@@ -1,10 +1,22 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
+interface Data {
+    message: string;
+}
+
 function App() {
   const [count, setCount] = useState(0)
+
+  const [data, setData] = useState<Data | null>(null)
+
+  useEffect(() => {
+    fetch('/api/data')
+        .then((response) => response.json())
+        .then((data: Data) => setData(data));
+  }, []);
 
   return (
     <>
@@ -17,6 +29,7 @@ function App() {
         </a>
       </div>
       <h1>Vite + React</h1>
+      {data ? <p>{data.message}</p> : <p>Loading...</p>}
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
