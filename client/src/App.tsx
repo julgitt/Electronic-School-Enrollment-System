@@ -1,48 +1,25 @@
-import { useEffect, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
-interface Data {
-    message: string;
-}
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import './assets/css/style.css'
+import Navbar from './components/Navbar.tsx'
+import Home from './pages/Home'
+import Login from './pages/Login'
+import Signup from './pages/Signup'
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  const [data, setData] = useState<Data | null>(null)
-
-  useEffect(() => {
-    fetch('/api/data')
-        .then((response) => response.json())
-        .then((data: Data) => setData(data));
-  }, []);
-
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      {data ? <p>{data.message}</p> : <p>Loading...</p>}
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    return (
+        <Router>
+            <div id="root-container">
+                <Navbar/>
+                <main>
+                <Routes>
+                    <Route path="/" element={<Home/>}/>
+                    <Route path="/login" element={<Login/>}/>
+                    <Route path="/signup" element={<Signup/>}/>
+                </Routes>
+                </main>
+            </div>
+        </Router>
+    );
 }
 
 export default App

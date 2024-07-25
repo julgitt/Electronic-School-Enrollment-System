@@ -1,14 +1,16 @@
 .nav {
-    background: #242424;
-    height: 85px;
+    background: var(--primary-color);
+    height: 75px;
     display: flex;
     justify-content: space-between;
-    padding: 0.2rem calc((100vw - 1000px) / 2);
-    z-index: 12;
+    align-items:  center;
+    padding: 0 1rem;
+    gap: 2rem;
 }
 
 .nav-link {
-    color: #808080;
+    color: var(--highlight-hover-color-dark);
+    font-size: 1.5rem;
     display: flex;
     align-items: center;
     text-decoration: none;
@@ -17,8 +19,12 @@
     cursor: pointer;
 }
 
+.nav-link:hover {
+    color: var(--highlight-hover-color);
+}
+
 .nav-link.active {
-    color: #000000;
+    color: var(--highlight-active-color);
 }
 
 .bars {
@@ -43,10 +49,12 @@
 }
 
 .nav-menu {
+    padding: 0;
+    margin: 0;
     display: flex;
-    align-items: center;
-    margin-right: -24px;
+    gap: 1rem;
 }
+
 
 .nav-btn {
     display: flex;

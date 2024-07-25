@@ -1,21 +1,9 @@
-import viteLogo from "*.svg";
-import reactLogo from "../assets/react.svg";
-import {useEffect, useState} from "react";
-
-interface Data {
-    message: string;
-}
+import {useState} from "react";
+import viteLogo from '/vite.svg';
+import reactLogo from "../assets/images/react.svg";
 
 function Home() {
     const [count, setCount] = useState(0)
-
-    const [data, setData] = useState<Data | null>(null)
-
-    useEffect(() => {
-        fetch('/api/data')
-            .then((response) => response.json())
-            .then((data: Data) => setData(data));
-    }, []);
 
     return (
         <>
@@ -28,7 +16,6 @@ function Home() {
                 </a>
             </div>
             <h1>Vite + React</h1>
-            {data ? <p>{data.message}</p> : <p>Loading...</p>}
             <div className="card">
                 <button onClick={() => setCount((count) => count + 1)}>
                     count is {count}
