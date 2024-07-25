@@ -1,0 +1,17 @@
+#footer {
+    margin: 100px 100px auto;
+    padding: var(--spacing-md);
+    text-align: center;
+}
+
+.footer-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.footer p {
+    margin: 0;
+    font-size: 1rem;
+}

@@ -44,7 +44,7 @@ body {
     font-family: var(--font-family), sans-serif;
     font-size: var(--font-size-base);
     line-height: var(--line-height-base);
-    width: 100%; /*po co?*/
+    width: 100%;
 }
 
 input, button, textarea, select {
@@ -53,16 +53,15 @@ input, button, textarea, select {
 
 p, h1, h2, h3, h4, h5, h6 {
     overflow-wrap: break-word;
+    color:var(--highlight-color-dark);
 }
 
 h1 {
     font-size: 3.5rem;
-    color:var(--highlight-color-dark);
 }
 
 h2 {
     font-size: 3rem;
-    color:var(--highlight-color-dark);
 }
 
 h3 {
@@ -72,12 +71,11 @@ h3 {
 
 h4 {
     font-size: 2rem;
-    color: var(--highlight-color-dark);
 }
+
 h6 {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--highlight-color-dark);
 }
 
 p {
@@ -94,18 +92,6 @@ a:hover {
     color: var(--highlight-hover-color-dark);
 }
 
-#header{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--spacing-lg) var(--spacing-xxl);
-    background: var(--primary-color);
-    position: sticky;
-    top: 0;
-    left: 0;
-    z-index: 999;
-}
-
 button {
     border-radius: 8px;
     border: 1px solid var(--button-border);
@@ -113,7 +99,8 @@ button {
     font-size: 1em;
     font-weight: 500;
     font-family: inherit;
-    background-color: var(--highlight-color);
+    background-color: var(--secondary-color);
+    color: var(--background-color);
     cursor: pointer;
     transition: border-color 0.25s;
 }
@@ -136,46 +123,4 @@ button:focus-visible {
     :root {
         background-color: var(--background-color-dark)
     }
-}
-
-
-#root {
-    margin: 0 auto;
-    text-align: center;
-}
-
-.logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-    transition: filter 300ms;
-}
-.logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-    filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-    a:nth-of-type(2) .logo {
-        animation: logo-spin infinite 20s linear;
-    }
-}
-
-.card {
-    padding: 2em;
-}
-
-.read-the-docs {
-    color: #888;
 }

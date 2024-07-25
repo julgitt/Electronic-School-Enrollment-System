@@ -1,23 +1,24 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import './assets/css/style.css'
-import Navbar from './components/Navbar.tsx'
+import './assets/css/styles.css'
+import './assets/css/Hero.css'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
+import Footer from "./components/Footer.tsx";
+import Header from "./components/Header.tsx";
 
-function App() {
+function App(){
     return (
         <Router>
-            <div id="root-container">
-                <Navbar/>
-                <main>
+            <Header/>
+            <div className="hero">
                 <Routes>
                     <Route path="/" element={<Home/>}/>
                     <Route path="/login" element={<Login/>}/>
                     <Route path="/signup" element={<Signup/>}/>
                 </Routes>
-                </main>
             </div>
+            <Footer/>
         </Router>
     );
 }
