@@ -20,15 +20,15 @@ const Header: React.FC = () => {
             <nav className="nav">
                 <div className="nav-menu">
                     <Link className="nav-link" to="/">System naboru do szkół</Link>
-                    <Link className="nav-link" to="/login">Terminy</Link>
+                    <Link className="nav-link" to="/dates">Terminy</Link>
                     {user && (
-                        <Link className="nav-link" to="/login">Złóż kandydaturę</Link>
+                        <Link className="nav-link" to="/apply">Złóż kandydaturę</Link>
                     )}
                 </div>
                 {user ? (
                     <div className="nav-menu">
-                        <Link className="nav-link" to="/login">{user.username}</Link>
-                        <Link className="nav-link" to="/signup">Status Aplikacji</Link>
+                        <Link className="nav-link" to="/">{user.username}</Link>
+                        <Link className="nav-link" to="/aplicationStatus">Status Aplikacji</Link>
                         <Link className="nav-link" to="/signup">Wyloguj</Link>
                     </div>
                 ) : (
