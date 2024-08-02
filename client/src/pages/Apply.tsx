@@ -1,5 +1,3 @@
-import React from 'react';
-
 const Apply: React.FC = () => {
     return (
         <div>

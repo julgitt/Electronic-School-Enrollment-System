@@ -10,10 +10,34 @@ const Header: React.FC = () => {
     const [user, setUser] = useState<User | null>(null)
 
     useEffect(() => {
-        fetch('/api/data')
-            .then((response) => response.json())
-            .then((user: User) => setUser(user));
+        fetch('/api/user', {
+            credentials: 'include'
+        })
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                return null;
+            }
+        })
+        .then((user: User | null) => setUser(user))
+        .catch((error) => console.error('Error fetching user:', error));
     }, []);
+
+    const handleLogout = async (event: React.MouseEvent<HTMLAnchorElement>) => {
+        event.preventDefault();
+
+        const response = await fetch('/api/logout', {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        if (response.ok) {
+            window.location.href = '/';
+        } else {
+            console.error('Logout failed');
+        }
+    };
 
     return (
         <header className="header">
@@ -29,7 +53,7 @@ const Header: React.FC = () => {
                     <div className="nav-menu">
                         <Link className="nav-link" to="/">{user.username}</Link>
                         <Link className="nav-link" to="/aplicationStatus">Status Aplikacji</Link>
-                        <Link className="nav-link" to="/signup">Wyloguj</Link>
+                        <Link className="nav-link" to="/logout" onClick={handleLogout}>Wyloguj</Link>
                     </div>
                 ) : (
                     <div className="nav-menu">
