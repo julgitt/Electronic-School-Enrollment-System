@@ -10,13 +10,3 @@
     align-items: center;
     justify-content: center;
 }
-#hero form .form-input,
-#popup .form-input{
-    padding: 7px;
-    width: 300px;
-}
-
-#form form .form-message-error{
-    color: rgb(166, 0, 0);
-    font-weight: 500;
-}

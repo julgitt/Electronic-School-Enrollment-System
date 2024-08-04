@@ -3,7 +3,7 @@
     align-items: center;
     justify-content: space-between;
     padding: var(--spacing-lg) var(--spacing-xxl);
-    background: var(--primary-color);
+    background: var(--header-color);
     position: sticky;
     top: 0;
     left: 0;
@@ -11,8 +11,8 @@
 }
 
 .nav {
-    background-color: var(--primary-color);
-    color: var(--highlight-hover-color-dark);
+    background-color: var(--header-color);
+    color: var(--text-on-dark-color);
     display: flex;
     justify-content: space-between;
     align-items:  stretch;
@@ -38,11 +38,11 @@
 }
 
 .nav-link:hover {
-    color: var(--highlight-hover-color);
+    color: var(--text-on-dark-hover-color);
 }
 
 .nav-link.active {
-    color: var(--highlight-active-color);
+    color: var(--text-on-dark-active-color);
 }
 
 @media screen and (max-width: 768px) {
