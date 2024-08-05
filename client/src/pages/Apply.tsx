@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import SuggestionBox from '../components/SuggestionBox';
 
 const Apply: React.FC = () => {
@@ -18,6 +18,32 @@ const Apply: React.FC = () => {
     const [pesel, setPesel] = useState('');
     const [schoolName, setSchoolName] = useState('');
     const [error, setError] = useState('');
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    useEffect(() => {
+        const checkAuth = async () => {
+            try {
+                const response = await fetch('/api/apply', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                if (response.ok) {
+                    setIsAuthenticated(true);
+                } else {
+                    if (response.status === 401) {
+                        window.location.href = '/login';
+                    } else {
+                        setError('Access denied');
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                window.location.href = '/login';
+            }
+        };
+
+        checkAuth();
+    }, []);
 
     const handleSuggestionSelected = (suggestion: string) => {
         setSchoolName(suggestion);
@@ -48,6 +74,10 @@ const Apply: React.FC = () => {
             setError(errorData.message);
         }
     };
+
+    if (!isAuthenticated) {
+        return <div> </div>;
+    }
 
     return (
         <div>

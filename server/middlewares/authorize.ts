@@ -22,7 +22,7 @@ export function authorize(...roles: string[]) {
         }
 
         if (!user) {
-            res.redirect('/login?returnUrl=' + req.url);
+            return res.status(401).json({ message: 'Not authorized', redirect: '/login?returnUrl=' + req.url});
         }
 
         const userRoles = await Promise.all(roles.map((role) => isUserInRole(user, role)));
