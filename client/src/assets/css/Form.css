@@ -53,6 +53,24 @@ h1 {
     text-decoration: underline;
 }
 
+.secondary-button {
+    margin: 0 0 0 0;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: row;
+    border: 1px solid var(--input-focus-color);
+    background: var(--input-color);
+    color: var(--text-primary-color);
+}
+.secondary-button:hover {
+    background: var(--input-focus-color);
+}
+.secondary-button:disabled {
+    border: 1px solid var(--input-focus-color);
+    background: var(--input-color);
+    color: var(--input-focus-color);
+}
+
 .form-message {
     margin-bottom: var(--spacing-md);
     padding: var(--spacing-md);

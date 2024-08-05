@@ -18,11 +18,11 @@ function App(){
             <section className="main-content">
                 <Routes>
                     <Route path="/" element={<Home/>}/>
-                    <Route path="/login" element={<Login/>}/>
-                    <Route path="/signup" element={<Signup/>}/>
                     <Route path="/dates" element={<Dates/>}/>
                     <Route path="/apply" element={<Apply/>}/>
                     <Route path="/applicationStatus" element={<ApplicationStatus/>}/>
+                    <Route path="/login" element={<Login/>}/>
+                    <Route path="/signup" element={<Signup/>}/>
                 </Routes>
             </section>
             <Footer/>

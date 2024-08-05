@@ -15,7 +15,7 @@
     color: var(--text-on-dark-color);
     display: flex;
     justify-content: space-between;
-    align-items:  stretch;
+    align-items: stretch;
     padding: 0 1rem;
     gap: 2rem;
 }
