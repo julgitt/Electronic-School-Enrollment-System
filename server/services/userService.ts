@@ -10,8 +10,8 @@ export class UserService {
         this.repo = new UserRepository();
     }
 
-    async validateUser(loginOrEmail: string | null = null, password: string): Promise<boolean> {
-        const user: User | null = await this.repo.getUser(loginOrEmail);
+    async authenticateUser(identifier: string, password: string): Promise<User> {
+        const user: User | null = await this.repo.getUserByIdentifier(identifier);
         if (!user) {
             throw new Error('User not found.');
         }
@@ -19,11 +19,11 @@ export class UserService {
         if (!isPasswordValid) {
             throw new Error('Invalid password.');
         }
-        return true;
+        return user;
     }
 
-    async isUserInRole(loginOrEmail: string, role: string): Promise<boolean> {
-        const user = await this.repo.getUser(loginOrEmail, loginOrEmail);
+    async isUserInRole(identifier: string, role: string): Promise<boolean> {
+        const user = await this.repo.getUserByIdentifier(identifier);
         if (!user) {
             throw new Error('User not found.');
         }
@@ -31,13 +31,13 @@ export class UserService {
     }
 
     async registerUser(login: string, email: string, firstName: string, lastName: string, password: string): Promise<User> {
-        const isLoginTaken = await this.isLoginTaken(login);
-        const isEmailTaken = await this.isEmailTaken(email);
+        const isLoginTaken = await this.repo.getUserByLogin(login);
+        const isEmailTaken = await this.repo.getUserByEmail(email);
         if (isLoginTaken) {
             throw new Error('Login is already taken.');
         }
         if (isEmailTaken) {
-            throw new Error('There is already account with that email.');
+            throw new Error('There is already an account with that email.');
         }
 
         const id = new Date().getTime();
@@ -54,15 +54,5 @@ export class UserService {
         };
 
         return await this.repo.insertUser(newUser);
-    }
-
-    async isEmailTaken(email: string): Promise<boolean> {
-        const user: User | null = await this.repo.getUser(null, email);
-        return !!user;
-    }
-
-    async isLoginTaken(login: string): Promise<boolean> {
-        const user: User | null = await this.repo.getUser(login);
-        return !!user;
     }
 }

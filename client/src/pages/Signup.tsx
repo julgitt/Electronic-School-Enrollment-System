@@ -25,6 +25,8 @@ const Signup: React.FC = () => {
                 body: JSON.stringify({
                     txtUser: username,
                     txtEmail: email,
+                    txtFirstName: firstName,
+                    txtLastName: lastName,
                     txtPwd: password,
                     txtPwd_c: passwordConfirm,
                 }),

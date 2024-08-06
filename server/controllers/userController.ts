@@ -8,36 +8,35 @@ export class UserController {
         this.userService = new UserService();
     }
 
+    private respondWithError(res: Response, message: string, error: any, status: number){
+        console.error(message, error);
+        return res.status(status).json({
+            message: error instanceof Error ? error.message : message + "An unknown error occurred."
+        });
+    }
+
     async registerUser(req: Request, res: Response) {
         const { txtUser: login, txtEmail: email, txtPwd: password, txtFirstName: firstName, txtLastName: lastName } = req.body;
         try {
             const user = await this.userService.registerUser(login, email, firstName, lastName, password);
             return res.status(201).json({ message: 'Signup successful', user: { username: user.login }, redirect: '/login' });
         } catch (error) {
-            console.error('Signup error:', error);
-            if (error instanceof Error) {
-                return res.status(400).json({ message: error.message });
-            }
-            return res.status(400).json({ message: "Register error: unknown error"});
+            return this.respondWithError(res, "Register Error: ", error, 400)
         }
     }
 
     async loginUser(req: Request, res: Response) {
         const { txtUser: loginOrEmail, txtPwd: password } = req.body;
         try {
-            await this.userService.validateUser(loginOrEmail, password);
-            res.cookie('user', loginOrEmail, { signed: true });
-            let returnUrl = req.query.returnUrl as string;
-            if (await this.userService.isUserInRole(loginOrEmail, 'admin')) {
-                returnUrl = '/admin_dashboard';
-            }
-            return res.status(200).json({ message: 'Login successful', redirect: returnUrl || '/' });
+            const user = await this.userService.authenticateUser(loginOrEmail, password);
+            res.cookie('user', user.firstName, { signed: true });
+
+            const isAdmin = await this.userService.isUserInRole(loginOrEmail, 'admin');
+
+            let returnUrl = isAdmin ? '/admin_dashboard' : req.query.returnUrl || '/';
+            return res.status(200).json({ message: 'Login successful', redirect: returnUrl });
         } catch (error) {
-            console.error('Login error:', error);
-            if (error instanceof Error) {
-                return res.status(401).json({ message: error.message });
-            }
-            return res.status(401).json({ message: "Login error: unknown error"});
+            return this.respondWithError(res, "Login Error: ", error, 401)
         }
     }
 
@@ -47,8 +46,9 @@ export class UserController {
     }
 
     async getUser(req: Request, res: Response) {
-        if (req.signedCookies.user) {
-            return res.json({ username: req.signedCookies.user });
+        const user = req.signedCookies.user
+        if (user) {
+            return res.json({ username: user });
         } else {
             return res.status(401).json({ message: 'Not authenticated' });
         }
