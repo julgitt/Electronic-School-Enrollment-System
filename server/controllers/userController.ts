@@ -1,59 +1,56 @@
-import { compare, hash } from 'bcrypt';
-
-import { UserRepository } from '../repositories/userRepository';
-import { User } from '../models/userModel';
+import { Request, Response } from 'express';
+import { UserService } from '../services/userService';
 
 export class UserController {
-    private repo: UserRepository;
+    private userService: UserService;
 
     constructor() {
-        this.repo = new UserRepository();
+        this.userService = new UserService();
     }
 
-    async getUser(login: string | null = null, email: string | null = null, password: string) {
-        const user: User | null = await this.repo.getUser(login, email);
-
-        if (user != null) {
-            return await compare(password, user.password);
-        }
-
-        return false;
-    }
-
-    async isEmailTaken(email: string) {
-        const user: User | null = await this.repo.getUser(null, email);
-        return !!user;
-    }
-
-    async isLoginTaken(login: string) {
-        const user = await this.repo.getUser(login);
-        return !!user;
-    }
-
-    async getRoles(login: string) {
-        const user: User | null = await this.repo.getUser(login);
-        return user ? user.roles : [];
-    }
-
-    async doInsertUser(login: string, email: string, password: string) {
+    async registerUser(req: Request, res: Response) {
+        const { txtUser: login, txtEmail: email, txtPwd: password, txtFirstName: firstName, txtLastName: lastName } = req.body;
         try {
-            const id = new Date().getTime();
-
-            const user : User = {
-                userId: id,
-            login: login,
-                email: email,
-                password: await hash(password, 12),
-                roles: ['logged'],
-            };
-
-            return await this.repo.insertUser(user);
-        } catch (error: unknown) {
+            const user = await this.userService.registerUser(login, email, firstName, lastName, password);
+            return res.status(201).json({ message: 'Signup successful', user: { username: user.login }, redirect: '/login' });
+        } catch (error) {
+            console.error('Signup error:', error);
             if (error instanceof Error) {
-                throw new Error(`Failed to insert user: ${error.message}`);
-            } else {
-                throw new Error('Failed to insert user: Unknown error');
+                return res.status(400).json({ message: error.message });
             }
+            return res.status(400).json({ message: "Register error: unknown error"});
+        }
+    }
+
+    async loginUser(req: Request, res: Response) {
+        const { txtUser: loginOrEmail, txtPwd: password } = req.body;
+        try {
+            await this.userService.validateUser(loginOrEmail, password);
+            res.cookie('user', loginOrEmail, { signed: true });
+            let returnUrl = req.query.returnUrl as string;
+            if (await this.userService.isUserInRole(loginOrEmail, 'admin')) {
+                returnUrl = '/admin_dashboard';
+            }
+            return res.status(200).json({ message: 'Login successful', redirect: returnUrl || '/' });
+        } catch (error) {
+            console.error('Login error:', error);
+            if (error instanceof Error) {
+                return res.status(401).json({ message: error.message });
+            }
+            return res.status(401).json({ message: "Login error: unknown error"});
+        }
+    }
+
+    async logout(_req: Request, res: Response) {
+        res.cookie('user', '', { maxAge: -1 });
+        return res.status(200).json({ message: 'Logout successful' });
+    }
+
+    async getUser(req: Request, res: Response) {
+        if (req.signedCookies.user) {
+            return res.json({ username: req.signedCookies.user });
+        } else {
+            return res.status(401).json({ message: 'Not authenticated' });
         }
     }
 }

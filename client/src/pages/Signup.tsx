@@ -6,6 +6,8 @@ import '../assets/css/Form.css';
 const Signup: React.FC = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [password, setPassword] = useState('');
     const [passwordConfirm, setPasswordConfirm] = useState('');
     const [error, setError] = useState('');
@@ -74,6 +76,29 @@ const Signup: React.FC = () => {
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
+                    <div className="form-input-group">
+                        <input
+                            type="text"
+                            name="txtFirstName"
+                            className="form-input"
+                            placeholder="Imię"
+                            required
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                        />
+                    </div>
+                    <div className="form-input-group">
+                        <input
+                            type="text"
+                            name="txtLastName"
+                            className="form-input"
+                            placeholder="Nazwisko"
+                            required
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                        />
+                    </div>
+
                     <div className="form-input-group">
                         <input
                             type="password"
