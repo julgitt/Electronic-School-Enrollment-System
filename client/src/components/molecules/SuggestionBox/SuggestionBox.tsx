@@ -1,5 +1,7 @@
-import React, { useState, ChangeEvent } from 'react';
-import '../assets/css/SuggestionBox.css';
+import React, { useState } from 'react';
+
+import { InputField } from "../../atoms/InputField";
+import styles from './SuggestionBox.module.scss';
 
 interface SuggestionBoxProps {
     placeholder: string;
@@ -12,13 +14,12 @@ const SuggestionBox: React.FC<SuggestionBoxProps> = ({ placeholder, suggestions,
     const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
     const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const userInput = e.target.value;
-        setQuery(userInput);
+    const handleChange = (value: string) => {
+        setQuery(value);
 
-        if (userInput.length > 0) {
+        if (value.length > 0) {
             const filtered = suggestions.filter((suggestion) =>
-                suggestion.toLowerCase().includes(userInput.toLowerCase())
+                suggestion.toLowerCase().includes(value.toLowerCase())
             );
             setFilteredSuggestions(filtered);
             setShowSuggestions(true);
@@ -36,20 +37,19 @@ const SuggestionBox: React.FC<SuggestionBoxProps> = ({ placeholder, suggestions,
     };
 
     return (
-        <div className="suggestion-box-container">
-            <input
+        <div className={styles.suggestionBoxContainer}>
+            <InputField
                 type="text"
-                className="input"
                 value={query}
                 placeholder={placeholder}
                 onChange={handleChange}
             />
             {showSuggestions && (
-                <ul className="suggestions-list">
+                <ul className={styles.suggestionsList}>
                     {filteredSuggestions.map((suggestion, index) => (
                         <li
                             key={index}
-                            className="suggestion-item"
+                            className={styles.suggestionItem}
                             onClick={() => handleSuggestionClick(suggestion)}
                         >
                             {suggestion}

@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
-import SuggestionBox from '../components/SuggestionBox';
+
+import { Button } from '../atoms/Button'
+import { PlusButton } from '../atoms/PlusButton'
+import SuggestionBox from '../molecules/SuggestionBox/SuggestionBox';
 
 const Apply: React.FC = () => {
     const suggestions = [
@@ -144,7 +147,7 @@ const Apply: React.FC = () => {
                                 onChange={(e) => setPesel(e.target.value)}
                             />
                         </div>
-                        <button type="submit">Dalej</button>
+                        <Button type="submit">Dalej</Button>
                     </form>
                 ) : (
                     <form method="POST" onSubmit={handleApply}>
@@ -160,10 +163,10 @@ const Apply: React.FC = () => {
                             </div>
                         ))}
                         <div>
-                            <button type="button" disabled={schools.length >= 5} className="secondary-button" onClick={handleAddSchoolInput}>+</button>
+                            <PlusButton disabled={schools.length >= 5} onClick={handleAddSchoolInput}/>
                         </div>
-                        <button type="button" onClick={handlePrev}>Cofnij</button>
-                        <button type="submit">Aplikuj</button>
+                        <Button type="button" onClick={handlePrev}>Cofnij</Button>
+                        <Button type="submit">Aplikuj</Button>
                     </form>
                 )}
             </section>

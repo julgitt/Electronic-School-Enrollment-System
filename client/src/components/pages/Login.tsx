@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from "react-router-dom";
 
-import '../assets/css/Form.css';
+import '../../assets/css/Form.css';
 
 function Login() {
     const [username, setUsername] = useState('');

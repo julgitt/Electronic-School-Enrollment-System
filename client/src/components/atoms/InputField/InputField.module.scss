@@ -1,0 +1,18 @@
+.input-group {
+  margin-bottom: var(--spacing-md);
+}
+
+.input {
+  width: 100%;
+  padding: var(--spacing-md);
+  border: 1px solid var(--input-color);
+  background: var(--input-color);
+  color: var(--text-primary-color);
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.input:focus {
+  border-color: var(--input-focus-color);
+  outline: none;
+}
