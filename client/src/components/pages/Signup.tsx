@@ -1,15 +1,12 @@
 import React from 'react';
 
-import '../../assets/css/Form.css';
-import { SignupForm } from '../organisms/SignupForm'
+import { SignupForm } from '../organisms/Forms/SignupForm'
 
 const Signup: React.FC = () => {
     return (
-        <div className="signup-container">
-            <section id="form">
-                <SignupForm />
-            </section>
-        </div>
+        <section id="form">
+            <SignupForm />
+        </section>
     );
 };
 

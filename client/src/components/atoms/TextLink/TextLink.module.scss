@@ -1,0 +1,14 @@
+.text {
+  text-align: center;
+  margin-top: var(--spacing-md);
+}
+
+.link {
+  color: var(--text-link-color);
+  text-decoration: none;
+}
+
+.link:hover {
+  color: var(--text-link-hover-color);
+  text-decoration: underline;
+}

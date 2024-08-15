@@ -7,6 +7,7 @@ interface InputFieldProps {
     placeholder: string;
     value: string;
     onChange: (value: string) => void;
+    autoFocus?: boolean;
     required?: boolean;
     pattern?: string;
     minLength?: number;
@@ -19,26 +20,26 @@ const InputField: React.FC<InputFieldProps> = ({
     placeholder,
     value,
     onChange,
+    autoFocus,
     required,
     pattern,
     minLength,
     title,
 }) => {
     return (
-        <div className={styles.inputGroup}>
-            <input
-                type={type}
-                name={name}
-                className={styles.input}
-                placeholder={placeholder}
-                value={value}
-                onChange={(e) => onChange(e.target.value)}
-                required={required}
-                pattern={pattern}
-                minLength={minLength}
-                title={title}
-            />
-        </div>
+        <input
+            type={type}
+            name={name}
+            className={styles.input}
+            placeholder={placeholder}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            required={required}
+            autoFocus={autoFocus}
+            pattern={pattern}
+            minLength={minLength}
+            title={title}
+        />
     );
 };
 
