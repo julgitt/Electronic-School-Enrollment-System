@@ -1,7 +1,6 @@
-// validators/userValidator.ts
 import { body } from 'express-validator';
 
-export const userSignupValidator = [
+export const applicationValidator = [
     body('txtUser')
         .notEmpty().withMessage("Username is required")
         .isLength({ min: 5 }).withMessage("Username must be at least 5 characters long")
@@ -18,9 +17,4 @@ export const userSignupValidator = [
         }
         return true;
     })
-];
-
-export const userLoginValidator = [
-    body('txtUser').notEmpty().withMessage('Username is required'),
-    body('txtPwd').notEmpty().withMessage('Password is required'),
 ];

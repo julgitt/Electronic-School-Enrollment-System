@@ -29,7 +29,8 @@ export class UserController {
         const { txtUser: loginOrEmail, txtPwd: password } = req.body;
         try {
             const user = await this.userService.authenticateUser(loginOrEmail, password);
-            res.cookie('user', user.firstName, { signed: true });
+            res.cookie('username', user.firstName, { signed: true });
+            res.cookie('user', user.userId, { signed: true });
 
             const isAdmin = await this.userService.isUserInRole(loginOrEmail, 'admin');
 
@@ -42,6 +43,7 @@ export class UserController {
 
     async logout(_req: Request, res: Response) {
         res.cookie('user', '', { maxAge: -1 });
+        res.cookie('username', '', { maxAge: -1 });
         return res.status(200).json({ message: 'Logout successful' });
     }
 

@@ -1,10 +1,13 @@
 import { Request, Response } from 'express';
+import { ApplicationService } from '../services/applicationService';
 import { UserService } from '../services/userService';
 
-export class UserController {
+export class ApplicationController {
+    private applicationService: ApplicationService;
     private userService: UserService;
 
     constructor() {
+        this.applicationService = new ApplicationService();
         this.userService = new UserService();
     }
 
@@ -15,13 +18,14 @@ export class UserController {
         });
     }
 
-    async registerUser(req: Request, res: Response) {
-        const { txtUser: login, txtEmail: email, txtPwd: password, txtFirstName: firstName, txtLastName: lastName } = req.body;
+    async addApplication(req: Request, res: Response) {
+        const { txtFirstName: firstName, txtLastName: lastName, txtPesel: pesel, txtSchools: schools } = req.body;
+        const userId = req.signedCookies.user;
         try {
-            const user = await this.userService.registerUser(login, email, firstName, lastName, password);
-            return res.status(201).json({ message: 'Signup successful', user: { username: user.login }, redirect: '/login' });
+            const Application = await this.applicationService.addApplication(firstName, lastName, pesel, schools, userId);
+            return res.status(201).json({ message: 'Application successful', redirect: '/apply_successful' });
         } catch (error) {
-            return this.respondWithError(res, "Register Error: ", error, 400)
+            return this.respondWithError(res, "Application Error: ", error, 400)
         }
     }
 }
