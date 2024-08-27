@@ -5,7 +5,7 @@ import bodyParser from "body-parser";
 import userRoutes from './routes/userRoute';
 import applyRoutes from './routes/applyRoute';
 
-const app= express();
+const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
