@@ -6,7 +6,7 @@ export interface Application {
     pesel: string;
     firstName: string;
     lastName: string;
-
+    status: string;
 }
 
 const application: Application[] = [];

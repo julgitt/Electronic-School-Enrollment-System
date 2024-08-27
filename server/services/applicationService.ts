@@ -19,6 +19,7 @@ export class ApplicationService {
             userId: userId,
             stage: 1,
             schools: schools,
+            status: 'pending',
         };
 
         return await this.repo.insertApplication(newApplication);
