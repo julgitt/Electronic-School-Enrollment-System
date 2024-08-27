@@ -22,7 +22,7 @@ export class ApplicationController {
         const { txtFirstName: firstName, txtLastName: lastName, txtPesel: pesel, txtSchools: schools } = req.body;
         const userId = req.signedCookies.user;
         try {
-            const Application = await this.applicationService.addApplication(firstName, lastName, pesel, schools, userId);
+            await this.applicationService.addApplication(firstName, lastName, pesel, schools, userId);
             return res.status(201).json({ message: 'Application successful', redirect: '/apply_successful' });
         } catch (error) {
             return this.respondWithError(res, "Application Error: ", error, 400)

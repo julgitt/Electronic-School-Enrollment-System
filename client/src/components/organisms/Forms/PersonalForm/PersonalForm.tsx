@@ -7,23 +7,23 @@ import { InputField } from "../../../atoms/InputField";
 import styles from "../Form.module.scss";
 
 interface PersonalFormProps {
-    name: string;
-    surname: string;
+    firstName: string;
+    lastName: string;
     pesel: string;
     error: string;
-    onNameChange: (value: string) => void;
-    onSurnameChange: (value: string) => void;
+    onFirstNameChange: (value: string) => void;
+    onLastNameChange: (value: string) => void;
     onPeselChange: (value: string) => void;
     onSubmit: (event: React.FormEvent) => void;
 }
 
 const PersonalForm: React.FC<PersonalFormProps> = ({
-    name,
-    surname,
+    firstName,
+    lastName,
     pesel,
     error,
-    onNameChange,
-    onSurnameChange,
+    onFirstNameChange,
+    onLastNameChange,
     onPeselChange,
     onSubmit,
 }) => (
@@ -33,20 +33,20 @@ const PersonalForm: React.FC<PersonalFormProps> = ({
             <div className={styles.formInputGroup}>
                 <InputField
                     type="text"
-                    name="txtName"
+                    name="txtFirstName"
                     autoFocus
                     placeholder="Imię"
                     required
-                    value={name}
-                    onChange={onNameChange}
+                    value={firstName}
+                    onChange={onFirstNameChange}
                     />
                     <InputField
                         type="text"
-                        name="txtSurname"
+                        name="txtLastName"
                         placeholder="Nazwisko"
                         required
-                        value={surname}
-                        onChange={onSurnameChange}
+                        value={lastName}
+                        onChange={onLastNameChange}
                     />
                     <InputField
                         type="text"

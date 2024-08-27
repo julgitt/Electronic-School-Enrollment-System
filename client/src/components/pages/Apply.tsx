@@ -4,8 +4,8 @@ import { SchoolSelectionForm } from '../organisms/Forms/SchoolSelectionForm';
 
 const Apply: React.FC = () => {
     const suggestions = ['Apple', 'Banana', 'Cherry'];
-    const [name, setName] = useState('');
-    const [surname, setSurname] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [pesel, setPesel] = useState('');
     const [error, setError] = useState('');
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -27,7 +27,7 @@ const Apply: React.FC = () => {
 
     const handleNext = (event: React.FormEvent) => {
         event.preventDefault();
-        if (!name || !surname || !pesel) setError('Proszę wypełnić wszystkie dane osobowe.');
+        if (!firstName || !lastName || !pesel) setError('Proszę wypełnić wszystkie dane osobowe.');
         else setStep(2);
     };
 
@@ -45,7 +45,7 @@ const Apply: React.FC = () => {
             const response = await fetch('/api/apply', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ txtName: name, txtSurname: surname, txtPesel: pesel, txtSchools: schools })
+                body: JSON.stringify({ txtFirstName: firstName, txtLastName: lastName, txtPesel: pesel, txtSchools: schools })
             });
 
             if (response.ok) window.location.href = (await response.json()).redirect;
@@ -67,12 +67,12 @@ const Apply: React.FC = () => {
         <div>
             {step === 1 ? (
                 <PersonalForm
-                    name={name}
-                    surname={surname}
+                    firstName={firstName}
+                    lastName={lastName}
                     pesel={pesel}
                     error={error}
-                    onNameChange={setName}
-                    onSurnameChange={setSurname}
+                    onFirstNameChange={setFirstName}
+                    onLastNameChange={setLastName}
                     onPeselChange={setPesel}
                     onSubmit={handleNext}
                 />
