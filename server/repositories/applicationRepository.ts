@@ -1,5 +1,5 @@
-import applications, { Application } from '../models/applicationModel';
-import db from './db';
+import { Application } from '../models/applicationModel';
+import { db } from '../db';
 
 export class ApplicationRepository {
     constructor() {}
@@ -12,16 +12,14 @@ export class ApplicationRepository {
         return application || null;
     }
 
-    async insertApplication(newApplication: Application): Promise<Application> {
-        const isExisting = await this.getApplicationByUserAndStage(newApplication.userId, newApplication.stage);
+    async insertApplication(newApp: Application): Promise<Application> {
+        const isExisting = await this.getApplicationByUserAndStage(newApp.userId, newApp.stage);
         if (isExisting) {
             throw new Error('Application already exists.');
         }
-        const result = await db.one(
+        return await db.one(
             'INSERT INTO applications(user_id, stage, other_column) VALUES($1, $2, $3) RETURNING *',
-            [newApplication.applicationId, newApplication.userId, newApplication.stage, newApplication.otherColumn]
+            [newApp.userId, newApp.schoolId, newApp.stage, newApp.pesel, newApp.firstName, newApp.status]
         );
-
-        return result;
     }
 }

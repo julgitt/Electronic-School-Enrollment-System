@@ -8,20 +8,20 @@ export class ApplicationService {
         this.repo = new ApplicationRepository();
     }
 
-    async addApplication(firstName: string, lastName: string, pesel: string, schools: string[], userId: number): Promise<Application> {
-        const id = new Date().getTime();
+    async addApplication(firstName: string, lastName: string, pesel: string, schools: number[], userId: number): Promise<Application[]> {
+        const applicationPromises = schools.map(schoolId => {
+            const newApplication: Application = {
+                userId: userId,
+                schoolId: schoolId,
+                firstName: firstName,
+                lastName: lastName,
+                pesel: pesel,
+                stage: 1,
+                status: 'pending',
+            };
+            return this.repo.insertApplication(newApplication);
+        });
 
-        const newApplication: Application = {
-            applicationId: id,
-            firstName: firstName,
-            lastName: lastName,
-            pesel: pesel,
-            userId: userId,
-            stage: 1,
-            schools: schools,
-            status: 'pending',
-        };
-
-        return await this.repo.insertApplication(newApplication);
+        return await Promise.all(applicationPromises);
     }
 }

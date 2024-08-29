@@ -13,4 +13,4 @@ const db = pgp({
     password: process.env.DB_PASSWORD,
 });
 
-module.exports = db;
+export { db };

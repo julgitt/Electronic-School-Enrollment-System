@@ -1,5 +1,5 @@
 export interface User {
-    userId: number;
+    id: number;
     login: string;
     firstName: string;
     lastName: string;
@@ -8,6 +8,7 @@ export interface User {
     roles: string[];
 }
 
-const users: User[] = [];
-
-export default users;
+export interface UserRole {
+    userId: number;
+    role_name: string;
+}

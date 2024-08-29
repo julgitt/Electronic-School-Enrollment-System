@@ -30,7 +30,7 @@ export class UserController {
         try {
             const user = await this.userService.authenticateUser(loginOrEmail, password);
             res.cookie('username', user.firstName, { signed: true });
-            res.cookie('user', user.userId, { signed: true });
+            res.cookie('user', user.id, { signed: true });
 
             const isAdmin = await this.userService.isUserInRole(loginOrEmail, 'admin');
 

@@ -40,15 +40,13 @@ export class UserService {
             throw new Error('There is already an account with that email.');
         }
 
-        const id = new Date().getTime();
         const hashedPassword = await hash(password, 12);
 
-        const newUser: User = {
-            userId: id,
-            login: login,
-            firstName: firstName,
-            lastName : lastName,
-            email: email,
+        const newUser: Omit<User, 'id'> = {
+            login,
+            firstName,
+            lastName,
+            email,
             password: hashedPassword,
             roles: ['user'],
         };
