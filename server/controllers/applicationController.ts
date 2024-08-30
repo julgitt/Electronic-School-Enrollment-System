@@ -1,14 +1,11 @@
 import { Request, Response } from 'express';
 import { ApplicationService } from '../services/applicationService';
-import { UserService } from '../services/userService';
 
 export class ApplicationController {
     private applicationService: ApplicationService;
-    private userService: UserService;
 
     constructor() {
         this.applicationService = new ApplicationService();
-        this.userService = new UserService();
     }
 
     private respondWithError(res: Response, message: string, error: any, status: number){
@@ -23,7 +20,7 @@ export class ApplicationController {
         const userId = req.signedCookies.user;
         try {
             await this.applicationService.addApplication(firstName, lastName, pesel, schools, userId);
-            return res.status(201).json({ message: 'Application successful', redirect: '/apply_successful' });
+            return res.status(201).json({ message: 'Application successful', redirect: '/applySubmitted' });
         } catch (error) {
             return this.respondWithError(res, "Application Error: ", error, 400)
         }

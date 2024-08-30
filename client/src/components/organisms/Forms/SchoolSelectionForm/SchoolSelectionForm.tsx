@@ -7,11 +7,17 @@ import { ErrorMessage } from "../../../atoms/ErrorMessage";
 
 import styles from "../Form.module.scss";
 
+//TODO: redundant interface
+interface School {
+    id: number;
+    name: string;
+}
+
 interface SchoolSelectionFormProps {
-    schools: string[];
+    schools: (number | null)[];
     error: string;
-    suggestions: string[];
-    onSchoolChange: (suggestion: string, index: number) => void;
+    suggestions: School[];
+    onSchoolChange: (schoolId: number, index: number) => void;
     onAddSchool: () => void;
     onPrev: (event: React.FormEvent) => void;
     onSubmit: (event: React.FormEvent) => void;
@@ -33,8 +39,11 @@ const SchoolSelectionForm: React.FC<SchoolSelectionFormProps> = ({
             <div key={index} className={styles.suggestionBox}>
                 <SuggestionBox
                     placeholder="Szkoła"
-                    suggestions={suggestions}
-                    onSuggestionSelected={(suggestion) => onSchoolChange(suggestion, index)}
+                    suggestions={suggestions.map(s => s.name)}
+                    onSuggestionSelected={(selectedName) => {
+                        const selectedSchool = suggestions.find(s => s.name === selectedName);
+                        onSchoolChange(selectedSchool ? selectedSchool.id : -1, index);
+                    }}
                 />
             </div>
         ))}

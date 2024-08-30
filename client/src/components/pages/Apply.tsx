@@ -2,17 +2,36 @@ import React, { useState, useEffect } from 'react';
 import { PersonalForm } from '../organisms/Forms/PersonalForm';
 import { SchoolSelectionForm } from '../organisms/Forms/SchoolSelectionForm';
 
+interface School {
+    id: number;
+    name: string;
+}
+
 const Apply: React.FC = () => {
-    const suggestions = ['Apple', 'Banana', 'Cherry'];
+    const [suggestions, setSuggestions] = useState<School[]>([]);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [pesel, setPesel] = useState('');
     const [error, setError] = useState('');
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [step, setStep] = useState(1);
-    const [schools, setSchools] = useState(['']);
+    const [schools, setSchools] = useState([-1]);
 
     useEffect(() => {
+        const fetchSchools = async () => {
+            try {
+                const response = await fetch('/api/schools');
+                if (response.ok) {
+                    const data = await response.json();
+                    setSuggestions(data);
+                } else {
+                    console.error('Błąd podczas pobierania szkół');
+                }
+            } catch (error) {
+                console.error('Error fetching schools:', error);
+            }
+        };
+
         const checkAuth = async () => {
             try {
                 const response = await fetch('/api/apply', { method: 'GET', credentials: 'include' });
@@ -23,6 +42,7 @@ const Apply: React.FC = () => {
             }
         };
         checkAuth();
+        fetchSchools();
     }, []);
 
     const handleNext = (event: React.FormEvent) => {
@@ -53,13 +73,13 @@ const Apply: React.FC = () => {
         }
     };
 
-    const handleSuggestionSelected = (suggestion: string, index: number) => {
+    const handleSuggestionSelected = (suggestion: number, index: number) => {
         const newSchools = [...schools];
         newSchools[index] = suggestion;
         setSchools(newSchools);
     };
 
-    const handleAddSchoolInput = () => setSchools([...schools, '']);
+    const handleAddSchoolInput = () => setSchools([...schools, -1]);
 
     if (!isAuthenticated) return <div>Loading...</div>;
 

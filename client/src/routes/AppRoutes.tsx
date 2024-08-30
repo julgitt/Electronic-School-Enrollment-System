@@ -5,6 +5,7 @@ import Signup from '../components/pages/Signup';
 import Dates from '../components/pages/Dates';
 import Apply from '../components/pages/Apply';
 import ApplicationStatus from '../components/pages/ApplicationStatus';
+import ApplicationSubmitted from "../components/pages/ApplicationSubmitted.tsx";
 
 const AppRoutes = () => {
     return (
@@ -15,6 +16,7 @@ const AppRoutes = () => {
             <Route path="/applicationStatus" element={<ApplicationStatus />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/applySubmitted" element={<ApplicationSubmitted />} />
         </Routes>
     );
 };
