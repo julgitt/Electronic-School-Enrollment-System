@@ -48,9 +48,9 @@ export class UserController {
     }
 
     async getUser(req: Request, res: Response) {
-        const user = req.signedCookies.user
-        if (user) {
-            return res.json({ username: user });
+        const username = req.signedCookies.username
+        if (username) {
+            return res.json({ username: username });
         } else {
             return res.status(401).json({ message: 'Not authenticated' });
         }

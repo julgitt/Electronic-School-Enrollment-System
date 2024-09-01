@@ -7,9 +7,9 @@ export class UserRepository {
     async getUserByLogin(login:string): Promise<User | null> {
         const query = 'SELECT * FROM users WHERE login = $1';
         const result = await db.query(query, [login]);
-        if (result.rows.length === 0)
+        if (result.length === 0)
             return null;
-        const user = result.rows[0];
+        const user = result[0];
         user.roles = await this.getUserRoles(user.user_id);
         return user;
     }
@@ -17,9 +17,9 @@ export class UserRepository {
     async getUserByEmail(email:string): Promise<User | null> {
         const query = 'SELECT * FROM users WHERE email = $1';
         const result = await db.query(query, [email]);
-        if (result.rows.length === 0)
+        if (result.length === 0)
             return null;
-        const user = result.rows[0];
+        const user = result[0];
         user.roles = await this.getUserRoles(user.user_id);
         return user;
     }
@@ -27,9 +27,9 @@ export class UserRepository {
     async getUserByIdentifier(identifier: string): Promise<User | null> {
         const query = 'SELECT * FROM users WHERE login = $1 OR email = $1';
         const result = await db.query(query, [identifier]);
-        if (result.rows.length === 0)
+        if (result.length === 0)
             return null;
-        const user = result.rows[0];
+        const user = result[0];
         user.roles = await this.getUserRoles(user.user_id);
         return user;
     }
@@ -50,7 +50,7 @@ export class UserRepository {
         const values = [newUser.login, newUser.firstName, newUser.lastName, newUser.email, newUser.password];
 
         const result = await db.query(userInsertQuery, values);
-        const user = result.rows[0] as User;
+        const user = result[0] as User;
 
         await this.insertUserRoles(user.id, newUser.roles);
         return user
@@ -64,7 +64,7 @@ export class UserRepository {
         `;
         const result = await db.query(query, [userId]);
 
-        return result.rows.map((row: UserRole) => row.role_name);
+        return result.map((row: UserRole) => row.role_name);
     }
 
     private async insertUserRoles(userId: number, roles: string[]): Promise<void> {

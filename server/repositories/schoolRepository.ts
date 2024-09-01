@@ -12,15 +12,15 @@ export class SchoolRepository {
         return result.rows;
     }
 
-    async insertSchool(newSchool: School): Promise<School> {
+    async insertSchool(newSchool: Omit<School, 'id'>): Promise<School> {
         const query = `
-            INSERT INTO schools (name, enrollmentLimit) 
-            VALUES ($1, $2, $3)
+            INSERT INTO schools (name, enrollment_limit) 
+            VALUES ($1, $2)
             RETURNING *;
         `;
         const values = [newSchool.name, newSchool.enrollmentLimit];
 
         const result = await db.query(query, values);
-        return result.rows[0] as School;
+        return result[0] as School;
     }
 }
