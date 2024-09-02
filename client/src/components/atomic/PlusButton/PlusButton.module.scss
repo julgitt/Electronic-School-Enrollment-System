@@ -1,11 +1,12 @@
 .secondaryButton {
-  margin: 0 0 0 0;
+  margin: 0;
+  padding: 15px 20px;
   border-radius: 4px;
   display: flex;
   flex-direction: row;
   border: 1px solid var(--input-focus-color);
   background: var(--input-color);
-  color: var(--text-primary-color);
+  color: var(--text-secondary-color);
 }
 .secondaryButton:hover {
   background: var(--input-focus-color);
