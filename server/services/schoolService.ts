@@ -1,6 +1,6 @@
 // services/schoolService.ts
 
-import { SchoolRepository } from '../repositories/schoolRepository'; // Zakładając, że repozytorium jest w folderze repositories
+import { SchoolRepository } from '../repositories/schoolRepository';
 import { School } from '../models/schoolModel';
 
 export class SchoolService {
@@ -11,7 +11,7 @@ export class SchoolService {
     }
 
     async getAllSchools(): Promise<School[]> {
-        return this.schoolRepository.getAllSchools();
+        return await this.schoolRepository.getAllSchools();
     }
 
     async addNewSchool(name: string, enrollmentLimit: number): Promise<School> {

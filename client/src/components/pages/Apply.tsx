@@ -21,9 +21,15 @@ const Apply: React.FC = () => {
         const fetchSchools = async () => {
             try {
                 const response = await fetch('/api/schools');
+
                 if (response.ok) {
                     const data = await response.json();
-                    setSuggestions(data);
+                    if (Array.isArray(data)) {
+                        setSuggestions(data);
+                    } else {
+                        console.error('Oczekiwana tablica, ale otrzymano:', data);
+                        setSuggestions([]);
+                    }
                 } else {
                     console.error('Błąd podczas pobierania szkół');
                 }

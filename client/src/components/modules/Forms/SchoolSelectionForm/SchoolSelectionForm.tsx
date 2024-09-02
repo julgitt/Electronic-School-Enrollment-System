@@ -2,7 +2,7 @@ import React from "react";
 
 import { Button } from '../../../atomic/Button'
 import { PlusButton } from '../../../atomic/PlusButton'
-import SuggestionBox from '../../../composite/SuggestionBox/SuggestionBox.tsx';
+import { SuggestionBox } from '../../../composite/SuggestionBox';
 import { ErrorMessage } from "../../../atomic/ErrorMessage";
 
 import styles from "../Form.module.scss";

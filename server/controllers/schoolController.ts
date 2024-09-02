@@ -9,22 +9,22 @@ export class SchoolController {
         this.schoolService = new SchoolService();
     }
 
-    async getAllSchools(req: Request, res: Response): Promise<void> {
+    async getAllSchools(_req: Request, res: Response) {
         try {
             const schools: School[] = await this.schoolService.getAllSchools();
-            res.status(200).json(schools);
+            return res.status(200).json(schools);
         } catch (error) {
-            res.status(500).json({ message: 'Error fetching schools', error });
+            return res.status(500).json({ message: 'Error fetching schools', error });
         }
     }
 
-    async addSchool(req: Request, res: Response): Promise<void> {
+    async addSchool(req: Request, res: Response) {
         try {
             const { name, enrollmentLimit } = req.body;
             const createdSchool: School = await this.schoolService.addNewSchool(name, enrollmentLimit);
-            res.status(201).json(createdSchool);
+            return res.status(201).json(createdSchool);
         } catch (error) {
-            res.status(500).json({ message: 'Error adding school', error });
+            return res.status(500).json({ message: 'Error adding school', error });
         }
     }
 }

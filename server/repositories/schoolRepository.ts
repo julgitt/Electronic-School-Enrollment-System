@@ -5,11 +5,10 @@ export class SchoolRepository {
     constructor() {}
     async getAllSchools(): Promise<School[]> {
         const query = `
-            SELECT * FROM schools;
+            SELECT id, name, enrollment_limit FROM schools;
         `;
 
-        const result = await db.query(query);
-        return result.rows;
+        return await db.query<School[]>(query);
     }
 
     async insertSchool(newSchool: Omit<School, 'id'>): Promise<School> {
