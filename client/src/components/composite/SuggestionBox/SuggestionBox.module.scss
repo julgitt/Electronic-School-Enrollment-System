@@ -23,8 +23,9 @@
   width: 100%;
   max-height: 150px;
   overflow-y: auto;
-  border: 1px solid #ccc;
-  background-color: #fff;
+  color: var(--text-primary-color);
+  border: 1px solid var(--input-focus-color);
+  background-color: var(--input-focus-color);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -38,5 +39,5 @@
 }
 
 .suggestionItem:hover {
-  background-color: #eee;
+  background-color:  #393E46;
 }
