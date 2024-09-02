@@ -56,7 +56,7 @@ export class UserRepository {
         return user
     }
 
-    private async getUserRoles(userId: number): Promise<string[]> {
+    async getUserRoles(userId: number): Promise<string[]> {
         const query = `
             SELECT role_name
             FROM user_roles
@@ -64,7 +64,7 @@ export class UserRepository {
         `;
         const result = await db.query(query, [userId]);
 
-        return result.map((row: UserRole) => row.role_name);
+        return result.map((row: UserRole) => row.roleName);
     }
 
     private async insertUserRoles(userId: number, roles: string[]): Promise<void> {

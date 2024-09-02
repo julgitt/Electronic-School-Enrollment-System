@@ -22,12 +22,9 @@ export class UserService {
         return user;
     }
 
-    async isUserInRole(identifier: string, role: string): Promise<boolean> {
-        const user = await this.repo.getUserByIdentifier(identifier);
-        if (!user) {
-            throw new Error('User not found.');
-        }
-        return user.roles.includes(role);
+    async isUserInRole(id: number, role: string): Promise<boolean> {
+        const roles = await this.repo.getUserRoles(id);
+        return roles.includes(role);
     }
 
     async registerUser(login: string, email: string, firstName: string, lastName: string, password: string): Promise<User> {

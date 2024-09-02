@@ -32,7 +32,7 @@ export class UserController {
             res.cookie('username', user.firstName, { signed: true });
             res.cookie('user', user.id, { signed: true });
 
-            const isAdmin = await this.userService.isUserInRole(loginOrEmail, 'admin');
+            const isAdmin = await this.userService.isUserInRole(user.id, 'admin');
 
             let returnUrl = isAdmin ? '/admin_dashboard' : req.query.returnUrl || '/';
             return res.status(200).json({ message: 'Login successful', redirect: returnUrl });

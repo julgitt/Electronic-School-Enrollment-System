@@ -6,21 +6,21 @@ const userService = new UserService();
 
 export function authorize(...roles: string[]) {
     return async function (req: Request, res: Response, next: NextFunction) {
-        const user = req.signedCookies.user;
+        const userId = req.signedCookies.user;
 
         if (roles.length === 0) {
-            req.user = user;
+            req.user = userId;
             return next();
         }
 
-        if (!user) {
+        if (!userId) {
             return res.status(401).json({ message: 'Not authorized', redirect: '/login?returnUrl=' + req.url});
         }
 
-        const userRoles = await Promise.all(roles.map((role) => userService.isUserInRole(user, role)));
+        const userRoles = await Promise.all(roles.map((role) => userService.isUserInRole(userId, role)));
 
         if (userRoles.some((isInRole) => isInRole)) {
-                req.user = user;
+                req.user = userId;
                 return next();
         }
 
