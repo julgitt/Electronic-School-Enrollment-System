@@ -1,5 +1,5 @@
 import React from 'react';
-import { LoginForm } from '../organisms/Forms/LoginForm';
+import { LoginForm } from '../modules/Forms/LoginForm';
 
 const Login: React.FC = () => {
     const handleLogin = async (username: string, password: string) => {

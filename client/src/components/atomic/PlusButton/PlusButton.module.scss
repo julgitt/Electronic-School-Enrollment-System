@@ -1,4 +1,4 @@
-.secondary-button {
+.secondaryButton {
   margin: 0 0 0 0;
   border-radius: 4px;
   display: flex;
@@ -7,10 +7,10 @@
   background: var(--input-color);
   color: var(--text-primary-color);
 }
-.secondary-button:hover {
+.secondaryButton:hover {
   background: var(--input-focus-color);
 }
-.secondary-button:disabled {
+.secondaryButton:disabled {
   border: 1px solid var(--input-focus-color);
   background: var(--input-color);
   color: var(--input-focus-color);

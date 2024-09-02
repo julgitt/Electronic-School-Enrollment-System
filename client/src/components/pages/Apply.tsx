@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { PersonalForm } from '../organisms/Forms/PersonalForm';
-import { SchoolSelectionForm } from '../organisms/Forms/SchoolSelectionForm';
+import { PersonalForm } from '../modules/Forms/PersonalForm';
+import { SchoolSelectionForm } from '../modules/Forms/SchoolSelectionForm';
 
 interface School {
     id: number;

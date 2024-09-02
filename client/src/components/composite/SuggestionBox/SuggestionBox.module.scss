@@ -1,4 +1,4 @@
-.suggestion-box-container {
+.suggestionBoxContainer {
   position: relative;
   margin-bottom: var(--spacing-md);
 }
@@ -18,7 +18,7 @@
   outline: none;
 }
 
-.suggestions-list {
+.suggestionsList {
   position: absolute;
   width: 100%;
   max-height: 150px;
@@ -32,11 +32,11 @@
   z-index: 1;
 }
 
-.suggestion-item {
+.suggestionItem {
   padding: 8px;
   cursor: pointer;
 }
 
-.suggestion-item:hover {
+.suggestionItem:hover {
   background-color: #eee;
 }

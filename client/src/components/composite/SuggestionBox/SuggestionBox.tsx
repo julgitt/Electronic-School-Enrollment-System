@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { InputField } from "../../atoms/InputField";
+import { InputField } from "../../atomic/InputField";
 import styles from './SuggestionBox.module.scss';
 
 interface SuggestionBoxProps {

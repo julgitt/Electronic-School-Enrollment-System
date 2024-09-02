@@ -1,9 +1,9 @@
 import React from "react";
 
-import { Button } from '../../../atoms/Button'
-import { PlusButton } from '../../../atoms/PlusButton'
-import SuggestionBox from '../../../molecules/SuggestionBox/SuggestionBox';
-import { ErrorMessage } from "../../../atoms/ErrorMessage";
+import { Button } from '../../../atomic/Button'
+import { PlusButton } from '../../../atomic/PlusButton'
+import SuggestionBox from '../../../composite/SuggestionBox/SuggestionBox.tsx';
+import { ErrorMessage } from "../../../atomic/ErrorMessage";
 
 import styles from "../Form.module.scss";
 

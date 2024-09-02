@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
-import { InputField } from '../../../atoms/InputField';
-import { ErrorMessage } from '../../../atoms/ErrorMessage';
-import { Button } from '../../../atoms/Button';
-import { TextLink } from "../../../atoms/TextLink";
+import { InputField } from '../../../atomic/InputField';
+import { ErrorMessage } from '../../../atomic/ErrorMessage';
+import { Button } from '../../../atomic/Button';
+import { TextLink } from "../../../atomic/TextLink";
 
 import styles from '../Form.module.scss';
 
