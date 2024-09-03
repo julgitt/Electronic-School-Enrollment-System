@@ -1,14 +1,23 @@
 import { ApplicationRepository } from '../repositories/applicationRepository';
+import { SchoolRepository } from '../repositories/schoolRepository';
 import { Application } from '../models/applicationModel';
 
 export class ApplicationService {
-    private repo: ApplicationRepository;
+    private appRepo: ApplicationRepository;
+    private schoolRepo: SchoolRepository;
 
     constructor() {
-        this.repo = new ApplicationRepository();
+        this.appRepo = new ApplicationRepository();
+        this.schoolRepo = new SchoolRepository();
     }
 
     async addApplication(firstName: string, lastName: string, pesel: string, schools: number[], userId: number): Promise<Application[]> {
+        for (const school_id of schools) {
+            if (! await this.schoolRepo.getSchoolById(school_id)) {
+                throw new Error('School name is not recognized.');
+            }
+        }
+
         const applicationPromises = schools.map(schoolId => {
             const newApplication: Application = {
                 userId: userId,
@@ -19,7 +28,7 @@ export class ApplicationService {
                 stage: 1,
                 status: 'pending',
             };
-            return this.repo.insertApplication(newApplication);
+            return this.appRepo.insertApplication(newApplication);
         });
 
         return await Promise.all(applicationPromises);

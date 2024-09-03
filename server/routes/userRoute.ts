@@ -7,18 +7,10 @@ const router = Router();
 const userCtrl = new UserController();
 
 router.post('/signup', userSignupValidator, async (req: Request, res: Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
     return await userCtrl.registerUser(req, res);
 });
 
 router.post('/login', userLoginValidator, async (req: Request, res: Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
     return await userCtrl.loginUser(req, res);
 });
 

@@ -1,21 +1,38 @@
 import { body } from 'express-validator';
 
+function validatePesel(pesel: string): boolean {
+    if (!/^\d{11}$/.test(pesel)) {
+        return false;
+    }
+
+    const weights = [1, 3, 7, 9, 1, 3, 7, 9, 1, 3];
+    const digits = pesel.split('').map(Number);
+    const checksum = digits
+        .slice(0, 10)
+        .reduce((acc, digit, index) => acc + digit * weights[index], 0);
+
+    const controlNumber = (10 - (checksum % 10)) % 10;
+
+    return controlNumber === digits[10];
+}
+
+
 export const applicationValidator = [
     body('txtFirstName')
-        .notEmpty().withMessage("Name is required")
-        .matches(/^[a-zA-Z\\]+$/).withMessage("Name can only contain letters"),
-     body('txtLastName')
-        .notEmpty().withMessage("Last name is required")
-        .matches(/^[a-zA-Z\\]+$/).withMessage("Last name can only contain letters"),
+        .notEmpty().withMessage("Name is required.")
+        .matches(/^[\p{L}]+$/u).withMessage("Name can only contain letters."),
+    body('txtLastName')
+        .notEmpty().withMessage("Last name is required.")
+        .matches(/^[\p{L}]+$/u).withMessage("Last name can only contain letters."),
+
     body('txtPesel')
-        .notEmpty().withMessage("Password is required")
-        .isLength({ min: 8 }).withMessage("Password must be at least 8 characters long")
-        .matches(/[a-zA-Z0-9!@#$%^&*_=+-]+/)
-        .withMessage("Password can only contain letters, numbers, and special characters: !@#$%^&*_=+-"),
-    body('txtSchools').custom((value, { req }) => {
-        if (value !== req.body.txtPwd) {
-            throw new Error("Passwords do not match");
+        .notEmpty().withMessage("Pesel is required.")
+        .custom((value) => {
+        if (!validatePesel(value)) {
+            throw new Error('Invalid Pesel number.');
         }
         return true;
-    })
+        }),
+    body('txtSchools')
+        .isArray({ min: 1 }).withMessage('At least one school must be selected.')
 ];

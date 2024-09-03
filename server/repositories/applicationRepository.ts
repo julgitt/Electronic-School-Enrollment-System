@@ -17,9 +17,14 @@ export class ApplicationRepository {
         if (isExisting) {
             throw new Error('Application already exists.');
         }
+        const query = `
+            INSERT INTO applications (user_id, school_id, first_name, last_name, pesel, stage, status)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING *;
+        `;
         return await db.one(
-            'INSERT INTO applications(user_id, stage, other_column) VALUES($1, $2, $3) RETURNING *',
-            [newApp.userId, newApp.schoolId, newApp.stage, newApp.pesel, newApp.firstName, newApp.status]
+            query,
+            [newApp.userId, newApp.schoolId, newApp.firstName, newApp.lastName, newApp.pesel, newApp.stage, newApp.status]
         );
     }
 }

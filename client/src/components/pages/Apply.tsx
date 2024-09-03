@@ -13,7 +13,6 @@ const Apply: React.FC = () => {
     const [lastName, setLastName] = useState('');
     const [pesel, setPesel] = useState('');
     const [error, setError] = useState('');
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [step, setStep] = useState(1);
     const [schools, setSchools] = useState([-1]);
 
@@ -41,8 +40,7 @@ const Apply: React.FC = () => {
         const checkAuth = async () => {
             try {
                 const response = await fetch('/api/apply', { method: 'GET', credentials: 'include' });
-                if (response.ok) setIsAuthenticated(true);
-                else window.location.href = '/login';
+                if (!response.ok) window.location.href = '/login';
             } catch {
                 window.location.href = '/login';
             }
@@ -86,8 +84,6 @@ const Apply: React.FC = () => {
     };
 
     const handleAddSchoolInput = () => setSchools([...schools, -1]);
-
-    if (!isAuthenticated) return <div>Loading...</div>;
 
     return (
         <div>

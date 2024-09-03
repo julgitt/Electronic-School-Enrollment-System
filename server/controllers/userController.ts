@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { UserService } from '../services/userService';
+import {validationResult} from "express-validator";
 
 export class UserController {
     private userService: UserService;
@@ -16,7 +17,13 @@ export class UserController {
     }
 
     async registerUser(req: Request, res: Response) {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
         const { txtUser: login, txtEmail: email, txtPwd: password, txtFirstName: firstName, txtLastName: lastName } = req.body;
+
         try {
             const user = await this.userService.registerUser(login, email, firstName, lastName, password);
             return res.status(201).json({ message: 'Signup successful', user: { username: user.login }, redirect: '/login' });
@@ -26,7 +33,13 @@ export class UserController {
     }
 
     async loginUser(req: Request, res: Response) {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
         const { txtUser: loginOrEmail, txtPwd: password } = req.body;
+
         try {
             const user = await this.userService.authenticateUser(loginOrEmail, password);
             res.cookie('username', user.firstName, { signed: true });
