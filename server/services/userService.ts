@@ -11,13 +11,13 @@ export class UserService {
     }
 
     async authenticateUser(identifier: string, password: string): Promise<User> {
-        const user: User | null = await this.repo.getUserByIdentifier(identifier);
+        const user: User | null = await this.repo.getUserWithRolesByLoginOrEmail(identifier);
         if (!user) {
-            throw new Error('User not found.');
+            throw new Error('Invalid login or password.');
         }
         const isPasswordValid = await compare(password, user.password);
         if (!isPasswordValid) {
-            throw new Error('Invalid password.');
+            throw new Error('Invalid login or password.');
         }
         return user;
     }
@@ -27,16 +27,18 @@ export class UserService {
         return roles.includes(role);
     }
 
+    // TODO: salt to config file
     async registerUser(login: string, email: string, firstName: string, lastName: string, password: string): Promise<User> {
-        const isLoginTaken = await this.repo.getUserByLogin(login);
-        const isEmailTaken = await this.repo.getUserByEmail(email);
-        if (isLoginTaken) {
-            throw new Error('Login is already taken.');
-        }
-        if (isEmailTaken) {
-            throw new Error('There is already an account with that email.');
-        }
+        const existingUser = await this.repo.getUserByLoginOrEmail(login, email);
 
+        if (existingUser) {
+            if (existingUser.login === login) {
+                throw new Error('Login is already taken.');
+            }
+            if (existingUser.email === email) {
+                throw new Error('There is already an account with that email.');
+            }
+        }
         const hashedPassword = await hash(password, 12);
 
         const newUser: Omit<User, 'id'> = {
