@@ -6,8 +6,8 @@ import { User } from '../models/userModel';
 export class UserService {
     private repo: UserRepository;
 
-    constructor() {
-        this.repo = new UserRepository();
+    constructor(userRepository: UserRepository) {
+        this.repo = userRepository;
     }
 
     async authenticateUser(identifier: string, password: string): Promise<User> {
@@ -27,18 +27,21 @@ export class UserService {
         return roles.includes(role);
     }
 
-    // TODO: salt to config file
     async registerUser(login: string, email: string, firstName: string, lastName: string, password: string): Promise<User> {
         const existingUser = await this.repo.getUserByLoginOrEmail(login, email);
-
+        //TODO: Instead of multiple messages glued together, throw multiple errors!
+        // Change error throwing to throw custom errors
         if (existingUser) {
+            const errorMessages = [];
             if (existingUser.login === login) {
-                throw new Error('Login is already taken.');
+                errorMessages.push('Login is already taken.');
             }
             if (existingUser.email === email) {
-                throw new Error('There is already an account with that email.');
+                errorMessages.push('There is already an account with that email.');
             }
+            throw new Error(errorMessages.join(' '));
         }
+
         const hashedPassword = await hash(password, 12);
 
         const newUser: Omit<User, 'id'> = {
@@ -50,6 +53,6 @@ export class UserService {
             roles: ['user'],
         };
 
-        return await this.repo.insertUser(newUser);
+        return this.repo.insertUser(newUser);
     }
 }

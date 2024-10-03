@@ -6,23 +6,31 @@ import { ApplicationService } from '../services/applicationService';
 export class ApplicationController {
     private applicationService: ApplicationService;
 
-    constructor() {
-        this.applicationService = new ApplicationService();
+    constructor(applicationService: ApplicationService) {
+        this.applicationService = applicationService;
     }
 
-    private respondWithError(res: Response, message: string, error: any, status: number){
-        console.error(message, error);
+    private respondWithError(res: Response, message: string, errors: any, status: number){
+        console.error(message, errors);
+
+        const errorMessage = Array.isArray(errors) && errors.length > 0
+            ? errors.map((err: any) => err.msg).join(', ')
+            : (errors instanceof Error ? errors.message : message + "An unknown error occurred.");
+
         return res.status(status).json({
-            message: error instanceof Error ? error.message : message + "An unknown error occurred.",
-            ...(error.errors ? { errors: error.errors } : {})
+            errorMessage,
+            errors
         });
     }
 
     async addApplication(req: Request, res: Response) {
+        console.log("Controller");
+        console.log("req: " + req);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return this.respondWithError(res, "Validation Error: ", { errors: errors.array() }, 400)
+            return this.respondWithError(res, "Validation Error: ", errors.array(), 400)
         }
+        console.log("Pass validation");
 
         const { txtFirstName: firstName, txtLastName: lastName, txtPesel: pesel, txtSchools: schools } = req.body;
         const userId = req.signedCookies.user;

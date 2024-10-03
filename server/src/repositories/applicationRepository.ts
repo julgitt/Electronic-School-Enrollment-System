@@ -4,7 +4,7 @@ import { db } from '../db';
 export class ApplicationRepository {
     constructor() {}
 
-    async getApplicationByUserAndStage(userId:number, stage:number): Promise<Application | null> {
+    async getApplicationByUserAndStage(userId: number, stage:number): Promise<Application | null> {
         const application = await db.oneOrNone(
             'SELECT * FROM applications WHERE user_id = $1 AND stage = $2',
             [userId, stage]

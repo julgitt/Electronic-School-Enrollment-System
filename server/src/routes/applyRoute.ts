@@ -3,9 +3,16 @@ import { applicationValidator } from "../validators/applicationValidator";
 
 import { authorize } from "../middlewares/authorize";
 import { ApplicationController } from "../controllers/applicationController";
+import { ApplicationService } from "../services/applicationService";
+import { SchoolRepository } from '../repositories/schoolRepository';
+import { ApplicationRepository } from "../repositories/applicationRepository";
 
 const router = Router();
-const applicationCtrl = new ApplicationController();
+
+const applicationRepository: ApplicationRepository = new ApplicationRepository();
+const schoolRepository: SchoolRepository = new SchoolRepository();
+const applicationService: ApplicationService = new ApplicationService(applicationRepository, schoolRepository);
+const applicationCtrl = new ApplicationController(applicationService);
 
 router.get('/apply', authorize('user'), (_req: Request, res: Response) => {
     return res.status(200).send({ message: 'Authorization successful'});

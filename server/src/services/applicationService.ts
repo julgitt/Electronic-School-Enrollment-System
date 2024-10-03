@@ -6,9 +6,9 @@ export class ApplicationService {
     private appRepo: ApplicationRepository;
     private schoolRepo: SchoolRepository;
 
-    constructor() {
-        this.appRepo = new ApplicationRepository();
-        this.schoolRepo = new SchoolRepository();
+    constructor(appRepo: ApplicationRepository, schoolRepo: SchoolRepository) {
+        this.appRepo = appRepo;
+        this.schoolRepo = schoolRepo;
     }
 
     async addApplication(firstName: string, lastName: string, pesel: string, schools: number[], userId: number): Promise<Application[]> {
@@ -31,6 +31,6 @@ export class ApplicationService {
             return this.appRepo.insertApplication(newApplication);
         });
 
-        return await Promise.all(applicationPromises);
+        return Promise.all(applicationPromises);
     }
 }

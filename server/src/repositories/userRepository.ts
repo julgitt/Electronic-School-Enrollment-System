@@ -1,5 +1,6 @@
-import {User, UserRole} from '../models/userModel';
-import {db} from '../db';
+import { User, UserRole } from '../models/userModel';
+import { db } from '../db';
+
 
 export class UserRepository {
     constructor() {}
