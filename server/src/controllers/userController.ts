@@ -46,7 +46,7 @@ export class UserController {
         const { txtUser: loginOrEmail, txtPwd: password } = req.body;
 
         try {
-            const user = await this.userService.authenticateUser(loginOrEmail, password);
+            const user = await this.userService.loginUser(loginOrEmail, password);
             res.cookie('username', user.firstName, { signed: true });
             res.cookie('user', user.id, { signed: true });
 

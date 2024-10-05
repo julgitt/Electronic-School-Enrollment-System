@@ -2,44 +2,41 @@ import { compare, hash } from 'bcrypt';
 
 import { UserRepository } from '../repositories/userRepository';
 import { User } from '../models/userModel';
+import {AuthenticationError} from "../errors/authenticationError";
+import {ValidationError} from "../errors/validationError";
 
 export class UserService {
-    private repo: UserRepository;
+    private userRepository: UserRepository;
 
     constructor(userRepository: UserRepository) {
-        this.repo = userRepository;
+        this.userRepository = userRepository;
     }
 
-    async authenticateUser(identifier: string, password: string): Promise<User> {
-        const user: User | null = await this.repo.getUserWithRolesByLoginOrEmail(identifier);
-        if (!user) {
-            throw new Error('Invalid login or password.');
+    async login(login: string, password: string): Promise<User> {
+        const existingUser: User | null = await this.userRepository.getByLoginOrEmail(login, login);
+        if (!existingUser) {
+            throw new AuthenticationError('Invalid login or password');
         }
-        const isPasswordValid = await compare(password, user.password);
+        const isPasswordValid = await compare(password, existingUser.password);
         if (!isPasswordValid) {
-            throw new Error('Invalid login or password.');
+            throw new AuthenticationError('Invalid login or password');
         }
-        return user;
+        return existingUser;
     }
 
-    async isUserInRole(id: number, role: string): Promise<boolean> {
-        const roles = await this.repo.getUserRoles(id);
+    async isInRole(id: number, role: string): Promise<boolean> {
+        const roles = await this.userRepository.getRoles(id);
         return roles.includes(role);
     }
 
-    async registerUser(login: string, email: string, firstName: string, lastName: string, password: string): Promise<User> {
-        const existingUser = await this.repo.getUserByLoginOrEmail(login, email);
-        //TODO: Instead of multiple messages glued together, throw multiple errors!
-        // Change error throwing to throw custom errors
+    async register(login: string, email: string, firstName: string, lastName: string, password: string): Promise<User> {
+        const existingUser = await this.userRepository.getByLoginOrEmail(login, email, false);
         if (existingUser) {
-            const errorMessages = [];
             if (existingUser.login === login) {
-                errorMessages.push('Login is already taken.');
+                throw new ValidationError('Login is already taken.');
+            } else if (existingUser.email === email) {
+                throw new ValidationError('There is already an account with that email.');
             }
-            if (existingUser.email === email) {
-                errorMessages.push('There is already an account with that email.');
-            }
-            throw new Error(errorMessages.join(' '));
         }
 
         const hashedPassword = await hash(password, 12);
@@ -53,6 +50,6 @@ export class UserService {
             roles: ['user'],
         };
 
-        return this.repo.insertUser(newUser);
+        return this.userRepository.insert(newUser);
     }
 }

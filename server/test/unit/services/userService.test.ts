@@ -40,7 +40,7 @@ describe('UserService', () => {
             userRepoStub.getUserWithRolesByLoginOrEmail.resolves(mockUser);
             bcryptCompareStub.resolves(true);
 
-            const result = await userService.authenticateUser('testuser', 'password123');
+            const result = await userService.loginUser('testuser', 'password123');
 
             assert.deepEqual(result, mockUser);
             assert.equal(userRepoStub.getUserWithRolesByLoginOrEmail.callCount, 1);
@@ -51,7 +51,7 @@ describe('UserService', () => {
             userRepoStub.getUserWithRolesByLoginOrEmail.resolves(null);
 
             try {
-                await userService.authenticateUser('nonexistent', 'password123');
+                await userService.loginUser('nonexistent', 'password123');
                 assert.fail('Expected an error to be thrown');
             } catch (err) {
                 assert.equal((err as Error).message, 'Invalid login or password.');
@@ -76,7 +76,7 @@ describe('UserService', () => {
             bcryptCompareStub.resolves(false);
 
             try {
-                await userService.authenticateUser('testuser', 'wrongpassword');
+                await userService.loginUser('testuser', 'wrongpassword');
                 assert.fail('Expected an error to be thrown');
             } catch (err) {
                 assert.equal((err as Error).message, 'Invalid login or password.');
