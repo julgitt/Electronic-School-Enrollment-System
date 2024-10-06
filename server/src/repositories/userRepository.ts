@@ -7,9 +7,9 @@ export class UserRepository {
 
     async getByLoginOrEmail(login: string, email: string, withRoles: boolean = true) : Promise<User | null> {
         if (withRoles) {
-            return this.getUserWithRolesByLoginOrEmail(login, email);
+            return this.getWithRolesByLoginOrEmail(login, email);
         } else {
-            return this.getUserWithoutRolesByLoginOrEmail(login, email);
+            return this.getWithoutRolesByLoginOrEmail(login, email);
         }
     }
 
@@ -40,7 +40,7 @@ export class UserRepository {
         });
     }
 
-    private async getUserWithRolesByLoginOrEmail(login: string, email: string): Promise<User | null> {
+    private async getWithRolesByLoginOrEmail(login: string, email: string): Promise<User | null> {
         const query = `
             SELECT u.*, r.role_name
             FROM users u
@@ -51,7 +51,7 @@ export class UserRepository {
         return this.mapUserWithRoles(result);
     }
 
-    private async getUserWithoutRolesByLoginOrEmail(login: string, email: string): Promise<User | null> {
+    private async getWithoutRolesByLoginOrEmail(login: string, email: string): Promise<User | null> {
         const query = `
             SELECT * 
             FROM users 

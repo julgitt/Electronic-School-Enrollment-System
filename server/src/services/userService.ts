@@ -24,13 +24,14 @@ export class UserService {
         return existingUser;
     }
 
-    async isInRole(id: number, role: string): Promise<boolean> {
+    async hasRole(id: number, role: string): Promise<boolean> {
         const roles = await this.userRepository.getRoles(id);
         return roles.includes(role);
     }
 
     async register(login: string, email: string, firstName: string, lastName: string, password: string): Promise<User> {
         const existingUser = await this.userRepository.getByLoginOrEmail(login, email, false);
+
         if (existingUser) {
             if (existingUser.login === login) {
                 throw new ValidationError('Login is already taken.');
