@@ -7,11 +7,9 @@ export class UserRepository {
     }
 
     async getByLoginOrEmail(login: string, email: string, withRoles: boolean = true): Promise<User | null> {
-        if (withRoles) {
-            return this.getWithRolesByLoginOrEmail(login, email);
-        } else {
-            return this.getWithoutRolesByLoginOrEmail(login, email);
-        }
+        return withRoles
+            ? this.getWithRolesByLoginOrEmail(login, email)
+            : this.getWithoutRolesByLoginOrEmail(login, email);
     }
 
     async getRoles(userId: number): Promise<string[]> {
@@ -24,20 +22,17 @@ export class UserRepository {
         return result.map((row: UserRole) => row.roleName);
     }
 
-    async insert(newUser: Omit<User, 'id'>): Promise<User> {
+    async insert(newUser: Omit<User, 'id'>): Promise<void> {
         return db.tx(async t => {
             const userInsertQuery = `
                 INSERT INTO users (login, first_name, last_name, email, password)
                 VALUES ($1, $2, $3, $4, $5)
-                RETURNING *;
+                RETURNING id;
             `;
             const values = [newUser.login, newUser.firstName, newUser.lastName, newUser.email, newUser.password];
-            const result = await t.one(userInsertQuery, values);
-            const user = result as User;
+            const user: User = await t.one(userInsertQuery, values);
 
             await this.insertUserRoles(user.id, newUser.roles, t);
-
-            return user;
         });
     }
 
@@ -49,7 +44,7 @@ export class UserRepository {
             WHERE u.login = $1 or u.email = $2;
             GROUP BY u.id;
         `;
-        const result = await db.query(query, [login, email]);
+        const result: User[] = await db.query(query, [login, email]);
         return result.length > 0 ? result[0] : null;
     }
 
@@ -60,7 +55,7 @@ export class UserRepository {
             WHERE login = $1 OR email = $2
             LIMIT 1
         `;
-        const result = await db.query(query, [login, email]);
+        const result: User[] = await db.query(query, [login, email]);
         return result.length > 0 ? result[0] : null;
     }
 
