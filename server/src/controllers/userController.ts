@@ -10,7 +10,7 @@ export class UserController {
         this.userService = userService;
     }
 
-    async registerUser(req: Request, res: Response, next: NextFunction) {
+    async register(req: Request, res: Response, next: NextFunction) {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return next({
@@ -23,7 +23,7 @@ export class UserController {
         const { txtUser: login, txtEmail: email, txtPwd: password, txtFirstName: firstName, txtLastName: lastName } = req.body;
 
         try {
-            const user = await this.userService.registerUser(login, email, firstName, lastName, password);
+            const user = await this.userService.register(login, email, firstName, lastName, password);
             return res.status(201).json({ message: 'Signup successful', user: { username: user.login }, redirect: '/login' });
         } catch (error) {
             return next({
@@ -33,7 +33,7 @@ export class UserController {
         }
     }
 
-    async loginUser(req: Request, res: Response, next: NextFunction) {
+    async login(req: Request, res: Response, next: NextFunction) {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return next({
@@ -46,11 +46,11 @@ export class UserController {
         const { txtUser: loginOrEmail, txtPwd: password } = req.body;
 
         try {
-            const user = await this.userService.loginUser(loginOrEmail, password);
+            const user = await this.userService.login(loginOrEmail, password);
             res.cookie('username', user.firstName, { signed: true });
             res.cookie('user', user.id, { signed: true });
 
-            const isAdmin = await this.userService.isUserInRole(user.id, 'admin');
+            const isAdmin = await this.userService.hasRole(user.id, 'admin');
             let returnUrl = isAdmin ? '/admin_dashboard' : req.query.returnUrl || '/';
 
             return res.status(200).json({ message: 'Login successful', redirect: returnUrl });

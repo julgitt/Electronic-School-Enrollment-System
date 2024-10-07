@@ -3,9 +3,10 @@ import { db } from '../db';
 
 
 export class UserRepository {
-    constructor() {}
+    constructor() {
+    }
 
-    async getByLoginOrEmail(login: string, email: string, withRoles: boolean = true) : Promise<User | null> {
+    async getByLoginOrEmail(login: string, email: string, withRoles: boolean = true): Promise<User | null> {
         if (withRoles) {
             return this.getWithRolesByLoginOrEmail(login, email);
         } else {
@@ -42,13 +43,14 @@ export class UserRepository {
 
     private async getWithRolesByLoginOrEmail(login: string, email: string): Promise<User | null> {
         const query = `
-            SELECT u.*, r.role_name
+            SELECT u.*, r.role_name as roles
             FROM users u
             LEFT JOIN user_roles r ON u.id = r.user_id
             WHERE u.login = $1 or u.email = $2;
+            GROUP BY u.id;
         `;
         const result = await db.query(query, [login, email]);
-        return this.mapUserWithRoles(result);
+        return result.length > 0 ? result[0] : null;
     }
 
     private async getWithoutRolesByLoginOrEmail(login: string, email: string): Promise<User | null> {
@@ -69,15 +71,5 @@ export class UserRepository {
     `;
         const queries = roles.map(roleName => t.none(insertRoleQuery, [userId, roleName]));
         await Promise.all(queries);
-    }
-
-    private async mapUserWithRoles(result: any[]): Promise<User | null> {
-        if (result.length === 0) {
-            return null;
-        }
-
-        const user = result[0];
-        user.roles = result.map(row => row.role_name).filter(role => role);
-        return user;
     }
 }

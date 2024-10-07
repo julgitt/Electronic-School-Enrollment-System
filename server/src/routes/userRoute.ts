@@ -15,11 +15,11 @@ const asyncHandler = (fn: Function) => (req: Request, res: Response, next: NextF
 };
 
 router.post('/signup', userSignupValidator, asyncHandler((req: Request, res: Response, next: NextFunction) => {
-    return userCtrl.registerUser(req, res, next);
+    return userCtrl.register(req, res, next);
 }));
 
 router.post('/login', userLoginValidator, asyncHandler((req: Request, res: Response, next: NextFunction) => {
-    return userCtrl.loginUser(req, res, next);
+    return userCtrl.login(req, res, next);
 }));
 
 router.get('/logout', asyncHandler((req: Request, res: Response, next: NextFunction) => {
