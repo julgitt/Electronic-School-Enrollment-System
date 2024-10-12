@@ -1,4 +1,3 @@
-// validators/userValidator.ts
 import { body } from 'express-validator';
 
 export const userSignupValidator = [

@@ -1,28 +1,22 @@
 import { compare, hash } from 'bcrypt';
 
-import { UserRepository } from '../repositories/userRepository';
+import userRepository from '../repositories/userRepository';
 import { User } from '../models/userModel';
-import {AuthenticationError} from "../errors/authenticationError";
-import {ValidationError} from "../errors/validationError";
+import { AuthenticationError } from "../errors/authenticationError";
+import { ValidationError } from "../errors/validationError";
 
-export class UserService {
-    private userRepository: UserRepository;
-
-    constructor(userRepository: UserRepository) {
-        this.userRepository = userRepository;
-    }
-
+class UserService {
     async login(login: string, password: string): Promise<User> {
-        const existingUser: User | null = await this.userRepository.getByLoginOrEmail(login, login);
+        const existingUser: User | null = await userRepository.getByLoginOrEmail(login, login);
         if (!existingUser || !(await compare(password, existingUser.password))) {
-            throw new AuthenticationError('Invalid login or password');
+            throw new AuthenticationError('Invalid credentials.');
         }
 
         return existingUser;
     }
 
     async register(login: string, email: string, firstName: string, lastName: string, password: string): Promise<void> {
-        const existingUser = await this.userRepository.getByLoginOrEmail(login, email, false);
+        const existingUser = await userRepository.getByLoginOrEmail(login, email, false);
         if (existingUser) {
             if (existingUser.login === login) {
                 throw new ValidationError('Login is already taken.', 409);
@@ -42,11 +36,13 @@ export class UserService {
             roles: ['user'],
         };
 
-        await this.userRepository.insert(newUser);
+        await userRepository.insert(newUser);
     }
 
     async hasRole(id: number, role: string): Promise<boolean> {
-        const roles = await this.userRepository.getUserRoles(id);
+        const roles = await userRepository.getUserRoles(id);
         return roles.includes(role);
     }
 }
+
+export default new UserService();

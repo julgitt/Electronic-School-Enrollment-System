@@ -2,7 +2,7 @@ import { User, UserRole } from '../models/userModel';
 import { db } from '../db';
 
 
-export class UserRepository {
+class UserRepository {
     async getByLoginOrEmail(login: string, email: string, withRoles: boolean = true): Promise<User | null> {
         return withRoles
             ? this.getWithRolesByLoginOrEmail(login, email)
@@ -35,7 +35,7 @@ export class UserRepository {
 
     private async getWithRolesByLoginOrEmail(login: string, email: string): Promise<User | null> {
         const query = `
-            SELECT u.*, r.role_name as roles
+            SELECT u.*, array_agg(r.role_name) as roles
             FROM users u
             LEFT JOIN user_roles r ON u.id = r.user_id
             WHERE u.login = $1 or u.email = $2
@@ -66,3 +66,5 @@ export class UserRepository {
         await Promise.all(queries);
     }
 }
+
+export default new UserRepository()
