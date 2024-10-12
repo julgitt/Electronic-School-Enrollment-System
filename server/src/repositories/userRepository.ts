@@ -3,16 +3,13 @@ import { db } from '../db';
 
 
 export class UserRepository {
-    constructor() {
-    }
-
     async getByLoginOrEmail(login: string, email: string, withRoles: boolean = true): Promise<User | null> {
         return withRoles
             ? this.getWithRolesByLoginOrEmail(login, email)
             : this.getWithoutRolesByLoginOrEmail(login, email);
     }
 
-    async getRoles(userId: number): Promise<string[]> {
+    async getUserRoles(userId: number): Promise<string[]> {
         const query = `
             SELECT role_name
             FROM user_roles
@@ -41,8 +38,9 @@ export class UserRepository {
             SELECT u.*, r.role_name as roles
             FROM users u
             LEFT JOIN user_roles r ON u.id = r.user_id
-            WHERE u.login = $1 or u.email = $2;
-            GROUP BY u.id;
+            WHERE u.login = $1 or u.email = $2
+            GROUP BY u.id
+            LIMIT 1;
         `;
         const result: User[] = await db.query(query, [login, email]);
         return result.length > 0 ? result[0] : null;
@@ -53,18 +51,18 @@ export class UserRepository {
             SELECT * 
             FROM users 
             WHERE login = $1 OR email = $2
-            LIMIT 1
+            LIMIT 1;
         `;
         const result: User[] = await db.query(query, [login, email]);
         return result.length > 0 ? result[0] : null;
     }
 
     private async insertUserRoles(userId: number, roles: string[], t: any): Promise<void> {
-        const insertRoleQuery = `
+        const query = `
         INSERT INTO user_roles (user_id, role_name)
         VALUES ($1, $2);
     `;
-        const queries = roles.map(roleName => t.none(insertRoleQuery, [userId, roleName]));
+        const queries = roles.map(roleName => t.none(query, [userId, roleName]));
         await Promise.all(queries);
     }
 }

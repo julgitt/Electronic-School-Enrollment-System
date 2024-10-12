@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import { validationResult } from "express-validator";
 
 import { UserService } from '../services/userService';
+import {ValidationError} from "../errors/validationError";
+import {AuthenticationError} from "../errors/authenticationError";
 
 export class UserController {
     private userService: UserService;
@@ -13,34 +15,23 @@ export class UserController {
     async register(req: Request, res: Response, next: NextFunction) {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return next({
-                status: 400,
-                message: "Validation Error",
-                errors: errors.array()
-            });
+            return next(new ValidationError("Validation Error", 400, errors.array()));
         }
 
         const { txtUser: login, txtEmail: email, txtPwd: password, txtFirstName: firstName, txtLastName: lastName } = req.body;
 
         try {
-            const user = await this.userService.register(login, email, firstName, lastName, password);
-            return res.status(201).json({ message: 'Signup successful', user: { username: user.login }, redirect: '/login' });
+            await this.userService.register(login, email, firstName, lastName, password);
+            return res.status(201).json({ message: 'Signup successful', user: { username: login }, redirect: '/login' });
         } catch (error) {
-            return next({
-                status: 400,
-                message: (error instanceof Error ? error.message : "Register Error"),
-                error });
+            return next(error);
         }
     }
 
     async login(req: Request, res: Response, next: NextFunction) {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return next({
-                status: 400,
-                message: "Validation Error",
-                errors: errors.array()
-            });
+            return next(new ValidationError("Validation Error", 400, errors.array()));
         }
 
         const { txtUser: loginOrEmail, txtPwd: password } = req.body;
@@ -55,11 +46,7 @@ export class UserController {
 
             return res.status(200).json({ message: 'Login successful', redirect: returnUrl });
         } catch (error) {
-            return next({
-                status: 401,
-                message: (error instanceof Error ? error.message : "Login error"),
-                error: error
-            });
+            return next(error);
         }
     }
 
@@ -69,11 +56,7 @@ export class UserController {
             res.cookie('username', '', { maxAge: -1 });
             return res.status(200).json({ message: 'Logout successful' });
         } catch (error) {
-            return next({
-                status: 500,
-                message: (error instanceof Error ? error.message : "Logout Error"),
-                error
-            });
+            return next(error);
         }
     }
 
@@ -83,17 +66,10 @@ export class UserController {
             if (username) {
                 return res.status(200).json({ username: username });
             } else {
-                return next({
-                    status: 401,
-                    message: 'Not authenticated'
-                });
+                return next(new AuthenticationError('Not authenticated'));
             }
         } catch (error) {
-            return next({
-                status: 500,
-                message: (error instanceof Error ? error.message : "Get User Error"),
-                error
-            });
+            return next(error);
         }
     }
 }

@@ -1,7 +1,11 @@
 import {CustomError} from "./customError";
+import { ValidationError as ExpressValidationError} from "express-validator";
 
 export class ValidationError extends CustomError {
-    constructor(message: string) {
-        super(message, 400);
+    public errors: ExpressValidationError[];
+
+    constructor(message: string, status: number, errors: ExpressValidationError[] = []) {
+        super(message, status);
+        this.errors = errors;
     }
 }

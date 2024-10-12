@@ -14,34 +14,25 @@ export class UserService {
 
     async login(login: string, password: string): Promise<User> {
         const existingUser: User | null = await this.userRepository.getByLoginOrEmail(login, login);
-        if (!existingUser) {
+        if (!existingUser || !(await compare(password, existingUser.password))) {
             throw new AuthenticationError('Invalid login or password');
         }
-        const isPasswordValid = await compare(password, existingUser.password);
-        if (!isPasswordValid) {
-            throw new AuthenticationError('Invalid login or password');
-        }
+
         return existingUser;
     }
 
-    async hasRole(id: number, role: string): Promise<boolean> {
-        const roles = await this.userRepository.getRoles(id);
-        return roles.includes(role);
-    }
-
-    async register(login: string, email: string, firstName: string, lastName: string, password: string): Promise<User> {
+    async register(login: string, email: string, firstName: string, lastName: string, password: string): Promise<void> {
         const existingUser = await this.userRepository.getByLoginOrEmail(login, email, false);
-
         if (existingUser) {
             if (existingUser.login === login) {
-                throw new ValidationError('Login is already taken.');
-            } else if (existingUser.email === email) {
-                throw new ValidationError('There is already an account with that email.');
+                throw new ValidationError('Login is already taken.', 409);
+            }
+            if (existingUser.email === email) {
+                throw new ValidationError('There is already an account with that email.', 409);
             }
         }
 
         const hashedPassword = await hash(password, 12);
-
         const newUser: Omit<User, 'id'> = {
             login,
             firstName,
@@ -51,6 +42,11 @@ export class UserService {
             roles: ['user'],
         };
 
-        return this.userRepository.insert(newUser);
+        await this.userRepository.insert(newUser);
+    }
+
+    async hasRole(id: number, role: string): Promise<boolean> {
+        const roles = await this.userRepository.getUserRoles(id);
+        return roles.includes(role);
     }
 }

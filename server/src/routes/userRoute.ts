@@ -6,6 +6,7 @@ import {UserRepository} from "../repositories/userRepository";
 
 const router = Router();
 
+// TODO: Global?
 const userRepo = new UserRepository();
 const userService = new UserService(userRepo);
 const userCtrl = new UserController(userService);
