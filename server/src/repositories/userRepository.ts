@@ -15,8 +15,9 @@ class UserRepository {
             FROM user_roles
             WHERE user_id = $1;
         `;
-        const result = await db.query(query, [userId]);
-        return result.map((row: UserRole) => row.roleName);
+        const roles: UserRole[] = await db.query(query, [userId]);
+
+        return roles.map((role: UserRole) => role.roleName);
     }
 
     async insert(newUser: Omit<User, 'id'>): Promise<void> {
@@ -42,8 +43,9 @@ class UserRepository {
             GROUP BY u.id
             LIMIT 1;
         `;
-        const result: User[] = await db.query(query, [login, email]);
-        return result.length > 0 ? result[0] : null;
+        const user: User = await db.one(query, [login, email]);
+
+        return user || null;
     }
 
     private async getWithoutRolesByLoginOrEmail(login: string, email: string): Promise<User | null> {
@@ -53,16 +55,18 @@ class UserRepository {
             WHERE login = $1 OR email = $2
             LIMIT 1;
         `;
-        const result: User[] = await db.query(query, [login, email]);
-        return result.length > 0 ? result[0] : null;
+        const user: User = await db.one(query, [login, email]);
+
+        return user || null;
     }
 
     private async insertUserRoles(userId: number, roles: string[], t: any): Promise<void> {
         const query = `
-        INSERT INTO user_roles (user_id, role_name)
-        VALUES ($1, $2);
-    `;
+            INSERT INTO user_roles (user_id, role_name)
+            VALUES ($1, $2);
+        `;
         const queries = roles.map(roleName => t.none(query, [userId, roleName]));
+
         await Promise.all(queries);
     }
 }

@@ -1,18 +1,12 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
 
 import { authorize } from "../middlewares/authorize";
-import { SchoolController } from "../controllers/schoolController";
-import {SchoolService} from "../services/schoolService";
-import {SchoolRepository} from "../repositories/schoolRepository";
+import schoolController from "../controllers/schoolController";
+import { asyncHandler } from "../middlewares/asyncHandler";
 
 const router = Router();
 
-const schoolRepo = new SchoolRepository()
-const schoolService = new SchoolService(schoolRepo);
-const schoolCtrl = new SchoolController(schoolService);
+router.get('/schools', authorize('user'), asyncHandler(schoolController.getAllSchools));
 
-router.get('/schools', authorize('user'), async (req: Request, res: Response) => {
-    return await schoolCtrl.getAllSchools(req, res);
-});
 
 export default router;

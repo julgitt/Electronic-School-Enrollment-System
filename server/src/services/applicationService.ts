@@ -1,20 +1,13 @@
-import { ApplicationRepository } from '../repositories/applicationRepository';
-import { SchoolRepository } from '../repositories/schoolRepository';
+import applicationRepository from '../repositories/applicationRepository';
+import schoolRepository from '../repositories/schoolRepository';
 import { Application } from '../models/applicationModel';
+import { ValidationError } from "../errors/validationError";
 
-export class ApplicationService {
-    private appRepo: ApplicationRepository;
-    private schoolRepo: SchoolRepository;
-
-    constructor(appRepo: ApplicationRepository, schoolRepo: SchoolRepository) {
-        this.appRepo = appRepo;
-        this.schoolRepo = schoolRepo;
-    }
-
-    async addApplication(firstName: string, lastName: string, pesel: string, schools: number[], userId: number): Promise<Application[]> {
+class ApplicationService {
+    async addApplication(firstName: string, lastName: string, pesel: string, schools: number[], userId: number): Promise<void> {
         for (const school_id of schools) {
-            if (! await this.schoolRepo.getSchoolById(school_id)) {
-                throw new Error('School name is not recognized.');
+            if (! await schoolRepository.getById(school_id)) {
+                throw new ValidationError('School name is not recognized.', 400);
             }
         }
 
@@ -28,9 +21,11 @@ export class ApplicationService {
                 stage: 1,
                 status: 'pending',
             };
-            return this.appRepo.insertApplication(newApplication);
+            return applicationRepository.insert(newApplication);
         });
 
-        return Promise.all(applicationPromises);
+        await Promise.all(applicationPromises);
     }
 }
+
+export default new ApplicationService();

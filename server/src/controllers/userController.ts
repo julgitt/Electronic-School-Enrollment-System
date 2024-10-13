@@ -5,14 +5,9 @@ import userService from '../services/userService';
 import { ValidationError } from "../errors/validationError";
 import { AuthenticationError } from "../errors/authenticationError";
 
-export class UserController {
+class UserController {
 
     async register(req: Request, res: Response, next: NextFunction) {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return next(new ValidationError("Validation Error", 400, errors.array()));
-        }
-
         const { txtUser: login, txtEmail: email, txtPwd: password, txtFirstName: firstName, txtLastName: lastName } = req.body;
 
         try {

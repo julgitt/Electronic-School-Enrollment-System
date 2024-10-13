@@ -2,7 +2,7 @@ import { Router } from 'express';
 import userController from '../controllers/userController';
 import { userSignupValidator, userLoginValidator } from '../validators/userValidator';
 import { handleValidationErrors } from '../middlewares/validationMiddleware';
-import { asyncHandler } from '../middlewares/asyncHandler'; // If you also abstract the asyncHandler
+import { asyncHandler } from '../middlewares/asyncHandler';
 
 const router = Router();
 
