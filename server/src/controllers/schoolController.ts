@@ -16,8 +16,8 @@ class SchoolController {
     async addSchool(req: Request, res: Response, next: NextFunction) {
         try {
             const { name, enrollmentLimit } = req.body;
-            const createdSchool: School = await schoolService.addSchool(name, enrollmentLimit);
-            return res.status(201).json(createdSchool);
+            await schoolService.addSchool(name, enrollmentLimit);
+            return res.status(201).json("School addition successful");
         } catch (error) {
             return next(error);
         }

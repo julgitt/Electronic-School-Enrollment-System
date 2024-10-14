@@ -19,17 +19,17 @@ class UserController {
     }
 
     async login(req: Request, res: Response, next: NextFunction) {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return next(new ValidationError("Validation Error", 400, errors.array()));
-        }
-
         const { txtUser: loginOrEmail, txtPwd: password } = req.body;
 
         try {
             const user = await userService.login(loginOrEmail, password);
             res.cookie('username', user.firstName, { signed: true, maxAge: 86400000 });
-            res.cookie('user', user.id, { signed: true, maxAge: 86400000 });
+            res.cookie('user', user.id, {
+                signed: true,
+                secure: true,
+                httpOnly: true,
+                maxAge: 86400000
+            });
 
             const isAdmin = await userService.hasRole(user.id, 'admin');
             let returnUrl = isAdmin ? '/admin_dashboard' : req.query.returnUrl || '/';
