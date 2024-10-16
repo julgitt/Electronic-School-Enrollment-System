@@ -20,18 +20,25 @@ class UserRepository {
         return roles.map((role: UserRole) => role.roleName);
     }
 
-    async insert(newUser: Omit<User, 'id'>): Promise<void> {
-        return db.tx(async t => {
-            const userInsertQuery = `
-                INSERT INTO users (login, first_name, last_name, email, password)
-                VALUES ($1, $2, $3, $4, $5)
-                RETURNING id;
-            `;
-            const values = [newUser.login, newUser.firstName, newUser.lastName, newUser.email, newUser.password];
-            const user: User = await t.one(userInsertQuery, values);
+    async insert(newUser: Omit<User, 'id'>, t: any): Promise<User> {
+        const userInsertQuery = `
+            INSERT INTO users (login, first_name, last_name, email, password)
+            VALUES ($1, $2, $3, $4, $5)
+            RETURNING id;
+        `;
 
-            await this.insertUserRoles(user.id, newUser.roles, t);
-        });
+        const values = [newUser.login, newUser.firstName, newUser.lastName, newUser.email, newUser.password];
+        return t.one(userInsertQuery, values);
+    }
+
+    async insertUserRoles(userId: number, roles: string[], t: any): Promise<void> {
+        const query = `
+            INSERT INTO user_roles (user_id, role_name)
+            VALUES ($1, $2);
+        `;
+        const queries = roles.map(roleName => t.none(query, [userId, roleName]));
+
+        await Promise.all(queries);
     }
 
     private async getWithRolesByLoginOrEmail(login: string, email: string): Promise<User | null> {
@@ -58,16 +65,6 @@ class UserRepository {
         const user: User = await db.one(query, [login, email]);
 
         return user || null;
-    }
-
-    private async insertUserRoles(userId: number, roles: string[], t: any): Promise<void> {
-        const query = `
-            INSERT INTO user_roles (user_id, role_name)
-            VALUES ($1, $2);
-        `;
-        const queries = roles.map(roleName => t.none(query, [userId, roleName]));
-
-        await Promise.all(queries);
     }
 }
 

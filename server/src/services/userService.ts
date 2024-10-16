@@ -4,6 +4,7 @@ import userRepository from '../repositories/userRepository';
 import { User } from '../models/userModel';
 import { AuthenticationError } from "../errors/authenticationError";
 import { ValidationError } from "../errors/validationError";
+import {db} from "../db";
 
 class UserService {
     async login(login: string, password: string): Promise<User> {
@@ -36,7 +37,10 @@ class UserService {
             roles: ['user'],
         };
 
-        await userRepository.insert(newUser);
+        await db.tx(async t => {
+            const user = await userRepository.insert(newUser, t);
+            await userRepository.insertUserRoles(user.id, newUser.roles, t);
+        });
     }
 
     async hasRole(id: number, role: string): Promise<boolean> {
