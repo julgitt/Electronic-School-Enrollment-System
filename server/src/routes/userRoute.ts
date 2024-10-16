@@ -8,7 +8,7 @@ const router = Router();
 
 router.post('/signup', userSignupValidator, handleValidationErrors, asyncHandler(userController.register));
 router.post('/login', userLoginValidator, handleValidationErrors, asyncHandler(userController.login));
-router.delete('/logout', asyncHandler(userController.logout));
+router.post('/logout', asyncHandler(userController.logout));
 router.get('/user', asyncHandler(userController.getUser));
 
 export default router;
