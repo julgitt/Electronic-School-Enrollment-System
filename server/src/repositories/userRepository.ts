@@ -1,6 +1,5 @@
 import { User, UserRole } from '../models/userModel';
-import { db } from '../db';
-
+import { db, ITask } from '../db';
 
 class UserRepository {
     async getByLoginOrEmail(login: string, email: string, withRoles: boolean = true): Promise<User | null> {
@@ -20,7 +19,7 @@ class UserRepository {
         return roles.map((role: UserRole) => role.roleName);
     }
 
-    async insert(newUser: Omit<User, 'id'>, t: any): Promise<User> {
+    async insert(newUser: Omit<User, 'id'>, t: ITask<any>): Promise<User> {
         const userInsertQuery = `
             INSERT INTO users (login, first_name, last_name, email, password)
             VALUES ($1, $2, $3, $4, $5)
@@ -31,14 +30,15 @@ class UserRepository {
         return t.one(userInsertQuery, values);
     }
 
-    async insertUserRoles(userId: number, roles: string[], t: any): Promise<void> {
+    async insertUserRoles(userId: number, roles: string[], t: ITask<any>): Promise<void> {
         const query = `
             INSERT INTO user_roles (user_id, role_name)
             VALUES ($1, $2);
         `;
-        const queries = roles.map(roleName => t.none(query, [userId, roleName]));
 
-        await Promise.all(queries);
+        for (const roleName of roles) {
+            await t.none(query, [userId, roleName]);
+        }
     }
 
     private async getWithRolesByLoginOrEmail(login: string, email: string): Promise<User | null> {
@@ -48,11 +48,8 @@ class UserRepository {
             LEFT JOIN user_roles r ON u.id = r.user_id
             WHERE u.login = $1 or u.email = $2
             GROUP BY u.id
-            LIMIT 1;
         `;
-        const user: User = await db.one(query, [login, email]);
-
-        return user || null;
+        return await db.oneOrNone(query, [login, email]);
     }
 
     private async getWithoutRolesByLoginOrEmail(login: string, email: string): Promise<User | null> {
@@ -60,11 +57,9 @@ class UserRepository {
             SELECT * 
             FROM users 
             WHERE login = $1 OR email = $2
-            LIMIT 1;
         `;
-        const user: User = await db.one(query, [login, email]);
 
-        return user || null;
+        return await db.oneOrNone(query, [login, email]);
     }
 }
 

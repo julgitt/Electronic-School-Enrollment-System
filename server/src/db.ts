@@ -1,4 +1,4 @@
-import pgPromise from 'pg-promise';
+import pgPromise, { ITask } from 'pg-promise';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -32,4 +32,4 @@ const db = pgp({
     password: process.env.DB_PASSWORD,
 });
 
-export { db };
+export { db, ITask };
