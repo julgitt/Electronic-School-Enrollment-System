@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { validationResult } from "express-validator";
 
 import userService from '../services/userService';
-import { ValidationError } from "../errors/validationError";
 import { AuthenticationError } from "../errors/authenticationError";
 
 class UserController {
