@@ -1,15 +1,24 @@
 import { Request, Response, NextFunction } from 'express';
 
-import userService from '../services/userService';
 import { AuthenticationError } from "../errors/authenticationError";
+import defaultUserService, { UserService } from "../services/userService";
 
-class UserController {
+export class UserController {
+    private userService: UserService;
+
+    constructor(userService?: UserService) {
+        if (userService != null) {
+            this.userService = userService;
+        } else {
+            this.userService = defaultUserService
+        }
+    }
 
     async register(req: Request, res: Response, next: NextFunction) {
         const { txtUser: login, txtEmail: email, txtPwd: password, txtFirstName: firstName, txtLastName: lastName } = req.body;
 
         try {
-            await userService.register(login, email, firstName, lastName, password);
+            await this.userService.register(login, email, firstName, lastName, password);
             return res.status(201).json({ message: 'Signup successful', user: { username: login }, redirect: '/login' });
         } catch (error) {
             return next(error);
@@ -20,7 +29,7 @@ class UserController {
         const { txtUser: loginOrEmail, txtPwd: password } = req.body;
 
         try {
-            const user = await userService.login(loginOrEmail, password);
+            const user = await this.userService.login(loginOrEmail, password);
             res.cookie('username', user.firstName, { signed: true, maxAge: 86400000 });
             res.cookie('user', user.id, {
                 signed: true,
@@ -29,7 +38,7 @@ class UserController {
                 maxAge: 86400000
             });
 
-            const isAdmin = await userService.hasRole(user.id, 'admin');
+            const isAdmin = await this.userService.hasRole(user.id, 'admin');
             let returnUrl = isAdmin ? '/admin_dashboard' : req.query.returnUrl || '/';
 
             return res.status(200).json({ message: 'Login successful', redirect: returnUrl });
@@ -62,4 +71,4 @@ class UserController {
     }
 }
 
-export default new UserController();
+export default new UserController()

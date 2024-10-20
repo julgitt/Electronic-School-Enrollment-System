@@ -37,27 +37,27 @@ describe('UserService', () => {
                 roles: ['user']
             };
 
-            userRepoStub.getUserWithRolesByLoginOrEmail.resolves(mockUser);
+            userRepoStub.getByLoginOrEmail.resolves(mockUser);
             bcryptCompareStub.resolves(true);
 
-            const result = await userService.loginUser('testuser', 'password123');
+            const result = await userService.login('testuser', 'password123');
 
             assert.deepEqual(result, mockUser);
-            assert.equal(userRepoStub.getUserWithRolesByLoginOrEmail.callCount, 1);
+            assert.equal(userRepoStub.getByLoginOrEmail.callCount, 1);
             assert.equal(bcryptCompareStub.callCount, 1);
         });
 
         it('should throw an error if user is not found', async () => {
-            userRepoStub.getUserWithRolesByLoginOrEmail.resolves(null);
+            userRepoStub.getByLoginOrEmail.resolves(null);
 
             try {
-                await userService.loginUser('nonexistent', 'password123');
+                await userService.login('nonexistent', 'password123');
                 assert.fail('Expected an error to be thrown');
             } catch (err) {
                 assert.equal((err as Error).message, 'Invalid login or password.');
             }
 
-            assert.equal(userRepoStub.getUserWithRolesByLoginOrEmail.callCount, 1);
+            assert.equal(userRepoStub.getByLoginOrEmail.callCount, 1);
             assert.equal(bcryptCompareStub.callCount, 0);
         });
 
@@ -72,17 +72,17 @@ describe('UserService', () => {
                 roles: ['user']
             };
 
-            userRepoStub.getUserWithRolesByLoginOrEmail.resolves(mockUser);
+            userRepoStub.getByLoginOrEmail.resolves(mockUser);
             bcryptCompareStub.resolves(false);
 
             try {
-                await userService.loginUser('testuser', 'wrongpassword');
+                await userService.login('testuser', 'wrongpassword');
                 assert.fail('Expected an error to be thrown');
             } catch (err) {
                 assert.equal((err as Error).message, 'Invalid login or password.');
             }
 
-            assert.equal(userRepoStub.getUserWithRolesByLoginOrEmail.callCount, 1);
+            assert.equal(userRepoStub.getByLoginOrEmail.callCount, 1);
             assert.equal(bcryptCompareStub.callCount, 1);
         });
     });
@@ -91,7 +91,7 @@ describe('UserService', () => {
         it('should return true if user is in role', async () => {
             userRepoStub.getUserRoles.resolves(['admin', 'user']);
 
-            const result = await userService.isUserInRole(1, 'admin');
+            const result = await userService.hasRole(1, 'admin');
             assert.strictEqual(true, result);
             assert.equal(userRepoStub.getUserRoles.callCount, 1);
         });
@@ -99,7 +99,7 @@ describe('UserService', () => {
         it('should return false if user is not in role', async () => {
             userRepoStub.getUserRoles.resolves(['user']);
 
-            const result = await userService.isUserInRole(1, 'admin');
+            const result = await userService.hasRole(1, 'admin');
             assert.strictEqual(false, result);
             assert.equal(userRepoStub.getUserRoles.callCount, 1);
         });
@@ -116,17 +116,17 @@ describe('UserService', () => {
                 roles: ['user']
             };
 
-            userRepoStub.getUserByLoginOrEmail.resolves(null);
+            userRepoStub.getByLoginOrEmail.resolves(null);
             bcryptHashStub.resolves('hashedPassword');
-            userRepoStub.insertUser.resolves({id: 1, ...mockUser});
+            userRepoStub.insert.resolves({id: 1, ...mockUser});
 
-            const result = await userService.registerUser('newuser', 'new@example.com', 'New', 'User', 'password123');
+            const result = await userService.register('newuser', 'new@example.com', 'New', 'User', 'password123');
 
             assert.deepEqual(result, {id: 1, ...mockUser});
-            assert.equal(userRepoStub.getUserByLoginOrEmail.callCount, 1);
+            assert.equal(userRepoStub.getByLoginOrEmail.callCount, 1);
             assert.equal(bcryptHashStub.callCount, 1);
-            assert.equal(userRepoStub.insertUser.callCount, 1);
-            assert(userRepoStub.insertUser.calledWith(mockUser));
+            assert.equal(userRepoStub.insert.callCount, 1);
+            assert(userRepoStub.insert.calledWith(mockUser));
         });
 
         it('should throw an error if login is already taken', async () => {
@@ -140,18 +140,18 @@ describe('UserService', () => {
                 roles: ['user']
             };
 
-            userRepoStub.getUserByLoginOrEmail.resolves(existingUser);
+            userRepoStub.getByLoginOrEmail.resolves(existingUser);
 
             try {
-                await userService.registerUser('existinguser', 'new@example.com', 'New', 'User', 'password123');
+                await userService.register('existinguser', 'new@example.com', 'New', 'User', 'password123');
                 assert.fail('Expected an error to be thrown');
             } catch (err) {
                 assert.match((err as Error).message, /Login is already taken./);
             }
 
-            assert.equal(userRepoStub.getUserByLoginOrEmail.callCount, 1);
+            assert.equal(userRepoStub.getByLoginOrEmail.callCount, 1);
             assert.equal(bcryptHashStub.callCount, 0);
-            assert.equal(userRepoStub.insertUser.callCount, 0);
+            assert.equal(userRepoStub.insert.callCount, 0);
         });
 
         it('should throw an error if email is already taken', async () => {
@@ -165,19 +165,19 @@ describe('UserService', () => {
                 roles: ['user']
             };
 
-            userRepoStub.getUserByLoginOrEmail.resolves(existingUser);
+            userRepoStub.getByLoginOrEmail.resolves(existingUser);
 
             try {
-                await userService.registerUser('newuser', 'existing@example.com', 'New', 'User', 'password123');
+                await userService.register('newuser', 'existing@example.com', 'New', 'User', 'password123');
                 assert.fail('Expected an error to be thrown');
             } catch (err) {
                 //TODO: Instead of multiple messages glued together, throw multiple errors!
                 assert.match((err as Error).message, /There is already an account with that email./);
             }
 
-            assert.equal(userRepoStub.getUserByLoginOrEmail.callCount, 1);
+            assert.equal(userRepoStub.getByLoginOrEmail.callCount, 1);
             assert.equal(bcryptHashStub.callCount, 0);
-            assert.equal(userRepoStub.insertUser.callCount, 0);
+            assert.equal(userRepoStub.insert.callCount, 0);
         });
     });
 })

@@ -1,9 +1,19 @@
-import schoolRepository from '../repositories/schoolRepository';
 import { School } from '../models/schoolModel';
+import defaultSchoolRepository, { SchoolRepository } from "../repositories/schoolRepository";
 
-class SchoolService {
+export class SchoolService {
+    private schoolRepository: SchoolRepository;
+
+    constructor(schoolRepository?: SchoolRepository) {
+        if (schoolRepository != null) {
+            this.schoolRepository = schoolRepository;
+        } else {
+            this.schoolRepository = defaultSchoolRepository;
+        }
+    }
+
     async getAllSchools(): Promise<School[]> {
-        return schoolRepository.getAll();
+        return this.schoolRepository.getAll();
     }
 
     async addSchool(name: string, enrollmentLimit: number): Promise<void> {
@@ -12,8 +22,8 @@ class SchoolService {
             enrollmentLimit: enrollmentLimit,
         }
 
-        await schoolRepository.insert(newSchool);
+        await this.schoolRepository.insert(newSchool);
     }
 }
 
-export default new SchoolService();
+export default new SchoolService()

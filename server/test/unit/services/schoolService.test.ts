@@ -24,12 +24,12 @@ describe('SchoolService', () => {
                 {id: 1, name: 'School 1', enrollmentLimit: 100},
                 {id: 2, name: 'School 2', enrollmentLimit: 150}
             ];
-            schoolRepoStub.getAllSchools.resolves(mockSchools);
+            schoolRepoStub.getAll.resolves(mockSchools);
 
             const result = await schoolService.getAllSchools();
 
             assert.deepEqual(result, mockSchools);
-            assert.equal(schoolRepoStub.getAllSchools.callCount, 1);
+            assert.equal(schoolRepoStub.getAll.callCount, 1);
         });
     });
 
@@ -37,13 +37,11 @@ describe('SchoolService', () => {
         it('should add a new school and returned it', async () => {
             const newSchool = {name: 'School Name', enrollmentLimit: 100};
             const mockInsertedSchool: School = {id: 1, ...newSchool};
-            schoolRepoStub.insertSchool.resolves(mockInsertedSchool);
 
-            const result = await schoolService.addSchool('School Name', 100);
+            await schoolService.addSchool('School Name', 100);
 
-            assert.deepEqual(result, mockInsertedSchool);
-            assert.equal(schoolRepoStub.insertSchool.callCount, 1);
-            assert(schoolRepoStub.insertSchool.calledWith(newSchool));
+            assert.equal(schoolRepoStub.insert.callCount, 1);
+            assert(schoolRepoStub.insert.calledWith(newSchool));
         });
     });
 })

@@ -1,12 +1,22 @@
 import { NextFunction, Request, Response } from 'express';
 
-import schoolService from '../services/schoolService';
 import { School } from '../models/schoolModel';
+import defaultSchoolService, { SchoolService } from "../services/schoolService";
 
-class SchoolController {
+export class SchoolController {
+    private schoolService: SchoolService;
+
+    constructor(schoolService?: SchoolService) {
+        if (schoolService != null) {
+            this.schoolService = schoolService;
+        } else {
+            this.schoolService = defaultSchoolService
+        }
+    }
+
     async getAllSchools(_req: Request, res: Response, next: NextFunction) {
         try {
-            const schools: School[] = await schoolService.getAllSchools();
+            const schools: School[] = await this.schoolService.getAllSchools();
             return res.status(200).json(schools);
         } catch (error) {
             return next(error);
@@ -16,7 +26,7 @@ class SchoolController {
     async addSchool(req: Request, res: Response, next: NextFunction) {
         try {
             const { name, enrollmentLimit } = req.body;
-            await schoolService.addSchool(name, enrollmentLimit);
+            await this.schoolService.addSchool(name, enrollmentLimit);
             return res.status(201).json("School addition successful");
         } catch (error) {
             return next(error);
@@ -24,4 +34,4 @@ class SchoolController {
     }
 }
 
-export default new SchoolController();
+export default new SchoolController()

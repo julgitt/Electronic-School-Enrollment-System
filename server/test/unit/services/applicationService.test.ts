@@ -5,7 +5,6 @@ import sinon from 'sinon';
 import { ApplicationService } from "../../../src/services/applicationService";
 import { ApplicationRepository } from "../../../src/repositories/applicationRepository";
 import { SchoolRepository } from "../../../src/repositories/schoolRepository";
-import { Application } from "../../../src/models/applicationModel";
 import { School } from "../../../src/models/schoolModel";
 
 describe('ApplicationService', () => {
@@ -25,24 +24,23 @@ describe('ApplicationService', () => {
     describe('AddApplication', () => {
 
         it('should add applications when all schools exist', async () => {
-            schoolRepoStub.getSchoolById.resolves({} as School);
+            //schoolRepoStub.getById.resolves();
 
-            appRepoStub.insertApplication.resolves({} as Application);
+            //appRepoStub.insert.resolves();
 
-            const result = await appService.addApplication(
+            await appService.addApplication(
                 'Name', 'Surname', '12345678901', [1, 2, 3], 1
             );
 
-            assert.equal(result.length, 3);
 
-            assert.equal(appRepoStub.insertApplication.callCount, 3);
+            assert.equal(appRepoStub.insert.callCount, 3);
 
-            assert.equal(schoolRepoStub.getSchoolById.callCount, 3);
+            assert.equal(schoolRepoStub.getById.callCount, 3);
         });
 
         it('should throw an error if a school is not found', async () => {
-            schoolRepoStub.getSchoolById.resolves({} as School);
-            schoolRepoStub.getSchoolById.withArgs(2).resolves(null);
+            schoolRepoStub.getById.resolves({} as School);
+            schoolRepoStub.getById.withArgs(2).resolves(null);
 
             try {
                 await appService.addApplication(
@@ -53,17 +51,17 @@ describe('ApplicationService', () => {
                 assert.equal((err as Error).message, 'School name is not recognized.')
             }
 
-            assert.equal(schoolRepoStub.getSchoolById.callCount, 2, "getSchools() call count differ.");
-            assert.equal(appRepoStub.insertApplication.callCount, 0, "insertApplication() call count differ.");
+            assert.equal(schoolRepoStub.getById.callCount, 2, "getSchools() call count differ.");
+            assert.equal(appRepoStub.insert.callCount, 0, "insertApplication() call count differ.");
         });
 
         it('should call insertApplication with correct arguments', async () => {
-            schoolRepoStub.getSchoolById.resolves({} as School);
-            appRepoStub.insertApplication.resolves({} as Application);
+            schoolRepoStub.getById.resolves({} as School);
+            appRepoStub.insert.resolves();
 
             await appService.addApplication('Name', 'Surname', '12345678901', [1], 1);
 
-            assert(appRepoStub.insertApplication.calledWithMatch({
+            assert(appRepoStub.insert.calledWithMatch({
                 userId: 1,
                 schoolId: 1,
                 firstName: 'Name',

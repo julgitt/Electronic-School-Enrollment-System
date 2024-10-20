@@ -1,14 +1,24 @@
 import { compare, hash } from 'bcrypt';
 
-import userRepository from '../repositories/userRepository';
+import defaultUserRepository, { UserRepository } from '../repositories/userRepository';
 import { User } from '../models/userModel';
 import { AuthenticationError } from "../errors/authenticationError";
 import { ValidationError } from "../errors/validationError";
-import {db} from "../db";
+import { db } from "../db";
 
-class UserService {
+export class UserService {
+    private userRepository: UserRepository;
+
+    constructor(userRepository?: UserRepository) {
+        if (userRepository != null) {
+            this.userRepository = userRepository;
+        } else {
+            this.userRepository = defaultUserRepository;
+        }
+    }
+
     async login(login: string, password: string): Promise<User> {
-        const existingUser: User | null = await userRepository.getByLoginOrEmail(login, login);
+        const existingUser: User | null = await this.userRepository.getByLoginOrEmail(login, login);
         if (!existingUser || !(await compare(password, existingUser.password))) {
             throw new AuthenticationError('Invalid credentials.');
         }
@@ -17,7 +27,7 @@ class UserService {
     }
 
     async register(login: string, email: string, firstName: string, lastName: string, password: string): Promise<void> {
-        const existingUser = await userRepository.getByLoginOrEmail(login, email, false);
+        const existingUser = await this.userRepository.getByLoginOrEmail(login, email, false);
         if (existingUser) {
             if (existingUser.login === login) {
                 throw new ValidationError('Login is already taken.', 409);
@@ -38,13 +48,13 @@ class UserService {
         };
 
         await db.tx(async t => {
-            const user = await userRepository.insert(newUser, t);
-            await userRepository.insertUserRoles(user.id, newUser.roles, t);
+            const user = await this.userRepository.insert(newUser, t);
+            await this.userRepository.insertUserRoles(user.id, newUser.roles, t);
         });
     }
 
     async hasRole(id: number, role: string): Promise<boolean> {
-        const roles = await userRepository.getUserRoles(id);
+        const roles = await this.userRepository.getUserRoles(id);
         return roles.includes(role);
     }
 }

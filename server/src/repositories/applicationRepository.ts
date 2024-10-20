@@ -1,7 +1,7 @@
 import { Application } from '../models/applicationModel';
-import { db } from '../db';
+import { db, ITask } from '../db';
 
-class ApplicationRepository {
+export class ApplicationRepository {
     async getByUserAndStage(userId: number, stage: number): Promise<Application[] | null> {
         const query = `
             SELECT *
@@ -13,7 +13,7 @@ class ApplicationRepository {
         return applications || null;
     }
 
-    async insert(newApp: Application, t: any): Promise<void> {
+    async insert(newApp: Application, t: ITask<any>): Promise<void> {
         const query = `
             INSERT INTO applications (user_id, school_id, first_name, last_name, pesel, stage, status)
             VALUES ($1, $2, $3, $4, $5, $6, $7)

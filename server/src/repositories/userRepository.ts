@@ -1,7 +1,8 @@
 import { User, UserRole } from '../models/userModel';
 import { db, ITask } from '../db';
+import {ApplicationRepository} from "./applicationRepository";
 
-class UserRepository {
+export class UserRepository {
     async getByLoginOrEmail(login: string, email: string, withRoles: boolean = true): Promise<User | null> {
         return withRoles
             ? this.getWithRolesByLoginOrEmail(login, email)
