@@ -21,10 +21,7 @@ describe('ApplicationService', () => {
             await callback({} as unknown as ITask<any>);
         })
 
-        appService = new ApplicationService();
-        appService.applicationRepository = appRepoStub;
-        appService.schoolRepository = schoolRepoStub;
-        appService.tx = txStub;
+        appService = new ApplicationService(appRepoStub, schoolRepoStub, txStub);
     });
 
     afterEach(() => { sinon.restore(); })

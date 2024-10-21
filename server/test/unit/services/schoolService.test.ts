@@ -13,8 +13,7 @@ describe('SchoolService', () => {
     beforeEach(() => {
         schoolRepoStub = sinon.createStubInstance(SchoolRepository);
 
-        schoolService = new SchoolService();
-        schoolService.schoolRepository = schoolRepoStub;
+        schoolService = new SchoolService(schoolRepoStub);
     });
 
     afterEach(() => { sinon.restore(); })

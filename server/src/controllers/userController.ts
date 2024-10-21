@@ -1,17 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { AuthenticationError } from "../errors/authenticationError";
-import defaultUserService, { UserService } from "../services/userService";
+import { UserService } from "../services/userService";
 
 export class UserController {
-    private userService: UserService;
-
-    constructor(userService?: UserService) {
-        if (userService != null) {
-            this.userService = userService;
-        } else {
-            this.userService = defaultUserService
-        }
+    constructor(private userService: UserService) {
+        this.userService = userService;
     }
 
     async register(req: Request, res: Response, next: NextFunction) {
@@ -70,5 +64,3 @@ export class UserController {
         }
     }
 }
-
-export default new UserController()

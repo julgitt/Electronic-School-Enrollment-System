@@ -1,6 +1,5 @@
-import { User, UserRole } from '../models/userModel';
 import { db, ITask } from '../db';
-import {ApplicationRepository} from "./applicationRepository";
+import { User, UserRole } from '../models/userModel';
 
 export class UserRepository {
     async getByLoginOrEmail(login: string, email: string, withRoles: boolean = true): Promise<User | null> {
@@ -63,5 +62,3 @@ export class UserRepository {
         return await db.oneOrNone(query, [login, email]);
     }
 }
-
-export default new UserRepository()

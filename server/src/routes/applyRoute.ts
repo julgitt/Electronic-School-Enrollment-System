@@ -1,10 +1,21 @@
 import { Router, Request, Response } from 'express';
-import { applicationValidator } from "../validators/applicationValidator";
 
+import { tx } from "../db"
+import { applicationValidator } from "../validators/applicationValidator";
 import { authorize } from "../middlewares/authorize";
-import applicationController from "../controllers/applicationController";
 import { asyncHandler } from '../middlewares/asyncHandler';
-import {handleValidationErrors} from "../middlewares/validationMiddleware";
+import { handleValidationErrors } from "../middlewares/validationMiddleware";
+
+import { ApplicationRepository} from "../repositories/applicationRepository";
+import { SchoolRepository } from "../repositories/schoolRepository";
+import { ApplicationService } from "../services/applicationService";
+import {ApplicationController} from "../controllers/applicationController";
+
+
+const applicationRepository: ApplicationRepository = new ApplicationRepository();
+const schoolRepository: SchoolRepository = new SchoolRepository();
+const applicationService: ApplicationService = new ApplicationService(applicationRepository, schoolRepository, tx);
+const applicationController = new ApplicationController(applicationService);
 
 const router = Router();
 

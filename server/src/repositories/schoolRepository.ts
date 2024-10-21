@@ -32,5 +32,3 @@ export class SchoolRepository {
         await db.query(query, values);
     }
 }
-
-export default new SchoolRepository()

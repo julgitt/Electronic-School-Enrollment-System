@@ -1,30 +1,24 @@
-import defaultApplicationRepository, { ApplicationRepository } from '../repositories/applicationRepository';
-import defaultSchoolRepository, { SchoolRepository } from '../repositories/schoolRepository';
-import { Application } from '../models/applicationModel';
-import { ValidationError } from "../errors/validationError";
-import { tx } from '../db';
 import { ITask } from "pg-promise";
+
+import { ValidationError } from "../errors/validationError";
+
+import { Application } from '../models/applicationModel';
+import { ApplicationRepository } from '../repositories/applicationRepository';
+import { SchoolRepository } from '../repositories/schoolRepository';
 
 export class ApplicationService {
     private _applicationRepository: ApplicationRepository;
     private _schoolRepository: SchoolRepository;
-    private _tx: (callback: (t: ITask<any>) => Promise<void>) => Promise<void>;
+    private readonly _tx: (callback: (t: ITask<any>) => Promise<void>) => Promise<void>;
 
-    public set tx(tx: (callback: (t: ITask<any>) => Promise<void>) => Promise<void>) {
-        this._tx = tx;
-    }
-
-    public set applicationRepository(applicationRepository: ApplicationRepository) {
+    constructor(
+        applicationRepository: ApplicationRepository,
+        schoolRepository: SchoolRepository,
+        tx: (callback: (t: ITask<any>) => Promise<void>) => Promise<void>
+    ) {
         this._applicationRepository = applicationRepository;
-    }
-    public set schoolRepository(schoolRepository: SchoolRepository) {
         this._schoolRepository = schoolRepository;
-    }
-
-    constructor() {
-        this._applicationRepository = defaultApplicationRepository;
-        this._schoolRepository = defaultSchoolRepository;
-        this._tx = tx
+        this._tx = tx;
     }
 
     async addApplication(firstName: string, lastName: string, pesel: string, schools: number[], userId: number): Promise<void> {
@@ -53,5 +47,3 @@ export class ApplicationService {
         });
     }
 }
-
-export default new ApplicationService()

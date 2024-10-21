@@ -1,17 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 
 import { School } from '../models/schoolModel';
-import defaultSchoolService, { SchoolService } from "../services/schoolService";
+import { SchoolService } from "../services/schoolService";
 
 export class SchoolController {
-    private schoolService: SchoolService;
-
-    constructor(schoolService?: SchoolService) {
-        if (schoolService != null) {
-            this.schoolService = schoolService;
-        } else {
-            this.schoolService = defaultSchoolService
-        }
+    constructor(private schoolService: SchoolService) {
+        this.schoolService = schoolService;
     }
 
     async getAllSchools(_req: Request, res: Response, next: NextFunction) {
@@ -33,5 +27,3 @@ export class SchoolController {
         }
     }
 }
-
-export default new SchoolController()

@@ -22,9 +22,7 @@ describe('UserService', () => {
             await callback({} as unknown as ITask<any>);
         })
 
-        userService = new UserService();
-        userService.userRepository = userRepoStub;
-        userService.tx = txStub;
+        userService = new UserService(userRepoStub, txStub);
 
         bcryptCompareStub = sinon.stub(bcrypt, 'compare');
         bcryptHashStub = sinon.stub(bcrypt, 'hash');

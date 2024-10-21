@@ -1,16 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
-import defaultApplicationService, { ApplicationService } from "../services/applicationService";
 
+import { ApplicationService } from "../services/applicationService";
 
 export class ApplicationController {
-    private applicationService: ApplicationService;
-
-    constructor(applicationService?: ApplicationService) {
-        if (applicationService != null) {
-            this.applicationService = applicationService;
-        } else {
-            this.applicationService = defaultApplicationService;
-        }
+    constructor(private applicationService: ApplicationService) {
+        this.applicationService = applicationService;
     }
 
     async addApplication(req: Request, res: Response, next: NextFunction) {
@@ -25,5 +19,3 @@ export class ApplicationController {
         }
     }
 }
-
-export default new ApplicationController()

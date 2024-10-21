@@ -1,5 +1,5 @@
-import { Application } from '../models/applicationModel';
 import { db, ITask } from '../db';
+import { Application } from '../models/applicationModel';
 
 export class ApplicationRepository {
     async getByUserAndStage(userId: number, stage: number): Promise<Application[] | null> {
@@ -25,5 +25,3 @@ export class ApplicationRepository {
         );
     }
 }
-
-export default new ApplicationRepository()

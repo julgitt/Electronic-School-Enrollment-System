@@ -1,27 +1,18 @@
 import { compare, hash } from 'bcrypt';
+import { ITask } from "pg-promise";
 
-import defaultUserRepository, { UserRepository } from '../repositories/userRepository';
 import { User } from '../models/userModel';
+import { UserRepository } from '../repositories/userRepository';
 import { AuthenticationError } from "../errors/authenticationError";
 import { ValidationError } from "../errors/validationError";
-import { tx } from "../db";
-import {ITask} from "pg-promise";
 
 export class UserService {
     private _userRepository: UserRepository;
     //TODO: Add interface
-    private _tx: (callback: (t: ITask<any>) => Promise<void>) => Promise<void>;
+    private readonly _tx: (callback: (t: ITask<any>) => Promise<void>) => Promise<void>;
 
-    set userRepository(userRepository: UserRepository) {
+    constructor(userRepository: UserRepository, tx: (callback: (t: ITask<any>) => Promise<void>) => Promise<void>) {
         this._userRepository = userRepository;
-    }
-
-    set tx(tx: (callback: (t: ITask<any>) => Promise<void>) => Promise<void>) {
-        this._tx = tx;
-    }
-
-    constructor() {
-        this._userRepository = defaultUserRepository;
         this._tx = tx
     }
 
@@ -66,5 +57,3 @@ export class UserService {
         return roles.includes(role);
     }
 }
-
-export default new UserService();
