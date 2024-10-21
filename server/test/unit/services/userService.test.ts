@@ -6,7 +6,6 @@ import { UserService } from "../../../src/services/userService";
 import { UserRepository } from "../../../src/repositories/userRepository";
 import { User } from "../../../src/models/userModel";
 import bcrypt from 'bcrypt';
-import {ITask} from "pg-promise";
 
 
 describe('UserService', () => {
@@ -18,8 +17,8 @@ describe('UserService', () => {
 
     beforeEach(() => {
         userRepoStub = sinon.createStubInstance(UserRepository);
-        txStub = sinon.stub().callsFake(async (callback: (t: ITask<any>) => Promise<void>) => {
-            await callback({} as unknown as ITask<any>);
+        txStub = sinon.stub().callsFake(async (callback) => {
+            await callback({});
         })
 
         userService = new UserService(userRepoStub, txStub);

@@ -15,6 +15,4 @@ router.get('/schools', authorize('user'), async (req: Request, res: Response, ne
     return await schoolController.getAllSchools(req, res, next);
 });
 
-
-
 export default router;

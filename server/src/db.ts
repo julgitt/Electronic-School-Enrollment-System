@@ -32,8 +32,10 @@ const db = pgp({
     password: process.env.DB_PASSWORD,
 });
 
-const tx = async (callback: (t: ITask<any>) => Promise<void>): Promise<void> => {
+type transactionFunction = (callback: (t: ITask<any>) => Promise<void>) => Promise<void>;
+
+const tx: transactionFunction = async (callback) => {
     return db.tx(callback);
 };
 
-export { db, ITask, tx };
+export { db, tx, transactionFunction, ITask };
