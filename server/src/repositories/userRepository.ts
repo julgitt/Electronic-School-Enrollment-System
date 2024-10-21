@@ -57,6 +57,7 @@ export class UserRepository {
             SELECT * 
             FROM users 
             WHERE login = $1 OR email = $2
+            LIMIT 1;
         `;
 
         return await db.oneOrNone(query, [login, email]);
