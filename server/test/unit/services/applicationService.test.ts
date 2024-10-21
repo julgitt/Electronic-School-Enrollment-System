@@ -6,17 +6,25 @@ import { ApplicationService } from "../../../src/services/applicationService";
 import { ApplicationRepository } from "../../../src/repositories/applicationRepository";
 import { SchoolRepository } from "../../../src/repositories/schoolRepository";
 import { School } from "../../../src/models/schoolModel";
+import { ITask } from "pg-promise";
 
 describe('ApplicationService', () => {
     let appService: ApplicationService;
     let appRepoStub: sinon.SinonStubbedInstance<ApplicationRepository>;
     let schoolRepoStub: sinon.SinonStubbedInstance<SchoolRepository>;
+    let txStub: sinon.SinonStub;
 
     beforeEach(() => {
         appRepoStub = sinon.createStubInstance(ApplicationRepository);
         schoolRepoStub = sinon.createStubInstance(SchoolRepository);
+        txStub = sinon.stub().callsFake(async (callback: (t: ITask<any>) => Promise<void>) => {
+            await callback({} as unknown as ITask<any>);
+        })
 
-        appService = new ApplicationService(appRepoStub, schoolRepoStub);
+        appService = new ApplicationService();
+        appService.applicationRepository = appRepoStub;
+        appService.schoolRepository = schoolRepoStub;
+        appService.tx = txStub;
     });
 
     afterEach(() => { sinon.restore(); })
@@ -24,9 +32,9 @@ describe('ApplicationService', () => {
     describe('AddApplication', () => {
 
         it('should add applications when all schools exist', async () => {
-            //schoolRepoStub.getById.resolves();
+            schoolRepoStub.getById.resolves({} as School);
 
-            //appRepoStub.insert.resolves();
+            appRepoStub.insert.resolves()
 
             await appService.addApplication(
                 'Name', 'Surname', '12345678901', [1, 2, 3], 1
@@ -48,7 +56,7 @@ describe('ApplicationService', () => {
                 );
                 assert.fail('Expected an error to be thrown');
             } catch (err) {
-                assert.equal((err as Error).message, 'School name is not recognized.')
+                assert.equal((err as Error).message, 'School ID is not recognized.')
             }
 
             assert.equal(schoolRepoStub.getById.callCount, 2, "getSchools() call count differ.");

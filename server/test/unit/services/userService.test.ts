@@ -6,18 +6,25 @@ import { UserService } from "../../../src/services/userService";
 import { UserRepository } from "../../../src/repositories/userRepository";
 import { User } from "../../../src/models/userModel";
 import bcrypt from 'bcrypt';
+import {ITask} from "pg-promise";
 
 
 describe('UserService', () => {
     let userService: UserService;
     let userRepoStub: sinon.SinonStubbedInstance<UserRepository>;
+    let txStub: sinon.SinonStub;
     let bcryptCompareStub: sinon.SinonStub;
     let bcryptHashStub: sinon.SinonStub;
 
     beforeEach(() => {
         userRepoStub = sinon.createStubInstance(UserRepository);
+        txStub = sinon.stub().callsFake(async (callback: (t: ITask<any>) => Promise<void>) => {
+            await callback({} as unknown as ITask<any>);
+        })
 
-        userService = new UserService(userRepoStub);
+        userService = new UserService();
+        userService.userRepository = userRepoStub;
+        userService.tx = txStub;
 
         bcryptCompareStub = sinon.stub(bcrypt, 'compare');
         bcryptHashStub = sinon.stub(bcrypt, 'hash');
@@ -54,7 +61,7 @@ describe('UserService', () => {
                 await userService.login('nonexistent', 'password123');
                 assert.fail('Expected an error to be thrown');
             } catch (err) {
-                assert.equal((err as Error).message, 'Invalid login or password.');
+                assert.equal((err as Error).message, 'Invalid credentials.');
             }
 
             assert.equal(userRepoStub.getByLoginOrEmail.callCount, 1);
@@ -79,7 +86,7 @@ describe('UserService', () => {
                 await userService.login('testuser', 'wrongpassword');
                 assert.fail('Expected an error to be thrown');
             } catch (err) {
-                assert.equal((err as Error).message, 'Invalid login or password.');
+                assert.equal((err as Error).message, 'Invalid credentials.');
             }
 
             assert.equal(userRepoStub.getByLoginOrEmail.callCount, 1);
@@ -120,9 +127,8 @@ describe('UserService', () => {
             bcryptHashStub.resolves('hashedPassword');
             userRepoStub.insert.resolves({id: 1, ...mockUser});
 
-            const result = await userService.register('newuser', 'new@example.com', 'New', 'User', 'password123');
+            await userService.register('newuser', 'new@example.com', 'New', 'User', 'password123');
 
-            assert.deepEqual(result, {id: 1, ...mockUser});
             assert.equal(userRepoStub.getByLoginOrEmail.callCount, 1);
             assert.equal(bcryptHashStub.callCount, 1);
             assert.equal(userRepoStub.insert.callCount, 1);
@@ -155,17 +161,7 @@ describe('UserService', () => {
         });
 
         it('should throw an error if email is already taken', async () => {
-            const existingUser: User = {
-                id: 1,
-                login: 'newuser',
-                firstName: 'Existing',
-                lastName: 'User',
-                email: 'existing@example.com',
-                password: 'hashedPassword',
-                roles: ['user']
-            };
-
-            userRepoStub.getByLoginOrEmail.resolves(existingUser);
+            userRepoStub.getByLoginOrEmail.resolves({ email: 'existing@example.com'} as User);
 
             try {
                 await userService.register('newuser', 'existing@example.com', 'New', 'User', 'password123');

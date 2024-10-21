@@ -32,4 +32,8 @@ const db = pgp({
     password: process.env.DB_PASSWORD,
 });
 
-export { db, ITask };
+const tx = async (callback: (t: ITask<any>) => Promise<void>): Promise<void> => {
+    return db.tx(callback);
+};
+
+export { db, ITask, tx };
