@@ -25,14 +25,21 @@ export class UserController {
         try {
             const user = await this.userService.login(loginOrEmail, password);
             res.cookie('username', user.firstName, { signed: true, maxAge: 86400000 });
-            res.cookie('user', user.id, {
+            res.cookie('userToken', user.id, {
                 signed: true,
                 secure: true,
                 httpOnly: true,
                 maxAge: 86400000
             });
 
-            const isAdmin = await this.userService.hasRole(user.id, 'admin');
+            res.cookie('roles', user.roles, {
+                signed: true,
+                secure: true,
+                httpOnly: true,
+                maxAge: 86400000
+            });
+
+            const isAdmin = user.roles.includes('admin');
             let returnUrl = isAdmin ? '/admin_dashboard' : req.query.returnUrl || '/';
 
             return res.status(200).json({ message: 'Login successful', redirect: returnUrl });
@@ -43,8 +50,9 @@ export class UserController {
 
     async logout(_req: Request, res: Response, next: NextFunction) {
         try {
-            res.clearCookie('user');
+            res.clearCookie('userToken');
             res.clearCookie('username');
+            res.clearCookie('roles');
             return res.status(200).json({ message: 'Logout successful' });
         } catch (error) {
             return next(error);

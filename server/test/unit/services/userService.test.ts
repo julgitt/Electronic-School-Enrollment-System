@@ -91,24 +91,6 @@ describe('UserService', () => {
         });
     });
 
-    describe('isUserInRole', () => {
-        it('should return true if user is in role', async () => {
-            userRepoStub.getUserRoles.resolves(['admin', 'user']);
-
-            const result = await userService.hasRole(1, 'admin');
-            assert.strictEqual(true, result);
-            assert.equal(userRepoStub.getUserRoles.callCount, 1);
-        });
-
-        it('should return false if user is not in role', async () => {
-            userRepoStub.getUserRoles.resolves(['user']);
-
-            const result = await userService.hasRole(1, 'admin');
-            assert.strictEqual(false, result);
-            assert.equal(userRepoStub.getUserRoles.callCount, 1);
-        });
-    });
-
     describe('registerUser', () => {
         it('should register a new user with hashed password', async () => {
             const mockUser: Omit<User, 'id'> = {

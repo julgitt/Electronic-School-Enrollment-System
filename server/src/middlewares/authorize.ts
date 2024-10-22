@@ -1,14 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import {UserRepository} from "../repositories/userRepository";
-import {UserService} from "../services/userService";
-import {tx} from "../db";
-
-const userRepository: UserRepository = new UserRepository();
-const userService: UserService = new UserService(userRepository, tx);
 
 export function authorize(...roles: string[]) {
     return async function (req: Request, res: Response, next: NextFunction) {
-        const userId = req.signedCookies.user;
+        const userId = req.signedCookies.userToken;
+        const userRoles: string[] = req.signedCookies.roles;
 
         if (roles.length === 0) {
             req.user = userId;
@@ -19,9 +14,7 @@ export function authorize(...roles: string[]) {
             return res.status(401).json({ message: 'Not authorized', redirect: '/login?returnUrl=' + req.url});
         }
 
-        const userRoles = await Promise.all(roles.map((role) => userService.hasRole(userId, role)));
-
-        if (userRoles.some((isInRole) => isInRole)) {
+        if (userRoles && roles.some(role => userRoles.includes(role))) {
                 req.user = userId;
                 return next();
         }

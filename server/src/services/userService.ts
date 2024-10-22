@@ -50,9 +50,4 @@ export class UserService {
             await this.userRepository.insertUserRoles(user.id, newUser.roles, t);
         });
     }
-
-    async hasRole(id: number, role: string): Promise<boolean> {
-        const roles = await this.userRepository.getUserRoles(id);
-        return roles.includes(role);
-    }
 }

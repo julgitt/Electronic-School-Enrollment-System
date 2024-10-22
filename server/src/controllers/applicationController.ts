@@ -9,7 +9,7 @@ export class ApplicationController {
 
     async addApplication(req: Request, res: Response, next: NextFunction) {
         const { txtFirstName: firstName, txtLastName: lastName, txtPesel: pesel, txtSchools: schools } = req.body;
-        const userId = req.signedCookies.user;
+        const userId = req.signedCookies.userToken;
 
         try {
             await this.applicationService.addApplication(firstName, lastName, pesel, schools, userId);
