@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PersonalForm } from '../modules/Forms/PersonalForm';
 import { SchoolSelectionForm } from '../modules/Forms/SchoolSelectionForm';
+import {errorMessages} from "../../constants/errorMessages.ts";
 
 interface School {
     id: number;
@@ -15,6 +16,8 @@ const Apply: React.FC = () => {
     const [error, setError] = useState('');
     const [step, setStep] = useState(1);
     const [schools, setSchools] = useState([-1]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [authorized, setAuthorized] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchSchools = async () => {
@@ -26,14 +29,19 @@ const Apply: React.FC = () => {
                     if (Array.isArray(data)) {
                         setSuggestions(data);
                     } else {
-                        console.error('Oczekiwana tablica, ale otrzymano:', data);
+                        console.error('Expected array, but received:', data);
+                        setError(errorMessages.INTERNAL_SERVER_ERROR)
                         setSuggestions([]);
                     }
                 } else {
-                    console.error('Błąd podczas pobierania szkół');
+                    console.error('Fetch returned the response with code:', response.status);
+                    setError(errorMessages.INTERNAL_SERVER_ERROR)
                 }
+                setLoading(false);
             } catch (error) {
-                console.error('Error fetching schools:', error);
+                console.error('Failed to fetch schools:', error);
+                setError(errorMessages.INTERNAL_SERVER_ERROR)
+                setLoading(false);
             }
         };
 
@@ -41,6 +49,7 @@ const Apply: React.FC = () => {
             try {
                 const response = await fetch('/api/apply', { method: 'GET', credentials: 'include' });
                 if (!response.ok) window.location.href = '/login';
+                setAuthorized(true);
             } catch {
                 window.location.href = '/login';
             }
@@ -48,6 +57,14 @@ const Apply: React.FC = () => {
         checkAuth();
         fetchSchools();
     }, []);
+
+    if (loading || !authorized) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>{error}</div>;
+    }
 
     const handleNext = (event: React.FormEvent) => {
         event.preventDefault();
