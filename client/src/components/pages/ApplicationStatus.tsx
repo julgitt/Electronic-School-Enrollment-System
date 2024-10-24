@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import { errorMessages } from '../../constants/errorMessages.ts'
+import { useFetch } from "../../hooks/useFetch.ts";
+import useAuthorize from "../../hooks/useAuthorize.ts";
 
 interface Application {
     id: number;
@@ -10,48 +11,8 @@ interface Application {
 }
 
 const ApplicationStatus: React.FC = () => {
-    const [applications, setApplications] = useState<Application[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-    const [authorized, setAuthorized] = useState<boolean>(false);
-
-    useEffect(() => {
-        const fetchApplications = async () => {
-            try {
-                const response = await fetch('/api/apply');
-                if (response.ok) {
-                    const data = await response.json();
-                    if (Array.isArray(data)) {
-                        setApplications(data);
-                    } else { // array was expected
-                        console.error('Expected array, but received:', data);
-                        setError(errorMessages.INTERNAL_SERVER_ERROR);
-                    }
-                } else {
-                    console.error('Fetch returned the response with code:', response.status);
-                    setError('errorMessages.INTERNAL_SERVER_ERROR');
-                }
-                setLoading(false);
-            } catch (err) {
-                console.error('Failed to fetch schools:', error);
-                setError('errorMessages.INTERNAL_SERVER_ERROR');
-                setLoading(false);
-            }
-        };
-
-        const checkAuth = async () => {
-            try {
-                const response = await fetch('/api/apply', { method: 'GET', credentials: 'include' });
-                if (!response.ok) window.location.href = '/login';
-                setAuthorized(true);
-            } catch {
-                window.location.href = '/login';
-            }
-        };
-
-        checkAuth();
-        fetchApplications();
-    }, []);
+    const authorized = useAuthorize('/api/apply');
+    const { data: applications, loading, error } = useFetch<Application[]>('/api/apply');
 
     if (loading || !authorized) {
         return <div>Loading...</div>;
