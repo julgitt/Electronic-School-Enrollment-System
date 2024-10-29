@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import { useFetch } from "../../hooks/useFetch.ts";
 import useAuthorize from "../../hooks/useAuthorize.ts";
 
@@ -25,7 +25,7 @@ const ApplicationStatus: React.FC = () => {
     return (
         <div>
             <h1>Status Aplikacji</h1>
-            {applications.length === 0 ? (
+            {(!applications || (applications && applications.length !== 0)) ? (
                 <p>Nie znaleziono aplikacji.</p>
             ) : (
                 <table>

@@ -1,11 +1,19 @@
 import React from 'react'
 
 import { Navigation } from '../Navigation'
-import useFetchUser from '../../../hooks/useFetchUser.ts'
 import styles from './Header.module.scss'
+import { useFetch } from "../../../hooks/useFetch.ts";
+
+interface User {
+    username: string;
+}
 
 const Header: React.FC = () => {
-    const user = useFetchUser();
+    const { data: user, loading, error: _fetchError } = useFetch<User>('/api/user');
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     const handleLogout = async (event: React.MouseEvent<HTMLAnchorElement>) => {
         event.preventDefault();

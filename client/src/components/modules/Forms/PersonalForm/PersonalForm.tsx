@@ -10,7 +10,7 @@ interface PersonalFormProps {
     firstName: string;
     lastName: string;
     pesel: string;
-    error: string;
+    error: string | null;
     onFirstNameChange: (value: string) => void;
     onLastNameChange: (value: string) => void;
     onPeselChange: (value: string) => void;

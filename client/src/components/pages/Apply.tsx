@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { PersonalForm } from '../modules/Forms/PersonalForm';
 import { SchoolSelectionForm } from '../modules/Forms/SchoolSelectionForm';
-import {errorMessages} from "../../constants/errorMessages.ts";
+import {useFetch} from "../../hooks/useFetch.ts";
+import useAuthorize from "../../hooks/useAuthorize.ts";
 
 interface School {
     id: number;
@@ -9,61 +10,21 @@ interface School {
 }
 
 const Apply: React.FC = () => {
-    const [suggestions, setSuggestions] = useState<School[]>([]);
+    const authorized = useAuthorize('/api/apply');
+    const [error, setError] = useState<string | null>(null);
+    const { data: suggestions, loading, error: fetchError } = useFetch<School[]>('/api/schools');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [pesel, setPesel] = useState('');
-    const [error, setError] = useState('');
     const [step, setStep] = useState(1);
     const [schools, setSchools] = useState([-1]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [authorized, setAuthorized] = useState<boolean>(false);
-
-    useEffect(() => {
-        const fetchSchools = async () => {
-            try {
-                const response = await fetch('/api/schools');
-
-                if (response.ok) {
-                    const data = await response.json();
-                    if (Array.isArray(data)) {
-                        setSuggestions(data);
-                    } else {
-                        console.error('Expected array, but received:', data);
-                        setError(errorMessages.INTERNAL_SERVER_ERROR)
-                        setSuggestions([]);
-                    }
-                } else {
-                    console.error('Fetch returned the response with code:', response.status);
-                    setError(errorMessages.INTERNAL_SERVER_ERROR)
-                }
-                setLoading(false);
-            } catch (error) {
-                console.error('Failed to fetch schools:', error);
-                setError(errorMessages.INTERNAL_SERVER_ERROR)
-                setLoading(false);
-            }
-        };
-
-        const checkAuth = async () => {
-            try {
-                const response = await fetch('/api/apply', { method: 'GET', credentials: 'include' });
-                if (!response.ok) window.location.href = '/login';
-                setAuthorized(true);
-            } catch {
-                window.location.href = '/login';
-            }
-        };
-        checkAuth();
-        fetchSchools();
-    }, []);
 
     if (loading || !authorized) {
         return <div>Loading...</div>;
     }
 
-    if (error) {
-        return <div>{error}</div>;
+    if (fetchError) {
+        return <div>{fetchError}</div>;
     }
 
     const handleNext = (event: React.FormEvent) => {
@@ -79,7 +40,7 @@ const Apply: React.FC = () => {
 
     const handleApply = async (event: React.FormEvent) => {
         event.preventDefault();
-        setError('');
+        setError(null);
 
         if (schools.every(school => !school)) setError('Proszę wybrać przynajmniej jedną szkołę.');
         else {
@@ -119,7 +80,7 @@ const Apply: React.FC = () => {
                 <SchoolSelectionForm
                     schools={schools}
                     error={error}
-                    suggestions={suggestions}
+                    suggestions={suggestions || []}
                     onSchoolChange={handleSuggestionSelected}
                     onAddSchool={handleAddSchoolInput}
                     onPrev={handlePrev}

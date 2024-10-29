@@ -15,7 +15,7 @@ interface School {
 
 interface SchoolSelectionFormProps {
     schools: (number | null)[];
-    error: string;
+    error: string | null;
     suggestions: School[];
     onSchoolChange: (schoolId: number, index: number) => void;
     onAddSchool: () => void;
