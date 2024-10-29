@@ -12,11 +12,8 @@ export const userSignupValidator = [
         .matches(/[a-zA-Z0-9!@#$%^&*_=+-]+/)
         .withMessage("Password can only contain letters, numbers, and special characters: !@#$%^&*_=+-"),
     body('txtPwd_c').custom((value, { req }) => {
-        if (value !== req.body.txtPwd) {
-            throw new Error("Passwords do not match");
-        }
-        return true;
-    })
+        return value === req.body.txtPwd;
+    }).withMessage("Passwords do not match")
 ];
 
 export const userLoginValidator = [

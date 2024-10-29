@@ -7,7 +7,7 @@ const errorHandler = (err: Error, _req: Request, res: Response, _next: NextFunct
 
     if (err instanceof ValidationError) {
         return res.status(err.statusCode).json({
-            message: err.message,
+            message: err.errors[0].msg,
             errors: err.errors
         });
     }

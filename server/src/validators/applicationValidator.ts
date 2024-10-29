@@ -28,11 +28,8 @@ export const applicationValidator = [
     body('txtPesel')
         .notEmpty().withMessage("Pesel is required.")
         .custom((value) => {
-        if (!validatePesel(value)) {
-            throw new Error('Invalid Pesel number.');
-        }
-        return true;
-        }),
+            return validatePesel(value);
+        }).withMessage("Invalid Pesel number"),
     body('txtSchools')
         .isArray({ min: 1 }).withMessage('At least one school must be selected.')
 ];
