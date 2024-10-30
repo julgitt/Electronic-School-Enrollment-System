@@ -2,7 +2,7 @@ import {NextFunction, Router, Request, Response} from 'express';
 
 import { tx } from "../db";
 import { userSignupValidator, userLoginValidator } from '../validators/userValidator';
-import { handleValidationErrors } from '../middlewares/validationMiddleware';
+import { handleValidationErrors } from '../middlewares/validationErrorHandler';
 
 import { UserRepository } from "../repositories/userRepository";
 import { UserService } from "../services/userService";

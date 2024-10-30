@@ -3,7 +3,7 @@ import {Router, Request, Response, NextFunction} from 'express';
 import { tx } from "../db"
 import { applicationValidator } from "../validators/applicationValidator";
 import { authorize } from "../middlewares/authorize";
-import { handleValidationErrors } from "../middlewares/validationMiddleware";
+import { handleValidationErrors } from "../middlewares/validationErrorHandler";
 
 import { ApplicationRepository} from "../repositories/applicationRepository";
 import { SchoolRepository } from "../repositories/schoolRepository";
