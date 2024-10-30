@@ -25,7 +25,7 @@ const ApplicationStatus: React.FC = () => {
     return (
         <div>
             <h1>Status Aplikacji</h1>
-            {(!applications || (applications && applications.length !== 0)) ? (
+            {(!applications || (applications && applications.length === 0)) ? (
                 <p>Nie znaleziono aplikacji.</p>
             ) : (
                 <table>

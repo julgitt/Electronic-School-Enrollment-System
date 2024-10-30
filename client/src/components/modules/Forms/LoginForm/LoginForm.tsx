@@ -8,21 +8,17 @@ import styles from '../Form.module.scss'
 
 interface LoginFormProps {
     onLogin: (username: string, password: string) => Promise<void>;
+    error?: string | null;
+    loading?: boolean;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
+const LoginForm: React.FC<LoginFormProps> = ({ onLogin, error, loading }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
 
     const handleLogin = async (event: React.FormEvent) => {
         event.preventDefault();
-        setError('');
-        try {
-            await onLogin(username, password);
-        } catch (error: any) {
-            setError(error.message);
-        }
+        await onLogin(username, password);
     };
 
     return (
@@ -45,7 +41,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
                     required
                 />
             </div>
-            <Button type="submit">Zaloguj</Button>
+            <Button type="submit" disabled={loading}>
+                {loading ? 'Logowanie...' : 'Zaloguj'}
+            </Button>
             <TextLink to="#">Przypomnij hasło</TextLink>
             <TextLink to="/signup">Załóż konto</TextLink>
         </form>

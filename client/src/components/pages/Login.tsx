@@ -1,28 +1,13 @@
 import React from 'react';
 import { LoginForm } from '../modules/Forms/LoginForm';
+import { useLogin } from "../../hooks/useLogin.ts";
 
 const Login: React.FC = () => {
-    const handleLogin = async (username: string, password: string) => {
-        const response = await fetch('/api/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ txtUser: username, txtPwd: password })
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message);
-        }
-
-        const data = await response.json();
-        window.location.href = data.redirect;
-    };
+    const { handleLogin, isLoading, error } = useLogin();
 
     return (
         <section id="form">
-            <LoginForm onLogin={handleLogin}/>
+            <LoginForm onLogin={handleLogin} error={error} loading={isLoading} />
         </section>
     );
 };

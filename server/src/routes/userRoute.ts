@@ -24,7 +24,7 @@ router.post('/login', userLoginValidator, handleValidationErrors, async (req: Re
     return await userController.login(req, res, next);
 });
 
-router.get('/logout', async (req: Request, res: Response, next: NextFunction) => {
+router.post('/logout', async (req: Request, res: Response, next: NextFunction) => {
     return await userController.logout(req, res, next);
 });
 

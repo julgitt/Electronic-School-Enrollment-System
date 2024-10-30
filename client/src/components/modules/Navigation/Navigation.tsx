@@ -6,9 +6,10 @@ import styles from './Navigation.module.scss';
 interface NavigationProps {
     user: { username: string } | null;
     onLogout: (event: React.MouseEvent<HTMLAnchorElement>) => void;
+    logoutLoading?: boolean;
 }
 
-const Navigation: React.FC<NavigationProps> = ({ user, onLogout }) => {
+const Navigation: React.FC<NavigationProps> = ({ user, onLogout, logoutLoading }) => {
     return (
         <nav className={styles.nav}>
             <div className={styles.navMenu}>
@@ -20,7 +21,16 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogout }) => {
                 <div className={styles.navMenu}>
                     <Link className={styles.navLink} to="/">{user.username}</Link>
                     <Link className={styles.navLink} to="/applicationStatus">Status Aplikacji</Link>
-                    <Link className={styles.navLink} to="/logout" onClick={onLogout}>Wyloguj</Link>
+                    <Link
+                        className={styles.navLink}
+                        to="#"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            if (!logoutLoading) onLogout(e);
+                        }}
+                    >
+                        {logoutLoading ? 'Wylogowywanie...' : 'Wyloguj'}
+                    </Link>
                 </div>
             ) : (
                 <div className={styles.navMenu}>
