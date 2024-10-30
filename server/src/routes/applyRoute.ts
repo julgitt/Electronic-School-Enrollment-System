@@ -18,8 +18,8 @@ const applicationController = new ApplicationController(applicationService);
 
 const router = Router();
 
-router.get('/apply', authorize('user'), (_req: Request, res: Response) => {
-    return res.status(200).send({ message: 'Authorization successful'});
+router.get('/apply', authorize('user'), async (req: Request, res: Response, next: NextFunction) => {
+    return await applicationController.getApplications(req, res, next)
 });
 
 router.post('/apply', authorize('user'), applicationValidator, handleValidationErrors, async (req: Request, res: Response, next: NextFunction) => {

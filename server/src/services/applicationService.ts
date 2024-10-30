@@ -10,11 +10,15 @@ export class ApplicationService {
     constructor(
         private applicationRepository: ApplicationRepository,
         private schoolRepository: SchoolRepository,
-        private tx: (callback: (t: ITask<any>) => Promise<void>) => Promise<void>
+        private readonly tx: (callback: (t: ITask<any>) => Promise<void>) => Promise<void>
     ) {
         this.applicationRepository = applicationRepository;
         this.schoolRepository = schoolRepository;
         this.tx = tx;
+    }
+
+    async getAllApplications(userId: number): Promise<Application[] | null> {
+        return this.applicationRepository.getAllByUser(userId);
     }
 
     async addApplication(firstName: string, lastName: string, pesel: string, schools: number[], userId: number): Promise<void> {
@@ -28,7 +32,7 @@ export class ApplicationService {
 
         await this.tx(async t => {
             for (const schoolId of schools) {
-                const newApplication: Application = {
+                const newApplication: Omit<Application, 'schoolName'> = {
                     userId: userId,
                     schoolId: schoolId,
                     firstName: firstName,
