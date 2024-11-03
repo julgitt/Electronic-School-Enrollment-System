@@ -1,25 +1,19 @@
 import React from 'react';
-import { useFetch } from "../../hooks/useFetch.ts";
-import useAuthorize from "../../hooks/useAuthorize.ts";
+import { useFetch } from "../../../hooks/useFetch.ts";
+import { Application } from "../../../models/application.ts";
+import Loading from "../utils/Loading.tsx";
+import Error from "../utils/Error.tsx";
 
-interface Application {
-    id: number;
-    schoolName: string;
-    status: string;
-    submittedAt: string;
-    stage: number;
-}
 
 const ApplicationStatus: React.FC = () => {
-    const authorized = useAuthorize('/api/apply');
-    const { data: applications, loading, error } = useFetch<Application[]>('/api/apply');
+    const { data: applications, loading, authorized, error} = useFetch<Application[]>('/api/apply');
 
     if (loading || !authorized) {
-        return <div>Loading...</div>;
+        return <Loading />;
     }
 
     if (error) {
-        return <div>{error}</div>;
+        return <Error errorMessage={error} />;
     }
 
     return (

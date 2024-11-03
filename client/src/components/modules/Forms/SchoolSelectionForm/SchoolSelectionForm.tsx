@@ -4,14 +4,9 @@ import { Button } from '../../../atomic/Button'
 import { PlusButton } from '../../../atomic/PlusButton'
 import { SuggestionBox } from '../../../composite/SuggestionBox';
 import { ErrorMessage } from "../../../atomic/ErrorMessage";
+import { School } from "../../../../models/school.ts"
 
 import styles from "../Form.module.scss";
-
-//TODO: redundant interface
-interface School {
-    id: number;
-    name: string;
-}
 
 interface SchoolSelectionFormProps {
     schools: (number | null)[];

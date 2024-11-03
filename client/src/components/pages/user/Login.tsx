@@ -1,6 +1,6 @@
 import React from 'react';
-import { LoginForm } from '../modules/Forms/LoginForm';
-import { useLogin } from "../../hooks/useLogin.ts";
+import { LoginForm } from '../../modules/Forms/LoginForm';
+import { useLogin } from "../../../hooks/useLogin.ts";
 
 const Login: React.FC = () => {
     const { handleLogin, isLoading, error } = useLogin();

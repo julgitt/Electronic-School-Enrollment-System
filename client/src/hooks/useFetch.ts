@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
+import { status } from "../constants/responseStatuses.ts";
 
 interface FetchResult<T> {
+    authorized: boolean;
     data: T | null;
     loading: boolean;
     error: string | null;
@@ -8,29 +10,34 @@ interface FetchResult<T> {
 
 export const useFetch = <T>(endpoint: string): FetchResult<T> => {
     const [data, setData] = useState<T | null>(null);
+    const [authorized, setAuthorized] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch(endpoint);
+    const fetchData = async () => {
+        try {
+            const response = await fetch(endpoint, { method: 'GET', credentials: 'include' });
 
-                if (!response.ok) {
-                    setError(`Error: ${response.status} ${response.statusText}`);
-                    return;
-                }
+            if (response.ok) {
                 const result: T = await response.json();
                 setData(result);
-            } catch (err) {
-                setError('Failed to fetch data');
-            } finally {
-                setLoading(false);
+                setAuthorized(true);
+            } else if (response.status === status.UNAUTHORIZED) {
+                window.location.href = '/login';
+            } else {
+                const error: any = await response.json();
+                setError(error.message)
             }
-        };
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    useEffect(() => {
         fetchData();
     }, [endpoint]);
 
-    return { data, loading, error };
+    return { data, authorized, loading, error };
 };

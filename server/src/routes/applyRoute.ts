@@ -18,8 +18,12 @@ const applicationController = new ApplicationController(applicationService);
 
 const router = Router();
 
-router.get('/apply', authorize('user'), async (req: Request, res: Response, next: NextFunction) => {
+router.get('/allApplications', authorize('user'), async (req: Request, res: Response, next: NextFunction) => {
     return await applicationController.getApplications(req, res, next)
+});
+
+router.get('/application', authorize('user'), async (req: Request, res: Response, next: NextFunction) => {
+    return await applicationController.getApplications(req, res, next);
 });
 
 router.post('/apply', authorize('user'), applicationValidator, handleValidationErrors, async (req: Request, res: Response, next: NextFunction) => {
