@@ -1,7 +1,6 @@
-import {Application, NextFunction, Request, Response} from 'express';
+import {NextFunction, Request, Response} from 'express';
 
 import { ApplicationService } from "../services/applicationService";
-import {ResourceNotFoundError} from "../errors/resourceNotFoundError";
 
 export class ApplicationController {
     constructor(private applicationService: ApplicationService) {

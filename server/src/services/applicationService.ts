@@ -1,11 +1,9 @@
 import { ITask } from "pg-promise";
 
-import { ValidationError } from "../errors/validationError";
-
 import { Application } from '../models/applicationModel';
 import { ApplicationRepository } from '../repositories/applicationRepository';
 import { SchoolRepository } from '../repositories/schoolRepository';
-import {ResourceNotFoundError} from "../errors/resourceNotFoundError";
+import { ResourceNotFoundError } from "../errors/resourceNotFoundError";
 
 export class ApplicationService {
     constructor(

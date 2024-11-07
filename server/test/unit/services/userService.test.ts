@@ -7,7 +7,6 @@ import { UserRepository } from "../../../src/repositories/userRepository";
 import { User } from "../../../src/models/userModel";
 import bcrypt from 'bcrypt';
 
-
 describe('UserService', () => {
     let userService: UserService;
     let userRepoStub: sinon.SinonStubbedInstance<UserRepository>;

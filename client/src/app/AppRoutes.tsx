@@ -1,12 +1,14 @@
 import { Route, Routes } from 'react-router-dom';
+
 import Home from './routes/Home.tsx';
 import Dates from './routes/Dates.tsx';
-import SubmitApplication from '../features/SubmitApplication/SubmitApplication.tsx';
 import ApplicationStatus from './routes/ApplicationStatus.tsx';
 import ApplicationSubmitted from "./routes/ApplicationSubmitted.tsx";
+import ErrorPage from "./routes/ErrorPage.tsx";
+
+import { SubmitApplication } from '../features/SubmitApplication';
 import { Login } from "../features/auth/Login";
 import { Signup } from "../features/auth/Signup";
-import ErrorPage from "./routes/ErrorPage.tsx";
 
 const AppRoutes = () => {
     return (

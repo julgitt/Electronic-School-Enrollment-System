@@ -1,9 +1,10 @@
 import React from 'react';
+
 import { useFetch } from "../../hooks/useFetch.ts";
 import { Application } from "../../types/application.ts";
+
 import LoadingPage from "./LoadingPage.tsx";
 import ErrorPage from "./ErrorPage.tsx";
-
 
 const ApplicationStatus: React.FC = () => {
     const { data: applications, loading, authorized, error} = useFetch<Application[]>('/api/allApplications');

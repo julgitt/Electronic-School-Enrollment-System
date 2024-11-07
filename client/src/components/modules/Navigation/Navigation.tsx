@@ -1,8 +1,8 @@
 import React from 'react';
 import { NavLink as Link } from 'react-router-dom';
 
-import styles from './Navigation.module.scss';
 import { User } from "../../../types/user.ts";
+import styles from './Navigation.module.scss';
 
 interface NavigationProps {
     user: User | null;

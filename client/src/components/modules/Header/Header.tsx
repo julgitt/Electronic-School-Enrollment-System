@@ -1,12 +1,15 @@
-import React, {useState} from 'react';
-import { Navigation } from '../Navigation';
+import React, { useState } from 'react';
+
 import { useFetch } from "../../../hooks/useFetch";
-import LoadingPage from "../../../app/routes/LoadingPage.tsx";
 import { User } from "../../../types/user.ts"
 
-import styles from './Header.module.scss';
+import LoadingPage from "../../../app/routes/LoadingPage.tsx";
 import ErrorPage from "../../../app/routes/ErrorPage.tsx";
-import {logout} from "../../../features/auth/authService.ts";
+
+import { logout } from "../../../features/auth/authService.ts";
+
+import { Navigation } from '../Navigation';
+import styles from './Header.module.scss';
 
 const Header: React.FC = () => {
     const { data: user, loading: userLoading } = useFetch<User>('/api/user');

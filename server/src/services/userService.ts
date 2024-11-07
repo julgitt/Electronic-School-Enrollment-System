@@ -5,8 +5,7 @@ import { transactionFunction } from "../db";
 import { User } from '../models/userModel';
 import { UserRepository } from '../repositories/userRepository';
 import { AuthenticationError } from "../errors/authenticationError";
-import { ValidationError } from "../errors/validationError";
-import {DataConflictError} from "../errors/dataConflictError";
+import { DataConflictError } from "../errors/dataConflictError";
 
 export class UserService {
     constructor(

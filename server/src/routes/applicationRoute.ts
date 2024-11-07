@@ -8,7 +8,7 @@ import { handleValidationErrors } from "../middlewares/validationErrorHandler";
 import { ApplicationRepository} from "../repositories/applicationRepository";
 import { SchoolRepository } from "../repositories/schoolRepository";
 import { ApplicationService } from "../services/applicationService";
-import {ApplicationController} from "../controllers/applicationController";
+import { ApplicationController } from "../controllers/applicationController";
 
 
 const applicationRepository: ApplicationRepository = new ApplicationRepository();

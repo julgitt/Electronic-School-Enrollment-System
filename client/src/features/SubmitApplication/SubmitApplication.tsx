@@ -1,8 +1,10 @@
 import React from 'react';
+
 import { useFetch } from "../../hooks/useFetch";
+import {useApplicationForm} from "./hooks/useApplicationForm.ts";
 import { School } from "../../types/school";
 import { Application } from "../../types/application";
-import {useApplicationForm} from "./hooks/useApplicationForm.ts";
+
 import SchoolSelectionForm from "./Forms/SchoolSelectionForm.tsx";
 import PersonalForm from "./Forms/PersonalForm.tsx";
 import ErrorPage from "../../app/routes/ErrorPage.tsx";
@@ -11,7 +13,6 @@ import LoadingPage from "../../app/routes/LoadingPage.tsx";
 const SubmitApplication: React.FC = () => {
     const { loading: applicationLoading, authorized, error: applicationFetchError } = useFetch<Application[]>('/api/application');
     const { data: suggestions, loading: schoolLoading, error: schoolFetchError } = useFetch<School[]>('/api/schools');
-
 
     const {
         firstName,
