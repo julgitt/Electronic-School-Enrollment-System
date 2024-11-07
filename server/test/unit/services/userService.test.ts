@@ -30,7 +30,7 @@ describe('UserService', () => {
     afterEach(() => { sinon.restore(); })
 
     describe('authenticateUser', () => {
-        it('should authenticate user with correct credentials', async () => {
+        it('should authenticate auth with correct credentials', async () => {
             const mockUser: User = {
                 id: 1,
                 login: 'testuser',
@@ -51,7 +51,7 @@ describe('UserService', () => {
             assert.equal(bcryptCompareStub.callCount, 1);
         });
 
-        it('should throw an error if user is not found', async () => {
+        it('should throw an error if auth is not found', async () => {
             userRepoStub.getByLoginOrEmail.resolves(null);
 
             try {
@@ -92,7 +92,7 @@ describe('UserService', () => {
     });
 
     describe('registerUser', () => {
-        it('should register a new user with hashed password', async () => {
+        it('should register a new auth with hashed password', async () => {
             const mockUser: Omit<User, 'id'> = {
                 login: 'newuser',
                 firstName: 'New',

@@ -9,11 +9,21 @@ export class UserController {
     }
 
     async register(req: Request, res: Response, next: NextFunction) {
-        const { txtUser: login, txtEmail: email, txtPwd: password, txtFirstName: firstName, txtLastName: lastName } = req.body;
-
         try {
+            const {
+                txtUser: login,
+                txtEmail: email,
+                txtPwd: password,
+                txtFirstName: firstName,
+                txtLastName: lastName
+            } = req.body;
+
             await this.userService.register(login, email, firstName, lastName, password);
-            return res.status(201).json({ message: 'Signup successful', user: { username: login }, redirect: '/login' });
+            return res.status(201).json({
+                message: 'Signup successful',
+                user: { username: login },
+                redirect: '/login'
+            });
         } catch (error) {
             return next(error);
         }
@@ -61,12 +71,9 @@ export class UserController {
 
     async getUser(req: Request, res: Response, next: NextFunction) {
         try {
-            const username = req.signedCookies.username
-            if (username) {
-                return res.status(200).json({ username: username });
-            } else {
-                return next(new AuthenticationError('Not authenticated'));
-            }
+            const username = req.signedCookies.username;
+            const userToken = req.signedCookies.userToken;
+            return res.status(200).json({ username: username, userToken: userToken });
         } catch (error) {
             return next(error);
         }

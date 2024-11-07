@@ -1,1 +1,0 @@
-export { default as SchoolSelectionForm } from "./SchoolSelectionForm.tsx";

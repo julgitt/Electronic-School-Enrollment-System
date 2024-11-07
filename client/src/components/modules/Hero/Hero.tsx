@@ -10,7 +10,7 @@ const Hero: React.FC = () => {
             <h2>Witamy w systemie naboru do szkół ponadpodstawowych</h2>
             <p>Sprawdź naszą ofertę i złóż kandydaturę już dziś!</p>
             <Button>
-                <Link to="/apply">Aplikuj</Link>
+                <Link to="/submitApplication">Aplikuj</Link>
             </Button>
         </section>
     );

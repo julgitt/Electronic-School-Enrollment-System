@@ -6,6 +6,7 @@ import { User } from '../models/userModel';
 import { UserRepository } from '../repositories/userRepository';
 import { AuthenticationError } from "../errors/authenticationError";
 import { ValidationError } from "../errors/validationError";
+import {DataConflictError} from "../errors/dataConflictError";
 
 export class UserService {
     constructor(
@@ -28,10 +29,10 @@ export class UserService {
         const existingUser = await this.userRepository.getByLoginOrEmail(login, email, false);
         if (existingUser) {
             if (existingUser.login === login) {
-                throw new ValidationError('Login is already taken.', 409);
+                throw new DataConflictError('Login is already taken.');
             }
             if (existingUser.email === email) {
-                throw new ValidationError('There is already an account with that email.', 409);
+                throw new DataConflictError('There is already an account with that email.');
             }
         }
 

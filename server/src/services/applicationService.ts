@@ -5,6 +5,7 @@ import { ValidationError } from "../errors/validationError";
 import { Application } from '../models/applicationModel';
 import { ApplicationRepository } from '../repositories/applicationRepository';
 import { SchoolRepository } from '../repositories/schoolRepository';
+import {ResourceNotFoundError} from "../errors/resourceNotFoundError";
 
 export class ApplicationService {
     constructor(
@@ -22,11 +23,11 @@ export class ApplicationService {
     }
 
     async addApplication(firstName: string, lastName: string, pesel: string, schools: number[], userId: number): Promise<void> {
-        // TODO: Check if application already exists?
+        // TODO: Check if applicationStatus already exists?
         for (const schoolId of schools) {
             const school = await this.schoolRepository.getById(schoolId);
             if (!school) {
-                throw new ValidationError('School ID is not recognized.', 400);
+                throw new ResourceNotFoundError('School ID is not recognized.');
             }
         }
 
