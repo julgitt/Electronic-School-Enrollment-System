@@ -28,11 +28,11 @@ const SubmitApplication: React.FC = () => {
         handleNext, handlePrev, handleSubmit, handleSuggestionSelected, handleAddSchoolInput
     } = useApplicationForm(applications || []);
 
-    if (applicationLoading || schoolLoading || deadlineLoading || !authorized) return <LoadingPage/>;
     if (isPastDeadline) return <SubmittedApplicationPreview/>;
     if (applicationFetchError) return <ErrorPage errorMessage={applicationFetchError} />;
     if (schoolFetchError) return <ErrorPage errorMessage={schoolFetchError} />;
     if (deadlineFetchError) return <ErrorPage errorMessage={deadlineFetchError} />;
+    if (applicationLoading || schoolLoading || deadlineLoading || !authorized) return <LoadingPage/>
 
     return (
         <div>

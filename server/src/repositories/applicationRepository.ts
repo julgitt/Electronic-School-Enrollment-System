@@ -2,10 +2,9 @@ import { db, ITask } from '../db';
 import { Application } from '../models/applicationModel';
 
 export class ApplicationRepository {
-    async getAllByUser(userId: number): Promise<Application[] | null> {
+    async getAllByUser(userId: number): Promise<Application[]> {
         const query = `
             SELECT 
-                a.id,
                 a.pesel,
                 a.stage,
                 a.status,
@@ -23,7 +22,7 @@ export class ApplicationRepository {
 
         const applications: Application[] = await db.query(query, [userId])
         console.log(applications);
-        return applications || null;
+        return applications;
     }
 
     async insert(newApp: Omit<Application, 'schoolName'>, t: ITask<any>): Promise<void> {
@@ -38,12 +37,12 @@ export class ApplicationRepository {
         );
     }
 
-    async delete(id: number, t: ITask<any>): Promise<void> {
+    async delete(schoolId: number, userId: number, t: ITask<any>): Promise<void> {
         const query = `
             DELETE FROM applications
-            WHERE id = $1
+            WHERE school_id = $1 AND user_id = $2;
         `;
 
-        await t.none(query, [id]);
+        await t.none(query, [schoolId, userId]);
     }
 }

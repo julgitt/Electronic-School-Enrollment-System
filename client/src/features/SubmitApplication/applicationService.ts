@@ -4,7 +4,7 @@ export const submitApplication = async (
     firstName: string,
     lastName: string,
 ) => {
-    if (schoolIds.every(school => school === -1)) {
+    if (schoolIds.length === 0) {
         throw new Error('Proszę wybrać przynajmniej jedną szkołę.');
     }
 
@@ -36,7 +36,7 @@ export const updateApplication = async (
     firstName: string,
     lastName: string,
 ) => {
-    if (schoolIds.every(school => school === -1)) {
+    if (schoolIds.length === 0) {
         throw new Error('Proszę wybrać przynajmniej jedną szkołę.');
     }
 

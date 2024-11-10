@@ -41,12 +41,12 @@ export const useApplicationForm = (applications: Application[]) => {
         event.preventDefault();
         setError(null);
         setLoading(true);
-        const schoolIds = schools.map(school => school.id);
+        const schoolIds = schools.map(school => school.id).filter(id => id != -1);
 
         try {
             const data = (applications && applications.length > 0)
-                ? await submitApplication(schoolIds, pesel, firstName, lastName)
-                : await updateApplication(schoolIds, pesel, firstName, lastName);
+                ? await updateApplication(schoolIds, pesel, firstName, lastName)
+                : await submitApplication(schoolIds, pesel, firstName, lastName);
             window.location.href = data.redirect;
         } catch (err: any) {
             setError(err.message);

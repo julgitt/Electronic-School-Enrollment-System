@@ -45,7 +45,7 @@ export class ApplicationController {
             const userId = req.signedCookies.userToken;
 
             await this.applicationService.updateApplication(firstName, lastName, pesel, schools, userId);
-            return res.status(201).json({ message: 'Application successfully updated', redirect: '/applicationSubmitted' });
+            return res.status(200).json({ message: 'Application successfully updated', redirect: '/applicationSubmitted' });
         } catch (error) {
             return next(error)
         }

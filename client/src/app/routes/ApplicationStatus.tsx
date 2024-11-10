@@ -34,7 +34,7 @@ const ApplicationStatus: React.FC = () => {
                     </thead>
                     <tbody>
                     {applications.map((application) => (
-                        <tr key={application.id}>
+                        <tr key={application.schoolId}>
                             <td>{application.schoolName}</td>
                             <td>{application.status}</td>
                             <td>{application.stage}</td>

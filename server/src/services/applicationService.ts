@@ -17,12 +17,13 @@ export class ApplicationService {
         this.tx = tx;
     }
 
-    async getAllApplications(userId: number): Promise<Application[] | null> {
+    async getAllApplications(userId: number): Promise<Application[]> {
         return this.applicationRepository.getAllByUser(userId);
     }
 
     async addApplication(firstName: string, lastName: string, pesel: string, schools: number[], userId: number): Promise<void> {
-        if (await this.getAllApplications(userId)) {
+        const applications = await this.getAllApplications(userId)
+        if (applications.length !== 0) {
             throw new DataConflictError('Application already  exists');
         }
         for (const schoolId of schools) {
@@ -51,7 +52,7 @@ export class ApplicationService {
 
     async updateApplication(firstName: string, lastName: string, pesel: string, schools: number[], userId: number): Promise<void> {
         let applications = await this.getAllApplications(userId);
-        if (!applications) {
+        if (applications.length === 0) {
             throw new ResourceNotFoundError('Application not found.');
         }
 
@@ -64,7 +65,7 @@ export class ApplicationService {
 
         await this.tx(async t => {
             for (const application of applications) {
-                await this.applicationRepository.delete(application.id!, t);
+                await this.applicationRepository.delete(application.schoolId, application.userId, t);
             }
             for (const schoolId of schools) {
                 const newApplication: Application = {

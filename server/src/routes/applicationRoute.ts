@@ -22,7 +22,7 @@ router.get('/allApplications', authorize('user'), async (req: Request, res: Resp
     return await applicationController.getApplications(req, res, next)
 });
 
-router.get('/updateApplication', authorize('user'), async (req: Request, res: Response, next: NextFunction) => {
+router.put('/updateApplication', authorize('user'), async (req: Request, res: Response, next: NextFunction) => {
     return await applicationController.updateApplication(req, res, next)
 });
 
