@@ -22,8 +22,13 @@ router.get('/allApplications', authorize('user'), async (req: Request, res: Resp
     return await applicationController.getApplications(req, res, next)
 });
 
-router.get('/application', authorize('user'), async (req: Request, res: Response, next: NextFunction) => {
-    return await applicationController.getApplications(req, res, next);
+router.get('/updateApplication', authorize('user'), async (req: Request, res: Response, next: NextFunction) => {
+    return await applicationController.updateApplication(req, res, next)
+});
+
+//TODO:
+router.get('/deadline', authorize('user'), async (_req: Request, res: Response, _next: NextFunction) => {
+    return res.status(200).json(new Date('2025-12-24'));
 });
 
 router.post('/submitApplication', authorize('user'), applicationValidator, handleValidationErrors, async (req: Request, res: Response, next: NextFunction) => {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { useFetch } from "../../../hooks/useFetch";
-import { User } from "../../../types/user.ts"
+import { UserCookie } from "../../../types/userCookie.ts"
 
 import LoadingPage from "../../../app/routes/LoadingPage.tsx";
 import ErrorPage from "../../../app/routes/ErrorPage.tsx";
@@ -12,7 +12,7 @@ import { Navigation } from '../Navigation';
 import styles from './Header.module.scss';
 
 const Header: React.FC = () => {
-    const { data: user, loading: userLoading } = useFetch<User>('/api/user');
+    const { data: user, loading: userLoading } = useFetch<UserCookie>('/api/user');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 

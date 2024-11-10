@@ -1,14 +1,28 @@
-import React, { useState } from 'react';
-import {submitApplication} from "../applicationService.ts";
+import React, {useEffect, useState} from 'react';
+import {submitApplication, updateApplication} from "../applicationService.ts";
+import {Application} from "../../../types/application.ts";
+import {School} from "../../../types/school.ts";
 
-export const useApplicationForm = () => {
+export const useApplicationForm = (applications: Application[]) => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [pesel, setPesel] = useState('');
-    const [schools, setSchools] = useState([-1]);
+    const [schools, setSchools] = useState<School[]>([{ id: -1, name: '' }]);
     const [error, setError] = useState<string | null>(null);
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (applications && applications.length > 0) {
+            const { firstName, lastName, pesel } = applications[0];
+            setFirstName(firstName);
+            setLastName(lastName);
+            setPesel(pesel);
+            applications.forEach( app => {
+                setSchools(prev => [...prev, { id: app.schoolId, name:  app.schoolName }]);
+            })
+        }
+    }, [applications]);
 
     const handleNext = () => {
         if (!firstName || !lastName || !pesel) {
@@ -27,9 +41,12 @@ export const useApplicationForm = () => {
         event.preventDefault();
         setError(null);
         setLoading(true);
+        const schoolIds = schools.map(school => school.id);
 
         try {
-            const data = await submitApplication(schools, pesel, firstName, lastName)
+            const data = (applications && applications.length > 0)
+                ? await submitApplication(schoolIds, pesel, firstName, lastName)
+                : await updateApplication(schoolIds, pesel, firstName, lastName);
             window.location.href = data.redirect;
         } catch (err: any) {
             setError(err.message);
@@ -38,13 +55,13 @@ export const useApplicationForm = () => {
         }
     };
 
-    const handleSuggestionSelected = (suggestion: number, index: number) => {
+    const handleSuggestionSelected = (suggestion: School, index: number) => {
         const newSchools = [...schools];
         newSchools[index] = suggestion;
         setSchools(newSchools);
     };
 
-    const handleAddSchoolInput = () => setSchools([...schools, -1]);
+    const handleAddSchoolInput = () => setSchools([...schools, {id: -1, name: ''}]);
 
     return {
         firstName,
@@ -57,6 +74,7 @@ export const useApplicationForm = () => {
         setFirstName,
         setLastName,
         setPesel,
+        setSchools,
         handleNext,
         handlePrev,
         handleSubmit,

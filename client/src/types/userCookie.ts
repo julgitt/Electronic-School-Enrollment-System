@@ -1,4 +1,4 @@
-export interface User {
+export interface UserCookie {
     username: string;
     userToken: string;
 }

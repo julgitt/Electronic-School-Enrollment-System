@@ -28,7 +28,24 @@ export class ApplicationController {
             const userId = req.signedCookies.userToken;
 
             await this.applicationService.addApplication(firstName, lastName, pesel, schools, userId);
-            return res.status(201).json({ message: 'Application successful', redirect: '/appllicationSubmitted' });
+            return res.status(201).json({ message: 'Application successful', redirect: '/applicationSubmitted' });
+        } catch (error) {
+            return next(error)
+        }
+    }
+
+    async updateApplication(req: Request, res: Response, next: NextFunction) {
+        try {
+            const {
+                txtFirstName: firstName,
+                txtLastName: lastName,
+                txtPesel: pesel,
+                txtSchools: schools
+            } = req.body;
+            const userId = req.signedCookies.userToken;
+
+            await this.applicationService.updateApplication(firstName, lastName, pesel, schools, userId);
+            return res.status(201).json({ message: 'Application successfully updated', redirect: '/applicationSubmitted' });
         } catch (error) {
             return next(error)
         }

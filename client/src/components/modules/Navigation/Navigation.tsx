@@ -1,11 +1,11 @@
 import React from 'react';
 import { NavLink as Link } from 'react-router-dom';
 
-import { User } from "../../../types/user.ts";
+import { UserCookie } from "../../../types/userCookie.ts";
 import styles from './Navigation.module.scss';
 
 interface NavigationProps {
-    user: User | null;
+    user: UserCookie | null;
     onLogout: (event: React.MouseEvent<HTMLAnchorElement>) => void;
     logoutLoading?: boolean;
 }

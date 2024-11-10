@@ -6,11 +6,12 @@ import styles from './SuggestionBox.module.scss';
 interface SuggestionBoxProps {
     placeholder: string;
     suggestions: string[];
+    defaultValue?: string;
     onSuggestionSelected: (suggestion: string) => void;
 }
 
-const SuggestionBox: React.FC<SuggestionBoxProps> = ({ placeholder, suggestions, onSuggestionSelected }) => {
-    const [query, setQuery] = useState<string>('');
+const SuggestionBox: React.FC<SuggestionBoxProps> = ({ placeholder, defaultValue, suggestions, onSuggestionSelected }) => {
+    const [query, setQuery] = useState<string>(defaultValue || '');
     const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
     const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
 

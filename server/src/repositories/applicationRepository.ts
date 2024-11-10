@@ -5,6 +5,7 @@ export class ApplicationRepository {
     async getAllByUser(userId: number): Promise<Application[] | null> {
         const query = `
             SELECT 
+                a.id,
                 a.pesel,
                 a.stage,
                 a.status,
@@ -35,5 +36,14 @@ export class ApplicationRepository {
             query,
             [newApp.userId, newApp.schoolId, newApp.firstName, newApp.lastName, newApp.pesel, newApp.stage, newApp.status]
         );
+    }
+
+    async delete(id: number, t: ITask<any>): Promise<void> {
+        const query = `
+            DELETE FROM applications
+            WHERE id = $1
+        `;
+
+        await t.none(query, [id]);
     }
 }
