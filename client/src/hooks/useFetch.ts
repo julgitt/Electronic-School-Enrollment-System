@@ -24,7 +24,6 @@ export const useFetch = <T>(endpoint: string): FetchResult<T> => {
                 setData(result);
                 setAuthorized(true);
             } else if (response.status === status.UNAUTHORIZED) {
-                //const result: any = await response.json();
                 window.location.href = '/login';
             } else {
                 const error: any = await response.json();
