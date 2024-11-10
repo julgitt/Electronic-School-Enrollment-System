@@ -40,10 +40,12 @@ const SchoolSelectionForm: React.FC<SchoolSelectionFormProps> = ({
                     defaultValue={school.name}
                     onSuggestionSelected={(selectedName) => {
                         const selectedSchool = suggestions.find(s => s.name === selectedName);
-                        onSchoolChange(
-                            selectedSchool ? {id: selectedSchool.id, name: selectedSchool.name} : {id: -1, name:''},
-                            index
-                        );
+                        if (selectedSchool && selectedSchool.name !== school.name) {
+                            onSchoolChange(
+                                {id: selectedSchool.id, name: selectedSchool.name},
+                                index
+                            );
+                        }
                     }}
                 />
             </div>

@@ -18,9 +18,11 @@ export const useApplicationForm = (applications: Application[]) => {
             setFirstName(firstName);
             setLastName(lastName);
             setPesel(pesel);
-            applications.forEach( app => {
-                setSchools(prev => [...prev, { id: app.schoolId, name:  app.schoolName }]);
-            })
+            const initialSchools = applications.map(app => ({
+                id: app.schoolId,
+                name: app.schoolName,
+            }));
+            setSchools(initialSchools);
         }
     }, [applications]);
 
@@ -33,9 +35,7 @@ export const useApplicationForm = (applications: Application[]) => {
         }
     };
 
-    const handlePrev = () => {
-        setStep(1);
-    };
+    const handlePrev = () => setStep(1);
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -55,13 +55,15 @@ export const useApplicationForm = (applications: Application[]) => {
         }
     };
 
-    const handleSuggestionSelected = (suggestion: School, index: number) => {
+    const handleSuggestionSelected = React.useCallback((suggestion: School, index: number) => {
         const newSchools = [...schools];
         newSchools[index] = suggestion;
         setSchools(newSchools);
-    };
+    }, []);
 
-    const handleAddSchoolInput = () => setSchools([...schools, {id: -1, name: ''}]);
+    const handleAddSchoolInput = React.useCallback(() => {
+        setSchools([...schools, {id: -1, name: ''}]);
+    }, []);
 
     return {
         firstName,

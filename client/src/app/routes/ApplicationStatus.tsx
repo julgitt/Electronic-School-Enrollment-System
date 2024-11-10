@@ -9,13 +9,8 @@ import ErrorPage from "./ErrorPage.tsx";
 const ApplicationStatus: React.FC = () => {
     const { data: applications, loading, authorized, error} = useFetch<Application[]>('/api/allApplications');
 
-    if (loading || !authorized) {
-        return <LoadingPage />;
-    }
-
-    if (error) {
-        return <ErrorPage errorMessage={error} />;
-    }
+    if (error) return <ErrorPage errorMessage={error} />;
+    if (loading || !authorized) return <LoadingPage />;
 
     return (
         <div>

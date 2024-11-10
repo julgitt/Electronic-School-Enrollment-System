@@ -10,7 +10,7 @@ interface SuggestionBoxProps {
     onSuggestionSelected: (suggestion: string) => void;
 }
 
-const SuggestionBox: React.FC<SuggestionBoxProps> = ({ placeholder, defaultValue, suggestions, onSuggestionSelected }) => {
+const SuggestionBox: React.FC<SuggestionBoxProps> = React.memo(({ placeholder, defaultValue, suggestions, onSuggestionSelected }) => {
     const [query, setQuery] = useState<string>(defaultValue || '');
     const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
     const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
@@ -60,6 +60,6 @@ const SuggestionBox: React.FC<SuggestionBoxProps> = ({ placeholder, defaultValue
             )}
         </div>
     );
-};
+});
 
 export default SuggestionBox;
