@@ -16,6 +16,9 @@ const Header: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    if (error) return <ErrorPage errorMessage={error}/>;
+    if (userLoading) return <LoadingPage/>;
+
     const handleLogout = async () => {
         setLoading(true);
         setError(null);
@@ -30,13 +33,6 @@ const Header: React.FC = () => {
             setLoading(false);
         }
     };
-
-    if (userLoading) {
-        return <LoadingPage/>;
-    }
-    if (error) {
-       return <ErrorPage errorMessage={error}/>;
-    }
 
     return (
         <header className={styles.header}>
