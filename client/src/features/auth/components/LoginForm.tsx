@@ -4,26 +4,24 @@ import { InputField } from "../../../components/atomic/InputField";
 import { Button } from "../../../components/atomic/Button";
 import { ErrorMessage } from "../../../components/atomic/ErrorMessage";
 import { TextLink } from "../../../components/atomic/TextLink";
+import { LoginFormData } from "../types/loginFormData.ts";
 
 import styles from "../../../assets/css/forms.module.scss";
 
 interface LoginFormProps {
-    username: string;
-    password: string;
+    formData: LoginFormData;
+    onInputChange: (field: keyof LoginFormData) =>
+        (event: React.ChangeEvent<HTMLInputElement>) => void;
     error?: string | null;
     loading?: boolean;
-    onUsernameChange: (value: string) => void;
-    onPasswordChange: (value: string) => void;
     onSubmit: (event: React.FormEvent) => void;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({
-     username,
-     password,
+     formData,
+     onInputChange,
      error,
      loading,
-     onUsernameChange,
-     onPasswordChange,
      onSubmit,
 }) => (
     <form method="POST" onSubmit={onSubmit} className={styles.form}>
@@ -33,15 +31,15 @@ const LoginForm: React.FC<LoginFormProps> = ({
             <InputField
                 type="text"
                 placeholder="Email"
-                value={username}
-                onChange={onUsernameChange}
+                value={formData.username}
+                onChange={onInputChange("username")}
                 required
             />
             <InputField
                 type="password"
                 placeholder="Hasło"
-                value={password}
-                onChange={onPasswordChange}
+                value={formData.password}
+                onChange={onInputChange("password")}
                 required
             />
         </div>

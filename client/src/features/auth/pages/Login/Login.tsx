@@ -1,14 +1,18 @@
 import React, { useState } from "react";
 
-import LoginForm from "./LoginForm.tsx";
-import { login } from "../authService.ts";
+import LoginForm from "../../components/LoginForm.tsx";
+import { login } from "../../services/authService.ts";
+import { LoginFormData } from "../../types/loginFormData.ts";
+import { useFormData } from "../../../../hooks/useFormData.ts";
 
 const Login: React.FC = () => {
+    const { formData, handleChange } = useFormData<LoginFormData>({
+        username: '',
+        password: '',
+    });
+
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
-
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
 
     const handleLogin = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -16,7 +20,7 @@ const Login: React.FC = () => {
         setError(null);
 
         try {
-            const data = await login(username, password);
+            const data = await login(formData);
             window.location.href = data.redirect;
         } catch (err: any) {
             setError(err.message);
@@ -28,12 +32,10 @@ const Login: React.FC = () => {
     return (
         <section id="form">
             <LoginForm
-                username={username}
-                password={password}
+                formData={formData}
                 error={error}
                 loading={loading}
-                onUsernameChange={setUsername}
-                onPasswordChange={setPassword}
+                onInputChange={handleChange}
                 onSubmit={handleLogin}
             />
         </section>

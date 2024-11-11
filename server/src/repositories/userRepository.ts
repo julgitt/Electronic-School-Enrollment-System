@@ -1,5 +1,5 @@
 import { db, ITask } from '../db';
-import { User, UserRole } from '../models/userModel';
+import { User } from '../models/userModel';
 
 export class UserRepository {
     async getByLoginOrEmail(login: string, email: string, withRoles: boolean = true): Promise<User | null> {
@@ -8,25 +8,14 @@ export class UserRepository {
             : this.getWithoutRolesByLoginOrEmail(login, email);
     }
 
-    async getUserRoles(userId: number): Promise<string[]> {
-        const query = `
-            SELECT role_name
-            FROM user_roles
-            WHERE user_id = $1;
-        `;
-        const roles: UserRole[] = await db.query(query, [userId]);
-
-        return roles.map((role: UserRole) => role.roleName);
-    }
-
     async insert(newUser: Omit<User, 'id'>, t: ITask<any>): Promise<User> {
         const userInsertQuery = `
-            INSERT INTO users (login, first_name, last_name, email, password)
-            VALUES ($1, $2, $3, $4, $5)
+            INSERT INTO users (login, email, password)
+            VALUES ($1, $2, $3)
             RETURNING id;
         `;
 
-        const values = [newUser.login, newUser.firstName, newUser.lastName, newUser.email, newUser.password];
+        const values = [newUser.login, newUser.email, newUser.password];
         return t.one(userInsertQuery, values);
     }
 

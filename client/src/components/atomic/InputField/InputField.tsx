@@ -6,7 +6,7 @@ interface InputFieldProps {
     name?: string;
     placeholder: string;
     value: string;
-    onChange: (value: string) => void;
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     autoFocus?: boolean;
     required?: boolean;
     pattern?: string;
@@ -33,7 +33,7 @@ const InputField: React.FC<InputFieldProps> = ({
             className={styles.input}
             placeholder={placeholder}
             value={value}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={onChange}
             required={required}
             autoFocus={autoFocus}
             pattern={pattern}

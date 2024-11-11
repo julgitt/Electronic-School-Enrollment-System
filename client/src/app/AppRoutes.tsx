@@ -7,8 +7,8 @@ import ApplicationSubmitted from "./routes/ApplicationSubmitted.tsx";
 import ErrorPage from "./routes/ErrorPage.tsx";
 
 import { SubmitApplication } from '../features/SubmitApplication';
-import { Login } from "../features/auth/Login";
-import { Signup } from "../features/auth/Signup";
+import { Login } from "../features/auth/pages/Login";
+import { Signup } from "../features/auth/pages/Signup";
 
 const AppRoutes = () => {
     return (

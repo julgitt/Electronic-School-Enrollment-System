@@ -24,7 +24,7 @@ export class UserService {
         return existingUser;
     }
 
-    async register(login: string, email: string, firstName: string, lastName: string, password: string): Promise<void> {
+    async register(login: string, email: string, password: string): Promise<void> {
         const existingUser = await this.userRepository.getByLoginOrEmail(login, email, false);
         if (existingUser) {
             if (existingUser.login === login) {
@@ -36,10 +36,8 @@ export class UserService {
         }
 
         const hashedPassword = await hash(password, 12);
-        const newUser: Omit<User, 'id'> = {
+        const newUser: User = {
             login,
-            firstName,
-            lastName,
             email,
             password: hashedPassword,
             roles: ['user'],
@@ -47,7 +45,7 @@ export class UserService {
 
         await this.tx(async t => {
             const user = await this.userRepository.insert(newUser, t);
-            await this.userRepository.insertUserRoles(user.id, newUser.roles, t);
+            await this.userRepository.insertUserRoles(user.id!, newUser.roles, t);
         });
     }
 }

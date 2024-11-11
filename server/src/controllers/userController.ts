@@ -10,14 +10,12 @@ export class UserController {
     async register(req: Request, res: Response, next: NextFunction) {
         try {
             const {
-                txtUser: login,
-                txtEmail: email,
-                txtPwd: password,
-                txtFirstName: firstName,
-                txtLastName: lastName
+                username: login,
+                email: email,
+                password: password,
             } = req.body;
 
-            await this.userService.register(login, email, firstName, lastName, password);
+            await this.userService.register(login, email, password);
             return res.status(201).json({
                 message: 'Signup successful',
                 user: { username: login },
@@ -29,11 +27,11 @@ export class UserController {
     }
 
     async login(req: Request, res: Response, next: NextFunction) {
-        const { txtUser: loginOrEmail, txtPwd: password } = req.body;
+        const { username: loginOrEmail, password } = req.body;
 
         try {
             const user = await this.userService.login(loginOrEmail, password);
-            res.cookie('username', user.firstName, { signed: true, maxAge: 86400000 });
+            //res.cookie('username', user.firstName, { signed: true, maxAge: 86400000 });
             res.cookie('userToken', user.id, {
                 signed: true,
                 secure: true,
@@ -60,7 +58,7 @@ export class UserController {
     async logout(_req: Request, res: Response, next: NextFunction) {
         try {
             res.clearCookie('userToken');
-            res.clearCookie('username');
+            //res.clearCookie('username');
             res.clearCookie('roles');
             return res.status(200).json({ message: 'Logout successful' });
         } catch (error) {
@@ -70,9 +68,9 @@ export class UserController {
 
     async getUser(req: Request, res: Response, next: NextFunction) {
         try {
-            const username = req.signedCookies.username;
+            //const username = req.signedCookies.username;
             const userToken = req.signedCookies.userToken;
-            return res.status(200).json({ username: username, userToken: userToken });
+            return res.status(200).json({ username: "username", userToken: userToken });
         } catch (error) {
             return next(error);
         }

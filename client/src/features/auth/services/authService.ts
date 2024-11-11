@@ -1,14 +1,13 @@
+import { SignupFormData } from "../types/signUpFormData.ts";
+import { LoginFormData } from "../types/loginFormData.ts";
 
-export const login = async (
-    username: string,
-    password: string
-) => {
+export const login = async (formData: LoginFormData) => {
     const response = await fetch('/api/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ txtUser: username, txtPwd: password }),
+        body: JSON.stringify(formData),
     });
     const data = await response.json();
 
@@ -19,27 +18,13 @@ export const login = async (
     return data;
 };
 
-export const signup = async (
-    username: string,
-    email: string,
-    firstName: string,
-    lastName: string,
-    password: string,
-    passwordConfirm: string,
-) => {
+export const signup = async (formData: SignupFormData) => {
     const response = await fetch('/api/signup', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-            txtUser: username,
-            txtEmail: email,
-            txtFirstName: firstName,
-            txtLastName: lastName,
-            txtPwd: password,
-            txtPwd_c: passwordConfirm,
-        }),
+        body: JSON.stringify(formData),
     });
     const data = await response.json();
 

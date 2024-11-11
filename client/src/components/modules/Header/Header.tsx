@@ -6,7 +6,7 @@ import { UserCookie } from "../../../types/userCookie.ts"
 import LoadingPage from "../../../app/routes/LoadingPage.tsx";
 import ErrorPage from "../../../app/routes/ErrorPage.tsx";
 
-import { logout } from "../../../features/auth/authService.ts";
+import { logout } from "../../../features/auth/services/authService.ts";
 
 import { Navigation } from '../Navigation';
 import styles from './Header.module.scss';
