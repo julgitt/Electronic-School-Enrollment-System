@@ -55,15 +55,15 @@ export const useApplicationForm = (applications: Application[]) => {
         }
     };
 
-    const handleSuggestionSelected = React.useCallback((suggestion: School, index: number) => {
+    const handleSuggestionSelected = (suggestion: School, index: number) => {
         const newSchools = [...schools];
         newSchools[index] = suggestion;
         setSchools(newSchools);
-    }, []);
+    };
 
-    const handleAddSchoolInput = React.useCallback(() => {
+    const handleAddSchoolInput = () => {
         setSchools([...schools, {id: -1, name: ''}]);
-    }, []);
+    };
 
     return {
         firstName,
