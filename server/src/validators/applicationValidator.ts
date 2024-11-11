@@ -31,5 +31,5 @@ export const applicationValidator = [
             return validatePesel(value);
         }).withMessage("Invalid Pesel number"),
     body('txtSchools')
-        .isArray({ min: 1 }).withMessage('At least one school must be selected.')
+        .isArray({ min: 1, max:5 }).withMessage('Between 1 and 5 schools must be selected.')
 ];
