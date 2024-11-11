@@ -8,9 +8,8 @@ export class SchoolRepository {
             FROM schools 
             WHERE id = $1
         `;
-        const result = await db.one(query, [id]);
 
-        return result || null;
+        return await db.oneOrNone(query, [id]);
     }
 
     async getAll(): Promise<School[]> {

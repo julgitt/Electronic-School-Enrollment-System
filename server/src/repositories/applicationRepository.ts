@@ -20,9 +20,7 @@ export class ApplicationRepository {
             WHERE user_id = $1
         `;
 
-        const applications: Application[] = await db.query(query, [userId])
-        console.log(applications);
-        return applications;
+        return await db.query(query, [userId]);
     }
 
     async insert(newApp: Omit<Application, 'schoolName'>, t: ITask<any>): Promise<void> {
