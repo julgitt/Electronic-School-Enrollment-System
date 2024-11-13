@@ -3,6 +3,7 @@ import cookieParser from 'cookie-parser';
 import bodyParser from "body-parser";
 
 import userRoutes from './routes/userRoute';
+import candidateRoutes from './routes/candidateRoute';
 import applicationRoutes from './routes/applicationRoute';
 import schoolRoutes from './routes/schoolRoute';
 import errorHandler from './middlewares/errorHandler';
@@ -14,6 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET || 'default_secret'));
 
 app.use('/api', userRoutes);
+app.use('/api', candidateRoutes);
 app.use('/api', applicationRoutes);
 app.use('/api', schoolRoutes);
 

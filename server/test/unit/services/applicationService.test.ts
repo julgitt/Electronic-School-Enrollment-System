@@ -26,7 +26,7 @@ describe('ApplicationService', () => {
 
     afterEach(() => { sinon.restore(); })
 
-    describe('AddApplication', () => {
+    describe('addApplication', () => {
 
         it('should add applications when all schools exist', async () => {
             schoolRepoStub.getById.resolves({} as School);
@@ -77,4 +77,6 @@ describe('ApplicationService', () => {
             }));
         });
     });
+    //TODO: update test
+
 })

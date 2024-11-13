@@ -7,11 +7,15 @@ import { handleValidationErrors } from '../middlewares/validationErrorHandler';
 import { UserRepository } from "../repositories/userRepository";
 import { UserService } from "../services/userService";
 import { UserController } from '../controllers/userController';
+import {CandidateRepository} from "../repositories/candidateRepository";
+import {CandidateService} from "../services/candidateService";
 
+const candidateRepository: CandidateRepository = new CandidateRepository();
+const candidateService: CandidateService = new CandidateService(candidateRepository);
 
 const userRepository: UserRepository = new UserRepository();
 const userService: UserService = new UserService(userRepository, tx);
-const userController = new UserController(userService);
+const userController = new UserController(userService, candidateService);
 
 const router = Router();
 
@@ -26,10 +30,6 @@ router.post('/login', userLoginValidator, handleValidationErrors, async (req: Re
 
 router.post('/logout', async (req: Request, res: Response, next: NextFunction) => {
     return await userController.logout(req, res, next);
-});
-
-router.get('/user', async (req: Request, res: Response, next: NextFunction) => {
-    return await userController.getUser(req, res, next);
 });
 
 export default router;

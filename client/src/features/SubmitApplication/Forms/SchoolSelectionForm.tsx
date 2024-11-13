@@ -4,7 +4,7 @@ import { Button } from '../../../components/atomic/Button'
 import { PlusButton } from '../../../components/atomic/PlusButton'
 import { SuggestionBox } from '../../../components/composite/SuggestionBox';
 import { ErrorMessage } from "../../../components/atomic/ErrorMessage";
-import { School } from "../../../types/school.ts"
+import { School } from "../../../shared/types/school.ts"
 
 import styles from "../../../assets/css/forms.module.scss";
 

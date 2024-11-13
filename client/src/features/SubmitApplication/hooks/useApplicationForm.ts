@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {submitApplication, updateApplication} from "../applicationService.ts";
-import {Application} from "../../../types/application.ts";
-import {School} from "../../../types/school.ts";
+import {Application} from "../../../shared/types/application.ts";
+import {School} from "../../../shared/types/school.ts";
 
 export const useApplicationForm = (applications: Application[]) => {
     const [firstName, setFirstName] = useState('');

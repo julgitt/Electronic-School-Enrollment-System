@@ -22,7 +22,7 @@ export class ApplicationService {
     }
 
     async addApplication(firstName: string, lastName: string, pesel: string, schools: number[], userId: number): Promise<void> {
-        const applications = await this.getAllApplications(userId)
+        const applications: Application[] = await this.getAllApplications(userId);
         if (applications.length !== 0) {
             throw new DataConflictError('Application already  exists');
         }

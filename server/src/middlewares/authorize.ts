@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 
 export function authorize(...roles: string[]) {
     return async function (req: Request, res: Response, next: NextFunction) {
-        const userId = req.signedCookies.userToken;
+        const userId = req.signedCookies.userId;
         const userRoles: string[] = req.signedCookies.roles;
 
         if (roles.length === 0) {

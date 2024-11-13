@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { useFetch } from "../../hooks/useFetch";
+import { useFetch } from "../../shared/hooks/useFetch";
 import {useApplicationForm} from "./hooks/useApplicationForm.ts";
-import { School } from "../../types/school";
-import { Application } from "../../types/application";
+import { School } from "../../shared/types/school";
+import { Application } from "../../shared/types/application";
 
 import SchoolSelectionForm from "./Forms/SchoolSelectionForm.tsx";
 import PersonalForm from "./Forms/PersonalForm.tsx";

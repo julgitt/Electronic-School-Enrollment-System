@@ -28,13 +28,11 @@ describe('UserService', () => {
 
     afterEach(() => { sinon.restore(); })
 
-    describe('authenticateUser', () => {
-        it('should authenticate auth with correct credentials', async () => {
+    describe('login', () => {
+        it('should authenticate user with correct credentials', async () => {
             const mockUser: User = {
                 id: 1,
                 login: 'testuser',
-                firstName: 'Test',
-                lastName: 'User',
                 email: 'test@example.com',
                 password: 'hashedPassword',
                 roles: ['user']
@@ -50,7 +48,7 @@ describe('UserService', () => {
             assert.equal(bcryptCompareStub.callCount, 1);
         });
 
-        it('should throw an error if auth is not found', async () => {
+        it('should throw an error if user is not found', async () => {
             userRepoStub.getByLoginOrEmail.resolves(null);
 
             try {
@@ -68,8 +66,6 @@ describe('UserService', () => {
             const mockUser: User = {
                 id: 1,
                 login: 'testuser',
-                firstName: 'Test',
-                lastName: 'User',
                 email: 'test@example.com',
                 password: 'hashedPassword',
                 roles: ['user']
@@ -90,12 +86,10 @@ describe('UserService', () => {
         });
     });
 
-    describe('registerUser', () => {
+    describe('register', () => {
         it('should register a new auth with hashed password', async () => {
-            const mockUser: Omit<User, 'id'> = {
+            const mockUser: User = {
                 login: 'newuser',
-                firstName: 'New',
-                lastName: 'User',
                 email: 'new@example.com',
                 password: 'hashedPassword',
                 roles: ['user']
@@ -105,7 +99,7 @@ describe('UserService', () => {
             bcryptHashStub.resolves('hashedPassword');
             userRepoStub.insert.resolves({id: 1, ...mockUser});
 
-            await userService.register('newuser', 'new@example.com', 'New', 'User', 'password123');
+            await userService.register('newuser', 'new@example.com', 'password123');
 
             assert.equal(userRepoStub.getByLoginOrEmail.callCount, 1);
             assert.equal(bcryptHashStub.callCount, 1);
@@ -117,8 +111,6 @@ describe('UserService', () => {
             const existingUser: User = {
                 id: 1,
                 login: 'existinguser',
-                firstName: 'Existing',
-                lastName: 'User',
                 email: 'existing@example.com',
                 password: 'hashedPassword',
                 roles: ['user']
@@ -127,7 +119,7 @@ describe('UserService', () => {
             userRepoStub.getByLoginOrEmail.resolves(existingUser);
 
             try {
-                await userService.register('existinguser', 'new@example.com', 'New', 'User', 'password123');
+                await userService.register('existinguser', 'new@example.com', 'password123');
                 assert.fail('Expected an error to be thrown');
             } catch (err) {
                 assert.match((err as Error).message, /Login is already taken./);
@@ -142,10 +134,9 @@ describe('UserService', () => {
             userRepoStub.getByLoginOrEmail.resolves({ email: 'existing@example.com'} as User);
 
             try {
-                await userService.register('newuser', 'existing@example.com', 'New', 'User', 'password123');
+                await userService.register('newuser', 'existing@example.com', 'password123');
                 assert.fail('Expected an error to be thrown');
             } catch (err) {
-                //TODO: Instead of multiple messages glued together, throw multiple errors!
                 assert.match((err as Error).message, /There is already an account with that email./);
             }
 

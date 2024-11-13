@@ -4,7 +4,7 @@ import SignupForm from "../../components/SignupForm.tsx";
 import { signup } from "../../services/authService.ts";
 
 import { SignupFormData } from "../../types/signUpFormData.ts";
-import { useFormData } from "../../../../hooks/useFormData.ts";
+import { useFormData } from "../../../../shared/hooks/useFormData.ts";
 
 const Signup: React.FC = () => {
     const { formData, handleChange } = useFormData<SignupFormData>({

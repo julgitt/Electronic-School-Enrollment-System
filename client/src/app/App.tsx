@@ -4,9 +4,11 @@ import { Footer } from '../components/modules/Footer';
 import { Header } from '../components/modules/Header';
 
 import AppRoutes from './AppRoutes.tsx';
+import {CandidateProvider} from "../shared/providers/candidateProvider.tsx";
 
 function App() {
     return (
+        <CandidateProvider>
         <Router>
             <Header />
             <main className="main-content">
@@ -14,6 +16,7 @@ function App() {
             </main>
             <Footer />
         </Router>
+        </CandidateProvider>
     );
 }
 

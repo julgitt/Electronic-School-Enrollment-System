@@ -9,7 +9,7 @@ export class ApplicationController {
 
     async getApplications(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = req.signedCookies.userToken;
+            const userId = req.signedCookies.userId;
             const applications = await this.applicationService.getAllApplications(userId);
             return res.status(200).json(applications);
         } catch (error) {
@@ -25,7 +25,7 @@ export class ApplicationController {
                 txtPesel: pesel,
                 txtSchools: schools
             } = req.body;
-            const userId = req.signedCookies.userToken;
+            const userId = req.signedCookies.userId;
 
             await this.applicationService.addApplication(firstName, lastName, pesel, schools, userId);
             return res.status(201).json({ message: 'Application successful', redirect: '/applicationSubmitted' });
@@ -42,7 +42,7 @@ export class ApplicationController {
                 txtPesel: pesel,
                 txtSchools: schools
             } = req.body;
-            const userId = req.signedCookies.userToken;
+            const userId = req.signedCookies.userId;
 
             await this.applicationService.updateApplication(firstName, lastName, pesel, schools, userId);
             return res.status(200).json({ message: 'Application successfully updated', redirect: '/applicationSubmitted' });

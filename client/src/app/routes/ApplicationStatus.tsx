@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { useFetch } from "../../hooks/useFetch.ts";
-import { Application } from "../../types/application.ts";
+import { useFetch } from "../../shared/hooks/useFetch.ts";
+import { Application } from "../../shared/types/application.ts";
 
 import LoadingPage from "./LoadingPage.tsx";
 import ErrorPage from "./ErrorPage.tsx";
