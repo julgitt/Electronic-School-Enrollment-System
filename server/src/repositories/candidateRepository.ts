@@ -13,7 +13,7 @@ export class CandidateRepository {
     async getByPesel(pesel: string): Promise<Candidate | null> {
         const query = `
             SELECT * FROM candidates
-            WHERE id = $1
+            WHERE pesel = $1
         `;
         return await db.oneOrNone(query, [pesel]);
     }
@@ -30,12 +30,12 @@ export class CandidateRepository {
 
     async insert(newCandidate: Candidate): Promise<Candidate> {
         const query = `
-            INSERT INTO candidate (first_name, last_name, pesel)
-            VALUES ($1, $2, $3)
+            INSERT INTO candidates (first_name, last_name, pesel, user_id)
+            VALUES ($1, $2, $3, $4)
             RETURNING id;
         `;
 
-        const values = [newCandidate.firstName, newCandidate.lastName, newCandidate.pesel];
+        const values = [newCandidate.firstName, newCandidate.lastName, newCandidate.pesel, newCandidate.userId];
         return db.one(query, values);
     }
 }
