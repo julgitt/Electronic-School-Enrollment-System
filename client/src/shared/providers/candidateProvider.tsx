@@ -1,4 +1,4 @@
-import React, {createContext, useState, useContext, useEffect, ReactNode} from 'react';
+import React, {createContext, useState, useContext, useEffect, ReactNode, useRef} from 'react';
 import {CandidateCookie} from "../types/candidateCookie.ts";
 
 interface CandidateContextType {
@@ -27,17 +27,27 @@ export const CandidateProvider: React.FC<CandidateProviderProps> = ({ children }
     const [candidate, setCandidate] = useState<CandidateCookie | null>(null);
     const [candidates, setCandidates] = useState<CandidateCookie[]>([]);
     const [logoutLoading, setLogoutLoading] = useState(false);
+    const wasAlreadyRequested = useRef(false);
 
     useEffect(() => {
-        fetch('/api/candidate')
-            .then(response => response.json())
-            .then(data => {
-                if (data.redirect)
-                    window.location.href = data.redirect;
-                setCandidate(data.candidate);
-                setCandidates(data.candidates);
-            });
-    }, []);
+        const fetchCandidate = async() =>
+        {
+            wasAlreadyRequested.current = true
+            fetch('/api/candidate')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.redirect && window.location.href != data.redirect) {
+                        window.location.href = data.redirect;
+                        return;
+                    }
+                    setCandidate(data.candidate);
+                    setCandidates(data.candidates);
+                });
+        }
+        if (!wasAlreadyRequested.current){
+            fetchCandidate();
+        }
+    }, [wasAlreadyRequested]);
 
     const switchCandidate = (candidateId: number) => {
         fetch('/api/switchCandidate', {
