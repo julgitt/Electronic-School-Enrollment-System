@@ -5,8 +5,8 @@ import {useApplicationForm} from "./hooks/useApplicationForm.ts";
 import { School } from "../../shared/types/school";
 import { Application } from "../../shared/types/application";
 
-import SchoolSelectionForm from "./Forms/SchoolSelectionForm.tsx";
-import PersonalForm from "./Forms/PersonalForm.tsx";
+import SchoolSelectionForm from "./forms/SchoolSelectionForm.tsx";
+import PersonalForm from "./forms/PersonalForm.tsx";
 import ErrorPage from "../../app/routes/ErrorPage.tsx";
 import LoadingPage from "../../app/routes/LoadingPage.tsx";
 import SubmittedApplicationPreview from "./SubmittedApplicationPreview.tsx";

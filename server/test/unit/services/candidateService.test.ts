@@ -39,18 +39,18 @@ describe('CandidateService', () => {
             const id = 1;
             const candidate = { id, userId, firstName: 'Jan', lastName: 'Kowalski', pesel: '23456789012' };
 
-            candidateRepoStub.getById.resolves(candidate);
+            candidateRepoStub.getByIdAndUserId.resolves(candidate);
 
             const result = await candidateService.getByIdAndUserId(id, userId);
             assert.equal(result, candidate);
-            assert.equal(candidateRepoStub.getById.callCount, 1);
+            assert.equal(candidateRepoStub.getByIdAndUserId.callCount, 1);
         });
 
         it('should throw ResourceNotFoundError if the candidate does not exist', async () => {
             const id = 1;
             const userId = 1;
 
-            candidateRepoStub.getById.resolves(null);
+            candidateRepoStub.getByIdAndUserId.resolves(null);
 
             try {
                 await candidateService.getByIdAndUserId(id, userId)
@@ -72,7 +72,7 @@ describe('CandidateService', () => {
                 pesel: '23456789012'
             };
 
-            candidateRepoStub.getById.resolves(candidate);
+            candidateRepoStub.getByIdAndUserId.resolves(candidate);
 
             try {
                 await candidateService.getByIdAndUserId(id, userId);
