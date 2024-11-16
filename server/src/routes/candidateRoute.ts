@@ -18,12 +18,20 @@ router.post('/registerCandidate', candidateRegisterValidator, handleValidationEr
     return await candidateController.register(req, res, next);
 });
 
+/*router.post('/editCandidate', candidateRegisterValidator, handleValidationErrors, async (req: Request, res: Response, next: NextFunction) => {
+    return await candidateController.edit(req, res, next);
+});*/
+
 router.post('/switchCandidate', async (req: Request, res: Response, next: NextFunction) => {
     return await candidateController.switchCandidate(req, res, next);
 });
 
 router.get('/candidate', async (req: Request, res: Response, next: NextFunction) => {
     return await candidateController.getCandidate(req, res, next);
+});
+
+router.get('/candidates', async (req: Request, res: Response, next: NextFunction) => {
+    return await candidateController.getAllCandidates(req, res, next);
 });
 
 export default router;

@@ -33,15 +33,18 @@
 
 .dropdownItem {
   padding: 8px 12px;
+  font-weight: 500;
   cursor: pointer;
-  background-color: var(--input-focus-color);
+  background-color: var(--input-color);
+  color: var(--button-primary-color);
   border: none;
   text-align: left;
   width: 100%;
 }
 
 .dropdownItem:hover {
-  background-color: #e9ecef;
+  background-color: var(--input-focus-color);
+  color: var(--button-primary-hover-color);
 }
 
 .extraLinks {

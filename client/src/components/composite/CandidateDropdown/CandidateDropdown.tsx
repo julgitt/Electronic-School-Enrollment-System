@@ -1,12 +1,11 @@
-// CandidateDropdown.tsx
 import React, { useState } from 'react';
 import { NavLink as Link } from 'react-router-dom';
 import styles from './CandidateDropdown.module.scss';
-import { CandidateCookie } from "../../../shared/types/candidateCookie.ts";
+import { Candidate } from "../../../shared/types/candidate.ts";
 
 interface CandidateDropdownProps {
-    currentCandidate: CandidateCookie;
-    candidates: CandidateCookie[];
+    currentCandidate: Candidate;
+    candidates: Candidate[];
     onSelectCandidate: (candidateId: number) => void;
 }
 
@@ -23,7 +22,7 @@ const CandidateDropdown: React.FC<CandidateDropdownProps> = ({
                 onClick={() => setDropdownOpen(!isDropdownOpen)}
                 className={styles.dropdownButton}
             >
-                {currentCandidate.name}
+                {currentCandidate.firstName} {currentCandidate.lastName}
             </button>
             {isDropdownOpen && (
                 <div className={styles.dropdownContent}>
@@ -36,11 +35,11 @@ const CandidateDropdown: React.FC<CandidateDropdownProps> = ({
                             }}
                             className={styles.dropdownItem}
                         >
-                            {candidate.name}
+                            {candidate.firstName} {candidate.lastName}
                         </button>
                     ))}
                     <Link
-                        to="/createCandidate"
+                        to="/registerCandidate"
                         className={styles.dropdownItem}
                         onClick={() => setDropdownOpen(false)}
                     >

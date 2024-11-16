@@ -1,13 +1,13 @@
-import { db, ITask } from '../db';
+import { db } from '../db';
 import { Candidate } from '../models/candidateModel';
 
 export class CandidateRepository {
-    async getById(id: number): Promise<Candidate | null> {
+    async getByIdAndUserId(id: number, userId: number): Promise<Candidate | null> {
         const query = `
             SELECT * FROM candidates
-            WHERE id = $1
+            WHERE id = $1 AND user_id = $2
         `;
-        return await db.oneOrNone(query, [id]);
+        return await db.oneOrNone(query, [id, userId]);
     }
 
     async getByPesel(pesel: string): Promise<Candidate | null> {
@@ -16,6 +16,15 @@ export class CandidateRepository {
             WHERE pesel = $1
         `;
         return await db.oneOrNone(query, [pesel]);
+    }
+
+    async getAllByUserId(userId: number): Promise<Candidate[]> {
+        const query = `
+            SELECT * FROM candidates
+            WHERE user_id = $1
+        `
+
+        return await db.query(query, [userId]);
     }
 
     async getLastUpdatedByUserId(userId: number): Promise<Candidate | null> {

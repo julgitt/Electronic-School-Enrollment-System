@@ -3,7 +3,7 @@ import React from "react";
 import { InputField } from "../../../components/atomic/InputField";
 import { Button } from "../../../components/atomic/Button";
 import { ErrorMessage } from "../../../components/atomic/ErrorMessage";
-import { Candidate } from "../types/candidate.ts";
+import { Candidate } from "../../../shared/types/candidate.ts";
 
 import styles from "../../../assets/css/forms.module.scss";
 

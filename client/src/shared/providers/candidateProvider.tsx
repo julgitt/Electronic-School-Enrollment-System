@@ -1,9 +1,9 @@
 import React, {createContext, useState, useContext, useEffect, ReactNode} from 'react';
-import {CandidateCookie} from "../types/candidateCookie.ts";
+import { Candidate } from "../types/candidate.ts";
 
 interface CandidateContextType {
-    candidate: CandidateCookie | null;
-    candidates: CandidateCookie[];
+    candidate: Candidate | null;
+    candidates: Candidate[];
     switchCandidate: (candidateId: number) => void;
     onLogout: (event: React.MouseEvent<HTMLAnchorElement>) => void;
     logoutLoading: boolean
@@ -24,8 +24,8 @@ interface CandidateProviderProps {
 }
 
 export const CandidateProvider: React.FC<CandidateProviderProps> = ({ children }) => {
-    const [candidate, setCandidate] = useState<CandidateCookie | null>(null);
-    const [candidates, setCandidates] = useState<CandidateCookie[]>([]);
+    const [candidate, setCandidate] = useState<Candidate | null>(null);
+    const [candidates, setCandidates] = useState<Candidate[]>([]);
     const [logoutLoading, setLogoutLoading] = useState(false);
 
     useEffect(() => {
@@ -36,13 +36,13 @@ export const CandidateProvider: React.FC<CandidateProviderProps> = ({ children }
                     window.location.href = data.redirect;
                     return;
                 }
-                setCandidate({id: data.id, name: data.name});
+                setCandidate(data.candidate);
             });
-      /*  fetch('/api/candidates')
+        fetch('/api/candidates')
             .then(response => response.json())
             .then(data => {
                 setCandidates(data.candidates);
-            });*/
+            });
     }, []);
 
     const switchCandidate = (candidateId: number) => {

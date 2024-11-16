@@ -1,15 +1,17 @@
 import { Request, Response, NextFunction } from 'express';
 import { CandidateService } from "../services/candidateService";
+import {Candidate} from "../models/candidateModel";
 
 export class CandidateController {
-    constructor(private candidateService: CandidateService) {}
+    constructor(private candidateService: CandidateService) {
+    }
 
     async switchCandidate(req: Request, res: Response, next: NextFunction) {
         try {
             const candidateId = req.body.candidateId;
             const userId = req.signedCookies.userId;
 
-            const newCandidate = await this.candidateService.getByIdAndUserId(userId, candidateId);
+            const newCandidate = await this.candidateService.getByIdAndUserId(candidateId, userId);
 
             res.cookie('candidateId', newCandidate.id, {
                 signed: true,
@@ -17,22 +19,29 @@ export class CandidateController {
                 httpOnly: true,
                 maxAge: 86400000
             });
-            res.cookie('candidateName', `${newCandidate.firstName} ${newCandidate.lastName}`, {
-                signed: true,
-                maxAge: 86400000
-            });
 
             return res.status(200).json({
                 message: 'Candidate switched successfully',
-                candidate: {
-                    id: newCandidate.id,
-                    name: newCandidate.firstName + ' ' + newCandidate.lastName
-                }
+                candidate: newCandidate
             });
         } catch (error) {
             return next(error);
         }
     }
+
+    /*
+        async edit(req: Request, res: Response, next: NextFunction) {
+            try {
+                const {
+                    firstName,
+                    lastName,
+                    pesel
+                } = req.body;
+
+                const userId = req.signedCookies.userId;
+            }
+        }
+    */
 
     async register(req: Request, res: Response, next: NextFunction) {
         try {
@@ -57,29 +66,46 @@ export class CandidateController {
 
     async getCandidate(req: Request, res: Response, next: NextFunction) {
         try {
-            let candidateId = req.signedCookies.candidateId;
             const userId = req.signedCookies.userId
-            if (candidateId == null && userId != null) {
-                const candidate = await this.candidateService.getLastCreatedByUserId(userId);
+            if (userId == null) return res.status(200).json();
 
-                if (candidate == null)
-                    return res.status(200).json({ message: 'Candidate register required', redirect: '/registerCandidate' });
+            let candidateId = req.signedCookies.candidateId;
+            const candidate = (candidateId == null)
+                ? await this.candidateService.getLastCreatedByUserId(userId)
+                : await this.candidateService.getByIdAndUserId(candidateId, userId);
 
-                res.cookie('candidateId', candidate!.id, {
-                    signed: true,
-                    secure: true,
-                    httpOnly: true,
-                    maxAge: 86400000
-                });
-                res.cookie('candidateName', `${candidate!.firstName} ${candidate!.lastName}`, {
-                    signed: true,
-                    maxAge: 86400000
+            if (candidate == null)
+                return res.status(200).json({
+                    message: 'Candidate register required',
+                    redirect: '/registerCandidate'
                 });
 
-                candidateId = candidate!.id;
+            res.cookie('candidateId', candidate!.id, {
+                signed: true,
+                secure: true,
+                httpOnly: true,
+                maxAge: 86400000
+            });
+
+            return res.status(200).json({candidate: candidate});
+        } catch (error) {
+            return next(error);
+        }
+    }
+
+    async getAllCandidates(req: Request, res: Response, next: NextFunction) {
+        try {
+            let candidateId = req.signedCookies.candidateId;
+            const userId = req.signedCookies.userId;
+
+            let candidates: Candidate[] = [];
+
+            if (userId != null) {
+                candidates = await this.candidateService.getAllByUserId(userId);
+                candidates = candidates.filter(item => item.id != candidateId);
             }
-            const candidateName = req.signedCookies.candidateName;
-            return res.status(200).json({ id: candidateId, name: candidateName });
+
+            res.status(200).json({candidates: candidates});
         } catch (error) {
             return next(error);
         }
