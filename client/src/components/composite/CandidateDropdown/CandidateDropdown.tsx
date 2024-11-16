@@ -44,7 +44,7 @@ const CandidateDropdown: React.FC<CandidateDropdownProps> = ({
                         className={styles.dropdownItem}
                         onClick={() => setDropdownOpen(false)}
                     >
-                        + Nowy Kandydat
+                        Nowy Kandydat
                     </Link>
                     <Link
                         to={`/editCandidate/${currentCandidate.id}`}
