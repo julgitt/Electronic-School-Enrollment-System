@@ -17,12 +17,12 @@ export class ApplicationService {
         this.tx = tx;
     }
 
-    async getAllApplications(userId: number): Promise<Application[]> {
-        return this.applicationRepository.getAllByUser(userId);
+    async getAllApplications(candidateId: number): Promise<Application[]> {
+        return this.applicationRepository.getAllByCandidate(candidateId);
     }
 
-    async addApplication(firstName: string, lastName: string, pesel: string, schools: number[], userId: number): Promise<void> {
-        const applications: Application[] = await this.getAllApplications(userId);
+    async addApplication(firstName: string, lastName: string, pesel: string, schools: number[], candidateId: number): Promise<void> {
+        const applications: Application[] = await this.getAllApplications(candidateId);
         if (applications.length !== 0) {
             throw new DataConflictError('Application already  exists');
         }
@@ -36,7 +36,7 @@ export class ApplicationService {
         await this.tx(async t => {
             for (const schoolId of schools) {
                 const newApplication: Omit<Application, 'schoolName'> = {
-                    userId: userId,
+                    candidateId: candidateId,
                     schoolId: schoolId,
                     firstName: firstName,
                     lastName: lastName,
@@ -50,8 +50,8 @@ export class ApplicationService {
         });
     }
 
-    async updateApplication(firstName: string, lastName: string, pesel: string, schools: number[], userId: number): Promise<void> {
-        let applications = await this.getAllApplications(userId);
+    async updateApplication(firstName: string, lastName: string, pesel: string, schools: number[], candidateId: number): Promise<void> {
+        let applications = await this.getAllApplications(candidateId);
         if (applications.length === 0) {
             throw new ResourceNotFoundError('Application not found.');
         }
@@ -65,11 +65,11 @@ export class ApplicationService {
 
         await this.tx(async t => {
             for (const application of applications) {
-                await this.applicationRepository.delete(application.schoolId, application.userId, t);
+                await this.applicationRepository.delete(application.schoolId, application.candidateId, t);
             }
             for (const schoolId of schools) {
                 const newApplication: Application = {
-                    userId: userId,
+                    candidateId: candidateId,
                     schoolId: schoolId,
                     firstName: firstName,
                     lastName: lastName,

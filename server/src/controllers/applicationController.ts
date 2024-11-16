@@ -9,8 +9,8 @@ export class ApplicationController {
 
     async getApplications(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = req.signedCookies.userId;
-            const applications = await this.applicationService.getAllApplications(userId);
+            const candidateId = req.signedCookies.candidateId;
+            const applications = await this.applicationService.getAllApplications(candidateId);
             return res.status(200).json(applications);
         } catch (error) {
             return next(error);
@@ -25,9 +25,9 @@ export class ApplicationController {
                 txtPesel: pesel,
                 txtSchools: schools
             } = req.body;
-            const userId = req.signedCookies.userId;
+            const candidateId = req.signedCookies.candidateId;
 
-            await this.applicationService.addApplication(firstName, lastName, pesel, schools, userId);
+            await this.applicationService.addApplication(firstName, lastName, pesel, schools, candidateId);
             return res.status(201).json({ message: 'Application successful', redirect: '/applicationSubmitted' });
         } catch (error) {
             return next(error)
@@ -42,9 +42,9 @@ export class ApplicationController {
                 txtPesel: pesel,
                 txtSchools: schools
             } = req.body;
-            const userId = req.signedCookies.userId;
+            const candidateId = req.signedCookies.candidateId;
 
-            await this.applicationService.updateApplication(firstName, lastName, pesel, schools, userId);
+            await this.applicationService.updateApplication(firstName, lastName, pesel, schools, candidateId);
             return res.status(200).json({ message: 'Application successfully updated', redirect: '/applicationSubmitted' });
         } catch (error) {
             return next(error)

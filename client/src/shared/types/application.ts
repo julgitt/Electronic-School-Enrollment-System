@@ -1,6 +1,6 @@
 export interface Application {
     id: number
-    userId: number;
+    candidateId: number;
     schoolId: number;
     stage: number;
     pesel: string;

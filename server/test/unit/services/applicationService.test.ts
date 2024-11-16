@@ -67,7 +67,7 @@ describe('ApplicationService', () => {
             await appService.addApplication('Name', 'Surname', '12345678901', [1], 1);
 
             assert(appRepoStub.insert.calledWithMatch({
-                userId: 1,
+                candidateId: 1,
                 schoolId: 1,
                 firstName: 'Name',
                 lastName: 'Surname',
