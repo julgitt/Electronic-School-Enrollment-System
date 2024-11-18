@@ -14,19 +14,19 @@ export class SchoolRepository {
 
     async getAll(): Promise<School[]> {
         const query = `
-            SELECT id, name, enrollment_limit 
+            SELECT id, name 
             FROM schools;
         `;
 
         return await db.query<School[]>(query);
     }
 
-    async insert(newSchool: Omit<School, 'id'>): Promise<void> {
+    async insert(newSchool: School): Promise<void> {
         const query = `
-            INSERT INTO schools (name, enrollment_limit) 
+            INSERT INTO schools (name, type) 
             VALUES ($1, $2)
         `;
-        const values = [newSchool.name, newSchool.enrollmentLimit];
+        const values = [newSchool.name];
 
         await db.query(query, values);
     }

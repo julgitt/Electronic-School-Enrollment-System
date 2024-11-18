@@ -1,11 +1,8 @@
 export const submitApplication = async (
-    schoolIds: number[],
-    pesel: string,
-    firstName: string,
-    lastName: string,
+    selections: {id: number, priority: number}[]
 ) => {
-    if (schoolIds.length === 0) {
-        throw new Error('Proszę wybrać przynajmniej jedną szkołę.');
+    if (selections.length === 0) {
+        throw new Error('Proszę wybrać przynajmniej jeden profil.');
     }
 
     const response = await fetch('/api/submitApplication', {
@@ -14,10 +11,7 @@ export const submitApplication = async (
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            txtFirstName: firstName,
-            txtLastName: lastName,
-            txtPesel: pesel,
-            txtSchools: schoolIds
+            selections: selections
         }),
     });
 
@@ -31,13 +25,10 @@ export const submitApplication = async (
 }
 
 export const updateApplication = async (
-    schoolIds: number[],
-    pesel: string,
-    firstName: string,
-    lastName: string,
+    selections: {id: number, priority: number}[]
 ) => {
-    if (schoolIds.length === 0) {
-        throw new Error('Proszę wybrać przynajmniej jedną szkołę.');
+    if (selections.length === 0) {
+        throw new Error('Proszę wybrać przynajmniej jeden profil.');
     }
 
     const response = await fetch('/api/updateApplication', {
@@ -46,10 +37,7 @@ export const updateApplication = async (
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            txtFirstName: firstName,
-            txtLastName: lastName,
-            txtPesel: pesel,
-            txtSchools: schoolIds
+            selections: selections
         }),
     });
 

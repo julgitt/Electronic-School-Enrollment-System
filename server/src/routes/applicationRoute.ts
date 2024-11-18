@@ -6,14 +6,14 @@ import { authorize } from "../middlewares/authorize";
 import { handleValidationErrors } from "../middlewares/validationErrorHandler";
 
 import { ApplicationRepository} from "../repositories/applicationRepository";
-import { SchoolRepository } from "../repositories/schoolRepository";
 import { ApplicationService } from "../services/applicationService";
 import { ApplicationController } from "../controllers/applicationController";
+import { ProfileRepository } from "../repositories/profileRepository";
 
 
 const applicationRepository: ApplicationRepository = new ApplicationRepository();
-const schoolRepository: SchoolRepository = new SchoolRepository();
-const applicationService: ApplicationService = new ApplicationService(applicationRepository, schoolRepository, tx);
+const profileRepository: ProfileRepository = new ProfileRepository();
+const applicationService: ApplicationService = new ApplicationService(applicationRepository, profileRepository, tx);
 const applicationController = new ApplicationController(applicationService);
 
 const router = Router();

@@ -1,12 +1,12 @@
+import {School} from "./school.ts";
+import {Profile} from "./profile.ts";
+
 export interface Application {
     id: number
     candidateId: number;
-    schoolId: number;
     stage: number;
-    pesel: string;
-    schoolName: string;
-    firstName: string;
-    lastName: string;
+    school: School;
+    profile: Profile;
     status: string;
     submittedAt: Date;
 }

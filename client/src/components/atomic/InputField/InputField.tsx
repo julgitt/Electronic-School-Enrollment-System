@@ -5,12 +5,13 @@ interface InputFieldProps {
     type: string;
     name?: string;
     placeholder: string;
-    value: string;
+    value: string | number;
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     autoFocus?: boolean;
     required?: boolean;
     pattern?: string;
     minLength?: number;
+    min?: number;
     title?: string;
 }
 
@@ -24,6 +25,7 @@ const InputField: React.FC<InputFieldProps> = ({
     required,
     pattern,
     minLength,
+    min,
     title,
 }) => {
     return (
@@ -38,6 +40,7 @@ const InputField: React.FC<InputFieldProps> = ({
             autoFocus={autoFocus}
             pattern={pattern}
             minLength={minLength}
+            min={min}
             title={title}
         />
     );

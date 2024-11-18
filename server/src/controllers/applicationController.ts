@@ -19,15 +19,10 @@ export class ApplicationController {
 
     async addApplication(req: Request, res: Response, next: NextFunction) {
         try {
-            const {
-                txtFirstName: firstName,
-                txtLastName: lastName,
-                txtPesel: pesel,
-                txtSchools: schools
-            } = req.body;
+            const { selections } = req.body;
             const candidateId = req.signedCookies.candidateId;
 
-            await this.applicationService.addApplication(firstName, lastName, pesel, schools, candidateId);
+            await this.applicationService.addApplication(selections, candidateId);
             return res.status(201).json({ message: 'Application successful', redirect: '/applicationSubmitted' });
         } catch (error) {
             return next(error)
@@ -36,15 +31,10 @@ export class ApplicationController {
 
     async updateApplication(req: Request, res: Response, next: NextFunction) {
         try {
-            const {
-                txtFirstName: firstName,
-                txtLastName: lastName,
-                txtPesel: pesel,
-                txtSchools: schools
-            } = req.body;
+            const { selections } = req.body;
             const candidateId = req.signedCookies.candidateId;
 
-            await this.applicationService.updateApplication(firstName, lastName, pesel, schools, candidateId);
+            await this.applicationService.updateApplication(selections, candidateId);
             return res.status(200).json({ message: 'Application successfully updated', redirect: '/applicationSubmitted' });
         } catch (error) {
             return next(error)

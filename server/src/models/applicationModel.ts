@@ -1,11 +1,8 @@
 export interface Application {
     id?: number;
     candidateId: number;
-    schoolId: number;
+    profileId: number;
+    priority: number;
     stage: number;
-    pesel: string;
-    schoolName?: string;
-    firstName: string;
-    lastName: string;
     status: string;
 }

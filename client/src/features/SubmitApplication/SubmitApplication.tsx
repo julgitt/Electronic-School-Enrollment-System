@@ -5,12 +5,12 @@ import {useApplicationForm} from "./hooks/useApplicationForm.ts";
 import { School } from "../../shared/types/school";
 import { Application } from "../../shared/types/application";
 
-import SchoolSelectionForm from "./forms/SchoolSelectionForm.tsx";
+import SelectionForm from "./forms/SelectionForm.tsx";
 import PersonalForm from "./forms/PersonalForm.tsx";
 import ErrorPage from "../../app/routes/ErrorPage.tsx";
 import LoadingPage from "../../app/routes/LoadingPage.tsx";
 import SubmittedApplicationPreview from "./SubmittedApplicationPreview.tsx";
-import {useDeadlineCheck} from "./hooks/useDeadlineCheck.ts";
+import { useDeadlineCheck } from "./hooks/useDeadlineCheck.ts";
 
 const SubmitApplication: React.FC = () => {
     const {
@@ -23,9 +23,11 @@ const SubmitApplication: React.FC = () => {
     const isPastDeadline = useDeadlineCheck(deadlineData?.deadline);
 
     const {
-        firstName, lastName, pesel, schools, error, step, loading,
+        firstName, lastName, pesel, selections, error, step, loading,
         setFirstName, setLastName, setPesel,
-        handleNext, handlePrev, handleSubmit, handleSuggestionSelected, handleAddSchoolInput
+        handleNext, handlePrev, handleSubmit,
+        handleSchoolChange, handleAddSchoolSelection,
+        handleProfileChange, handlePriorityChange
     } = useApplicationForm(applications || []);
 
     if (isPastDeadline) return <SubmittedApplicationPreview/>;
@@ -49,13 +51,15 @@ const SubmitApplication: React.FC = () => {
                     onSubmit={handleNext}
                 />
             ) : (
-                <SchoolSelectionForm
-                    schools={schools}
+                <SelectionForm
+                    selections={selections}
+                    suggestions={suggestions || []}
                     error={error}
                     loading={loading}
-                    suggestions={suggestions || []}
-                    onSchoolChange={handleSuggestionSelected}
-                    onAddSchool={handleAddSchoolInput}
+                    onSchoolChange={handleSchoolChange}
+                    onAddSchool={handleAddSchoolSelection}
+                    onProfileChange={handleProfileChange}
+                    onPriorityChange={handlePriorityChange}
                     onPrev={handlePrev}
                     onSubmit={handleSubmit}
                 />
