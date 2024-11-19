@@ -9,11 +9,19 @@ import { ApplicationRepository} from "../repositories/applicationRepository";
 import { ApplicationService } from "../services/applicationService";
 import { ApplicationController } from "../controllers/applicationController";
 import { ProfileRepository } from "../repositories/profileRepository";
-
+import {SchoolRepository} from "../repositories/schoolRepository";
+import {SchoolService} from "../services/schoolService";
 
 const applicationRepository: ApplicationRepository = new ApplicationRepository();
 const profileRepository: ProfileRepository = new ProfileRepository();
-const applicationService: ApplicationService = new ApplicationService(applicationRepository, profileRepository, tx);
+const schoolRepository: SchoolRepository = new SchoolRepository();
+const schoolService: SchoolService = new SchoolService(schoolRepository, profileRepository);
+const applicationService: ApplicationService = new ApplicationService(
+    applicationRepository,
+    profileRepository,
+    schoolService,
+    tx
+);
 const applicationController = new ApplicationController(applicationService);
 
 const router = Router();
@@ -22,7 +30,11 @@ router.get('/allApplications', authorize('user'), async (req: Request, res: Resp
     return await applicationController.getApplications(req, res, next)
 });
 
-router.put('/updateApplication', authorize('user'), async (req: Request, res: Response, next: NextFunction) => {
+router.get('/allSubmissions', authorize('user'), async (req: Request, res: Response, next: NextFunction) => {
+    return await applicationController.getApplicationSubmissions(req, res, next)
+});
+
+router.put('/updateApplication', authorize('user'), applicationValidator, handleValidationErrors, async (req: Request, res: Response, next: NextFunction) => {
     return await applicationController.updateApplication(req, res, next)
 });
 

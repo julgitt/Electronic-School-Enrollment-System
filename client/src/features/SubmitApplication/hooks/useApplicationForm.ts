@@ -1,41 +1,22 @@
 import React, {useEffect, useState} from 'react';
 import {submitApplication, updateApplication} from "../applicationService.ts";
-import {Application} from "../../../shared/types/application.ts";
 import {School} from "../../../shared/types/school.ts";
-import {Selection} from "../types/selection.ts"
+import {SchoolSelection} from "../types/schoolSelection.ts"
 import {Profile} from "../../../shared/types/profile.ts";
+import {UserSelectedProfile} from "../types/userSelectedProfile.ts";
 
-export const useApplicationForm = (applications: Application[]) => {
+export const useApplicationForm = (submission: SchoolSelection[]) => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [pesel, setPesel] = useState('');
-    const [selections, setSelections] = useState<Selection[]>([]);
+    const [selections, setSelections] = useState<SchoolSelection[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        const initialSelections = applications.reduce<Selection[]>((acc, application) => {
-            const existingSelection = acc.find(s => s.school && s.school.id === application.school.id);
-
-            if (existingSelection) {
-                existingSelection.profiles = [
-                    ...existingSelection.profiles, application.profile,
-                ].filter(
-                    (profile, index, self) =>
-                        index === self.findIndex(p => p.id === profile.id)
-                );
-            } else {
-                acc.push({
-                    school: application.school,
-                    profiles: [ application.profile ],
-                });
-            }
-            return acc;
-        }, []);
-
-        setSelections(initialSelections);
-    }, [applications]);
+        setSelections(submission);
+    }, [submission]);
 
 
     const handleNext = () => {
@@ -53,11 +34,11 @@ export const useApplicationForm = (applications: Application[]) => {
         event.preventDefault();
         setError(null);
         setLoading(true);
-        const profiles: {id: number, priority: number}[] = selections.flatMap(s =>
-            s.profiles).map(p => ({ id: p.id, priority: p.priority }));
+        const profiles: UserSelectedProfile[] = selections.flatMap(s =>
+            s.profiles);
 
         try {
-            const data = (applications && applications.length > 0)
+            const data = (submission && submission.length > 0)
                 ? await updateApplication(profiles)
                 : await submitApplication(profiles);
             window.location.href = data.redirect;
@@ -77,10 +58,10 @@ export const useApplicationForm = (applications: Application[]) => {
     const handleProfileChange = (profile: Profile, index: number) => {
         const newSelection = [...selections];
         const schoolSelection = newSelection[index];
-        const profileIndex = schoolSelection.profiles.findIndex(p => p.id === profile.id);
+        const profileIndex = schoolSelection.profiles.findIndex(p => p.profileId === profile.id);
 
         if (profileIndex === -1) {
-            schoolSelection.profiles = [...schoolSelection.profiles, profile];
+            schoolSelection.profiles = [...schoolSelection.profiles, {profileId: profile.id, priority: 1}];
         } else {
             schoolSelection.profiles.splice(profileIndex, 1)
         }
@@ -91,11 +72,10 @@ export const useApplicationForm = (applications: Application[]) => {
     const handlePriorityChange = (profileId: number, index: number, priority: number) => {
         const newSelection = [...selections];
         const schoolSelection = newSelection[index];
-        const profileIndex = schoolSelection.profiles.findIndex(profile => profile.id === profileId);
+        const profileIndex = schoolSelection.profiles.findIndex(profile => profile.profileId === profileId);
 
         schoolSelection.profiles[profileIndex] = {
-            id: schoolSelection.profiles[profileIndex].id,
-            name: schoolSelection.profiles[profileIndex].name,
+            profileId: schoolSelection.profiles[profileIndex].profileId,
             priority: priority};
 
         setSelections(newSelection);

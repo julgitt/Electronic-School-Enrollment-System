@@ -18,18 +18,23 @@ function validatePesel(pesel: string): boolean {
 
 
 export const applicationValidator = [
-    body('txtFirstName')
-        .notEmpty().withMessage("Name is required.")
-        .matches(/^[\p{L}]+$/u).withMessage("Name can only contain letters."),
-    body('txtLastName')
-        .notEmpty().withMessage("Last name is required.")
-        .matches(/^[\p{L}]+$/u).withMessage("Last name can only contain letters."),
+    body("selections")
+        .isArray()
+        .bail()
+        .custom((selections: { id: number, priority: number }[]) => {
+            const priorities = new Set<number>();
+            for (const selection of selections) {
+                if (selection.priority <= 0 || !Number.isInteger(selection.priority)) {
+                    throw new Error('Each priority must be a positive integer greater than 0.');
+                }
 
-    body('txtPesel')
-        .notEmpty().withMessage("Pesel is required.")
-        .custom((value) => {
-            return validatePesel(value);
-        }).withMessage("Invalid Pesel number"),
-    body('txtSchools')
-        .isArray({ min: 1, max:5 }).withMessage('Between 1 and 5 schools must be selected.')
+                if (priorities.has(selection.priority)) {
+                    throw new Error(`Each priority must be unique.`);
+                }
+
+                priorities.add(selection.priority);
+            }
+            return true;
+        }).withMessage("Priorytety muszą być unikalnymi liczbami całkowitymi większymi od zera"),
+
 ];

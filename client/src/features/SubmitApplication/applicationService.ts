@@ -1,5 +1,7 @@
+import {UserSelectedProfile} from "./types/userSelectedProfile.ts";
+
 export const submitApplication = async (
-    selections: {id: number, priority: number}[]
+    selections: UserSelectedProfile[],
 ) => {
     if (selections.length === 0) {
         throw new Error('Proszę wybrać przynajmniej jeden profil.');
@@ -25,7 +27,7 @@ export const submitApplication = async (
 }
 
 export const updateApplication = async (
-    selections: {id: number, priority: number}[]
+    selections: UserSelectedProfile[]
 ) => {
     if (selections.length === 0) {
         throw new Error('Proszę wybrać przynajmniej jeden profil.');

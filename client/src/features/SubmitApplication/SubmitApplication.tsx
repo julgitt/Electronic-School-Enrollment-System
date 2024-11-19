@@ -3,7 +3,6 @@ import React from 'react';
 import { useFetch } from "../../shared/hooks/useFetch";
 import {useApplicationForm} from "./hooks/useApplicationForm.ts";
 import { School } from "../../shared/types/school";
-import { Application } from "../../shared/types/application";
 
 import SelectionForm from "./forms/SelectionForm.tsx";
 import PersonalForm from "./forms/PersonalForm.tsx";
@@ -11,12 +10,13 @@ import ErrorPage from "../../app/routes/ErrorPage.tsx";
 import LoadingPage from "../../app/routes/LoadingPage.tsx";
 import SubmittedApplicationPreview from "./SubmittedApplicationPreview.tsx";
 import { useDeadlineCheck } from "./hooks/useDeadlineCheck.ts";
+import {SchoolSelection} from "./types/schoolSelection.ts";
 
 const SubmitApplication: React.FC = () => {
     const {
-        data: applications, loading: applicationLoading, authorized,
-        error: applicationFetchError
-    } = useFetch<Application[]>('/api/allApplications');
+        data: submission, loading: applicationLoading, authorized,
+        error: submissionFetchError
+    } = useFetch<SchoolSelection[]>('/api/allSubmissions');
     const { data: suggestions, loading: schoolLoading, error: schoolFetchError } = useFetch<School[]>('/api/schools');
     const { data: deadlineData, loading: deadlineLoading, error: deadlineFetchError } = useFetch<{ deadline: string }>('/api/deadline');
 
@@ -28,10 +28,10 @@ const SubmitApplication: React.FC = () => {
         handleNext, handlePrev, handleSubmit,
         handleSchoolChange, handleAddSchoolSelection,
         handleProfileChange, handlePriorityChange
-    } = useApplicationForm(applications || []);
+    } = useApplicationForm(submission || []);
 
     if (isPastDeadline) return <SubmittedApplicationPreview/>;
-    if (applicationFetchError) return <ErrorPage errorMessage={applicationFetchError} />;
+    if (submissionFetchError) return <ErrorPage errorMessage={submissionFetchError} />;
     if (schoolFetchError) return <ErrorPage errorMessage={schoolFetchError} />;
     if (deadlineFetchError) return <ErrorPage errorMessage={deadlineFetchError} />;
     if (applicationLoading || schoolLoading || deadlineLoading || !authorized) return <LoadingPage/>

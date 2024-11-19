@@ -5,7 +5,7 @@ import { PlusButton } from '../../../components/atomic/PlusButton'
 import { SuggestionBox } from '../../../components/composite/SuggestionBox';
 import { ErrorMessage } from "../../../components/atomic/ErrorMessage";
 import { School } from "../../../shared/types/school.ts"
-import { Selection } from "../types/selection.ts"
+import { SchoolSelection } from "../types/schoolSelection.ts"
 import { Profile } from "../../../shared/types/profile.ts";
 
 
@@ -13,7 +13,7 @@ import styles from "../../../assets/css/forms.module.scss";
 import {InputField} from "../../../components/atomic/InputField";
 
 interface SchoolSelectionFormProps {
-    selections: Selection[];
+    selections: SchoolSelection[];
     suggestions: School[];
     error: string | null;
     loading: boolean;
@@ -59,21 +59,21 @@ const SelectionForm: React.FC<SchoolSelectionFormProps> = ({
                 />
                 {selection.school && selection.school.profiles && selection.school.profiles.length > 0 && (
                     <div className={styles.profilesSection}>
-                        <h3>Wybór profili</h3>
                         {selection.school.profiles.map((profile) => {
                             const selectedProfile = selection.profiles.find(
-                                (p) => p.id === profile.id
+                                (p) => p.profileId === profile.id
                             )
 
                             return (
-                                <div key={profile.id} className={styles.checkBoxOption}>
-                                    <label>
+                                <div key={profile.id} className={styles.profilesSectionElement}>
+                                    <label className={styles.profileLabel}>
                                         <input
                                             type="checkbox"
                                             checked={!!selectedProfile}
                                             onChange={() => onProfileChange(profile, index)}
+                                            className={styles.checkbox}
                                         />
-                                        {profile.name}
+                                        <h5 className={styles.profileName}>{profile.name}</h5>
                                     </label>
                                     {selectedProfile && (
                                         <InputField
@@ -84,7 +84,8 @@ const SelectionForm: React.FC<SchoolSelectionFormProps> = ({
                                                 onPriorityChange(profile.id, index, Number(e.target.value))
                                             }
                                             placeholder="Priorytet"
-                                            width="10px"
+                                            width="150px"
+                                            height="20px"
                                         />
                                     )}
                                 </div>

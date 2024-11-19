@@ -4,16 +4,16 @@ import { Application } from '../models/applicationModel';
 export class ApplicationRepository {
     async getAllByCandidate(candidateId: number): Promise<Application[]> {
         const query = `
-            SELECT 
-                a.stage,
-                a.status,
-                a.candidate_id,
-                a.priority,
-                a.profile_id,
-                a.created_at,
-                a.updated_at,
+            SELECT
                 p.name AS profile_name,
-                s.name AS school_name
+                p.id AS profile_id,
+                s.name AS school_name,
+                s.id AS school_id,
+                a.priority,
+                a.status,
+                a.stage,
+                a.created_at,
+                a.updated_at
             FROM applications a
             JOIN profiles p ON a.profile_id = p.id
             JOIN schools s ON p.school_id = s.id
@@ -26,7 +26,7 @@ export class ApplicationRepository {
     async insert(newApp: Application, t: ITask<any>): Promise<void> {
         const query = `
             INSERT INTO applications (candidate_id, profile_id, priority, stage, status)
-            VALUES ($1, $2, $3, $4 $4)
+            VALUES ($1, $2, $3, $4, $5)
         `;
 
         await t.none(

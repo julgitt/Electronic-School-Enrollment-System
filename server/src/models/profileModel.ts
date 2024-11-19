@@ -1,6 +1,6 @@
 export interface Profile {
     id: number;
     name: string;
-    school_id: number;
+    schoolId: number;
     capacity: number;
 }

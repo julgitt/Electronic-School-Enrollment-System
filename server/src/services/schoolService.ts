@@ -17,8 +17,17 @@ export class SchoolService {
         return schools
     }
 
+    async getByIdWithProfiles(id: number): Promise<School | null> {
+        let school = await this.schoolRepository.getById(id);
+        if (school) {
+            school.profiles = await this.profileRepository.getAllBySchool(school.id);
+        }
+        return school
+    }
+
     async addSchool(name: string, ): Promise<void> {
         const newSchool: School = {
+            id: 0,
             name: name,
         }
 
