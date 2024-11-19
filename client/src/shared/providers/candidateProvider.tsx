@@ -27,21 +27,26 @@ export const CandidateProvider: React.FC<CandidateProviderProps> = ({ children }
     const [candidate, setCandidate] = useState<Candidate | null>(null);
     const [candidates, setCandidates] = useState<Candidate[]>([]);
     const [logoutLoading, setLogoutLoading] = useState(false);
+    const [redirected, setRedirected] = useState(false);
 
+    //TODO update depth exceeded
     useEffect(() => {
         fetch('/api/candidate')
             .then(response => response.json())
             .then(data => {
-                if (data.redirect && window.location.href != data.redirect) {
+                if (data.redirect && !redirected && window.location.href != data.redirect) {
+                    setRedirected(true)
                     window.location.href = data.redirect;
                     return;
                 }
-                setCandidate(data.candidate);
+                if (candidate != data.candidate)
+                    setCandidate(data.candidate);
             });
         fetch('/api/candidates')
             .then(response => response.json())
             .then(data => {
-                setCandidates(data.candidates);
+                if (data.candidates != candidates)
+                    setCandidates(data.candidates);
             });
     }, []);
 

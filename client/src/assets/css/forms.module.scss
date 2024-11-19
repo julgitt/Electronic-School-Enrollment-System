@@ -13,3 +13,8 @@ form {
   gap: var(--spacing-md);
   margin-bottom: var(--spacing-md);
 }
+
+.profileSelection {
+  display: flex;
+  justify-content: flex-start;
+}

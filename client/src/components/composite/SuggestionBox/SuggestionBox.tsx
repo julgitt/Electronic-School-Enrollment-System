@@ -43,7 +43,7 @@ const SuggestionBox: React.FC<SuggestionBoxProps> = React.memo(({ placeholder, d
                 type="text"
                 value={query}
                 placeholder={placeholder}
-                onChange={handleChange}
+                onChange={(event) => { handleChange(event.target.value) }}
             />
             {showSuggestions && (
                 <ul className={styles.suggestionsList}>

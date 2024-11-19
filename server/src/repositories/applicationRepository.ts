@@ -12,7 +12,7 @@ export class ApplicationRepository {
                 a.profile_id,
                 a.created_at,
                 a.updated_at,
-                p.name AS profile_name
+                p.name AS profile_name,
                 s.name AS school_name
             FROM applications a
             JOIN profiles p ON a.profile_id = p.id

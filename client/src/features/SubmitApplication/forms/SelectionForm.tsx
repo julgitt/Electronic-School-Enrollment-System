@@ -38,7 +38,7 @@ const SelectionForm: React.FC<SchoolSelectionFormProps> = ({
     onSubmit,
  }) => (
     <form method="POST" onSubmit={onSubmit} className={styles.form}>
-        <h1>Wybór szkół</h1>
+        <h2>Wybór szkół</h2>
         {error && <ErrorMessage message={error} />}
 
         {selections.map((selection, index) => (
@@ -49,17 +49,17 @@ const SelectionForm: React.FC<SchoolSelectionFormProps> = ({
                     defaultValue={selection.school ? selection.school.name : ''}
                     onSuggestionSelected={(selectedName) => {
                         const selectedSchool = suggestions.find(s => s.name === selectedName);
-                        if (selectedSchool && selection.school && selectedSchool.name !== selection.school.name) {
+                        if (selectedSchool && (!selection.school || selectedSchool.name !== selection.school.name)) {
                             onSchoolChange(
                                 selectedSchool,
                                 index
-                            );
+                            )
                         }
                     }}
                 />
                 {selection.school && selection.school.profiles && selection.school.profiles.length > 0 && (
-                    <div>
-                        <h3>Wybierz profile:</h3>
+                    <div className={styles.profilesSection}>
+                        <h3>Wybór profili</h3>
                         {selection.school.profiles.map((profile) => {
                             const selectedProfile = selection.profiles.find(
                                 (p) => p.id === profile.id
@@ -67,11 +67,14 @@ const SelectionForm: React.FC<SchoolSelectionFormProps> = ({
 
                             return (
                                 <div key={profile.id} className={styles.checkBoxOption}>
-                                    <input
-                                        type="checkbox"
-                                        checked={!!selectedProfile}
-                                        onChange={() => onProfileChange(profile, index)}
-                                    />
+                                    <label>
+                                        <input
+                                            type="checkbox"
+                                            checked={!!selectedProfile}
+                                            onChange={() => onProfileChange(profile, index)}
+                                        />
+                                        {profile.name}
+                                    </label>
                                     {selectedProfile && (
                                         <InputField
                                             type="number"
@@ -81,6 +84,7 @@ const SelectionForm: React.FC<SchoolSelectionFormProps> = ({
                                                 onPriorityChange(profile.id, index, Number(e.target.value))
                                             }
                                             placeholder="Priorytet"
+                                            width="10px"
                                         />
                                     )}
                                 </div>
@@ -88,9 +92,9 @@ const SelectionForm: React.FC<SchoolSelectionFormProps> = ({
                         })}
 
                     </div>
-                )};
+                )}
             </div>
-        ))};
+        ))}
         <PlusButton disabled={selections.length >= 5} onClick={onAddSchool}/>
         <div className={styles.buttonGroup}>
             <Button type="button" onClick={onPrev} disabled={loading}>Cofnij</Button>

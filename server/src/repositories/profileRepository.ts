@@ -12,12 +12,13 @@ export class ProfileRepository {
         return await db.oneOrNone(query, [id]);
     }
 
- /*   async getAllBySchool(): Promise<School[]> {
+    async getAllBySchool(schoolId: number): Promise<Profile[]> {
         const query = `
-            SELECT id, name, enrollment_limit 
-            FROM profiles;
+            SELECT *
+            FROM profiles
+            WHERE school_Id = $1;
         `;
 
-        return await db.query<School[]>(query);
-    }*/
+        return await db.query<Profile[]>(query, [schoolId]);
+    }
 }

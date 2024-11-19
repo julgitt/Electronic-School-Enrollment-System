@@ -4,7 +4,7 @@ import { School } from '../models/schoolModel';
 export class SchoolRepository {
     async getById(id: number): Promise<School | null> {
         const query = `
-            SELECT * 
+            SELECT
             FROM schools 
             WHERE id = $1
         `;

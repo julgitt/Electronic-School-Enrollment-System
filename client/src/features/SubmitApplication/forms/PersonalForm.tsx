@@ -38,21 +38,21 @@ const PersonalForm: React.FC<PersonalFormProps> = ({
                 autoFocus
                 placeholder="Imię"
                 value={firstName}
-                onChange={onFirstNameChange}
+                onChange={(event) => onFirstNameChange(event.target.value)}
                 required
             />
             <InputField
                 type="text"
                 placeholder="Nazwisko"
                 value={lastName}
-                onChange={onLastNameChange}
+                onChange={(event) => onLastNameChange(event.target.value)}
                 required
             />
             <InputField
                 type="text"
                 placeholder="Pesel"
                 value={pesel}
-                onChange={onPeselChange}
+                onChange={(event) => onPeselChange(event.target.value)}
                 required
             />
         </div>

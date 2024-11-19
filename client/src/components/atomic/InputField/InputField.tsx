@@ -13,6 +13,7 @@ interface InputFieldProps {
     minLength?: number;
     min?: number;
     title?: string;
+    width?: string
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -27,6 +28,7 @@ const InputField: React.FC<InputFieldProps> = ({
     minLength,
     min,
     title,
+    width = "100%",
 }) => {
     return (
         <input
@@ -42,6 +44,7 @@ const InputField: React.FC<InputFieldProps> = ({
             minLength={minLength}
             min={min}
             title={title}
+            style={{ width }}
         />
     );
 };
