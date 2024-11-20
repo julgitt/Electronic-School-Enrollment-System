@@ -102,7 +102,7 @@ const SelectionForm: React.FC<SchoolSelectionFormProps> = ({
             </div>
         ))}
         <PlusButton disabled={selections.length >= 5} onClick={onAddSchool}/>
-        <div className={styles.buttonGroup}>
+        <div>
             <Button type="button" onClick={onPrev} disabled={loading}>Cofnij</Button>
             <Button type="submit" disabled={loading}>Zapisz</Button>
         </div>

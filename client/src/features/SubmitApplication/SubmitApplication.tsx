@@ -8,7 +8,7 @@ import SelectionForm from "./forms/SelectionForm.tsx";
 import PersonalForm from "./forms/PersonalForm.tsx";
 import ErrorPage from "../../app/routes/ErrorPage.tsx";
 import LoadingPage from "../../app/routes/LoadingPage.tsx";
-import SubmittedApplicationPreview from "./SubmittedApplicationPreview.tsx";
+import ApplicationSubmittionPastDeadline from "./ApplicationSubmittionPastDeadline.tsx";
 import { useDeadlineCheck } from "./hooks/useDeadlineCheck.ts";
 import {SchoolSelection} from "./types/schoolSelection.ts";
 
@@ -30,7 +30,7 @@ const SubmitApplication: React.FC = () => {
         handleProfileChange, handlePriorityChange
     } = useApplicationForm(submission || []);
 
-    if (isPastDeadline) return <SubmittedApplicationPreview/>;
+    if (isPastDeadline) return <ApplicationSubmittionPastDeadline/>;
     if (submissionFetchError) return <ErrorPage errorMessage={submissionFetchError} />;
     if (schoolFetchError) return <ErrorPage errorMessage={schoolFetchError} />;
     if (deadlineFetchError) return <ErrorPage errorMessage={deadlineFetchError} />;
