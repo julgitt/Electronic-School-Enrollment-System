@@ -21,18 +21,22 @@ const ApplicationStatus: React.FC = () => {
                 <table>
                     <thead>
                     <tr>
-                        <th>Nazwa szkoły</th>
+                        <th>Szkoła</th>
+                        <th>Profil</th>
                         <th>Status</th>
                         <th>Tura</th>
+                        <th>Priorytet</th>
                         <th>Data złożenia aplikacji</th>
                     </tr>
                     </thead>
                     <tbody>
                     {applications.map((application) => (
-                        <tr key={application.schoolId}>
-                            <td>{application.schoolName}</td>
+                        <tr key={application.id}>
+                            <td>{application.school.name}</td>
+                            <td>{application.profile.name}</td>
                             <td>{application.status}</td>
                             <td>{application.stage}</td>
+                            <td>{application.priority}</td>
                             <td>{new Date(application.submittedAt).toLocaleDateString()}</td>
                         </tr>
                     ))}

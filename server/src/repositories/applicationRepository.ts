@@ -1,14 +1,12 @@
 import { db, ITask } from '../db';
-import { Application } from '../models/applicationModel';
+import { ApplicationModel } from '../models/applicationModel';
 
 export class ApplicationRepository {
-    async getAllByCandidate(candidateId: number): Promise<Application[]> {
+    async getAllByCandidate(candidateId: number): Promise<ApplicationModel[]> {
         const query = `
             SELECT
                 a.candidate_id as candidate_id,
-                p.name AS profile_name,
                 p.id AS profile_id,
-                s.name AS school_name,
                 s.id AS school_id,
                 a.priority,
                 a.status,
@@ -24,7 +22,7 @@ export class ApplicationRepository {
         return await db.query(query, [candidateId]);
     }
 
-    async insert(newApp: Application, t: ITask<any>): Promise<void> {
+    async insert(newApp: ApplicationModel, t: ITask<any>): Promise<void> {
         const query = `
             INSERT INTO applications (candidate_id, profile_id, priority, stage, status)
             VALUES ($1, $2, $3, $4, $5)

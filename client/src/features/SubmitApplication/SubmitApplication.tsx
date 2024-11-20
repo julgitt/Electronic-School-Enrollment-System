@@ -8,7 +8,7 @@ import SelectionForm from "./forms/SelectionForm.tsx";
 import PersonalForm from "./forms/PersonalForm.tsx";
 import ErrorPage from "../../app/routes/ErrorPage.tsx";
 import LoadingPage from "../../app/routes/LoadingPage.tsx";
-import ApplicationSubmittionPastDeadline from "./ApplicationSubmittionPastDeadline.tsx";
+import ApplicationSubmittionPastDeadline from "../../app/routes/ApplicationSubmittionPastDeadline.tsx";
 import { useDeadlineCheck } from "../../shared/hooks/useDeadlineCheck.ts";
 import {SchoolSelection} from "./types/schoolSelection.ts";
 

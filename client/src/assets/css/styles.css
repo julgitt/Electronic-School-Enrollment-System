@@ -91,8 +91,30 @@ a {
     color: var(--text-link-color);
     text-decoration: inherit;
 }
+
 a:hover {
     color: var(--text-link-hover-color);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 50px 0;
+    font-size: 1.5rem;
+    text-align: center;
+    color: var(--text-primary-color);
+}
+
+td {
+    font-size: 1.2rem;
+    padding: 30px;
+    color: var(--text-on-dark-active-color);
+}
+
+
+th {
+    padding: 20px;
+    font-weight: bold;
 }
 
 .main-content {

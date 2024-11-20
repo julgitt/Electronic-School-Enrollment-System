@@ -7,6 +7,7 @@ export interface Application {
     stage: number;
     school: School;
     profile: Profile;
+    priority: number;
     status: string;
     submittedAt: Date;
 }

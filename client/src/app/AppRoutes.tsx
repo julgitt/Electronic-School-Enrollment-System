@@ -10,7 +10,7 @@ import { SubmitApplication } from '../features/SubmitApplication';
 import { Login } from "../features/auth/pages/Login";
 import { RegisterCandidate } from "../features/candidate/pages/RegisterCandidate";
 import { Signup } from "../features/auth/pages/Signup";
-import ApplicationSubmittionPastDeadline from "../features/SubmitApplication/ApplicationSubmittionPastDeadline.tsx";
+import ApplicationSubmittionPastDeadline from "./routes/ApplicationSubmittionPastDeadline.tsx";
 
 const AppRoutes = () => {
     return (

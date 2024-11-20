@@ -1,6 +1,5 @@
 import { ITask } from "pg-promise";
 
-import { Application } from '../models/applicationModel';
 import { ApplicationRepository } from '../repositories/applicationRepository';
 import { ProfileRepository } from '../repositories/profileRepository';
 import { ResourceNotFoundError } from "../errors/resourceNotFoundError";
@@ -8,6 +7,8 @@ import { DataConflictError } from "../errors/dataConflictError";
 import {ApplicationSubmission} from "../types/applicationSubmission";
 import {ApplicationSubmissionsBySchool} from "../types/applicationSubmissionsBySchool";
 import {SchoolService} from "./schoolService";
+import {Application} from "../types/application";
+import {ApplicationModel} from "../models/applicationModel";
 
 export class ApplicationService {
     constructor(
@@ -23,17 +24,40 @@ export class ApplicationService {
     }
 
     async getAllApplications(candidateId: number): Promise<Application[]> {
-        return this.applicationRepository.getAllByCandidate(candidateId);
+        const applications: ApplicationModel[] = await this.applicationRepository.getAllByCandidate(candidateId);
+
+        const userFriendlyApplications: Application[] = [];
+
+        for (const app of applications) {
+            const profile = await this.profileRepository.getById(app.profileId);
+            if (profile == null) throw new ResourceNotFoundError('Profile ID is not recognized.');
+            const school = await this.schoolService.getByIdWithProfiles(profile.schoolId);
+            if (school == null) throw new ResourceNotFoundError('School ID is not recognized.');
+
+            const newApplication: Application = {
+                id: app.id!,
+                school: school,
+                profile: profile,
+                priority: app.priority,
+                stage: app.stage,
+                status: app.status,
+                submittedAt: app.submittedAt || Date.now(),
+                updatedAt: Date.now()
+            };
+
+            userFriendlyApplications.push(newApplication);
+        }
+        return userFriendlyApplications;
     }
 
     async getAllApplicationSubmissions(candidateId: number): Promise<ApplicationSubmissionsBySchool[]> {
         // TODO: musi  być z obecnej tury!
-        const applications = await this.applicationRepository.getAllByCandidate(candidateId);
+        const applications = await this.getAllApplications(candidateId);
         return this.groupApplicationsBySchool(applications);
     }
 
     async addApplication(submissions: ApplicationSubmission[], candidateId: number): Promise<void> {
-        const applications: Application[] = await this.getAllApplications(candidateId);
+        const applications: ApplicationModel[] = await this.applicationRepository.getAllByCandidate(candidateId);
         if (applications.length !== 0) {
             throw new DataConflictError('Application already  exists');
         }
@@ -46,7 +70,7 @@ export class ApplicationService {
 
         await this.tx(async t => {
             for (const submission of submissions) {
-                const newApplication: Application = {
+                const newApplication: ApplicationModel = {
                     candidateId: candidateId,
                     profileId: submission.profileId,
                     priority: submission.priority,
@@ -60,7 +84,7 @@ export class ApplicationService {
     }
 
     async updateApplication(submissions: ApplicationSubmission[], candidateId: number): Promise<void> {
-        let applications = await this.getAllApplications(candidateId);
+        let applications = await this.applicationRepository.getAllByCandidate(candidateId);
         if (applications.length === 0) {
             throw new ResourceNotFoundError('Application not found.');
         }
@@ -78,7 +102,7 @@ export class ApplicationService {
                 await this.applicationRepository.delete(application.profileId, application.candidateId, t);
             }
             for (const submission of submissions) {
-                const newApplication: Application = {
+                const newApplication: ApplicationModel = {
                     candidateId: candidateId,
                     profileId: submission.profileId,
                     priority: submission.priority,
@@ -95,20 +119,15 @@ export class ApplicationService {
         const groupedBySchool = new Map<number, ApplicationSubmissionsBySchool>();
 
         for (const app of applications) {
-            const profile = await this.profileRepository.getById(app.profileId);
-            if  (profile == null) throw new ResourceNotFoundError('Profile ID is not recognized.');
-            const school = await this.schoolService.getByIdWithProfiles(profile.schoolId);
-            if  (school  == null) throw new ResourceNotFoundError('School ID is not recognized.');
-
-            if (!groupedBySchool.has(school.id)) {
-                groupedBySchool.set(school.id, {
-                    school: school,
+            if (!groupedBySchool.has(app.school.id)) {
+                groupedBySchool.set(app.school.id, {
+                    school: app.school,
                     profiles: [],
                 });
             }
 
-            groupedBySchool.get(school.id)!.profiles.push({
-                profileId: app.profileId,
+            groupedBySchool.get(app.school.id)!.profiles.push({
+                profileId: app.profile.id,
                 priority: app.priority,
             });
         }
