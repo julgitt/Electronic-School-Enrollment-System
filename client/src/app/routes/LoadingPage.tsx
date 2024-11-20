@@ -1,7 +1,11 @@
 import React from "react";
 
 const LoadingPage: React.FC = () => {
-    return <div>Loading...</div>;
+    return <div>
+        <h4>
+            Loading...
+        </h4>
+    </div>;
 }
 
 export default LoadingPage;

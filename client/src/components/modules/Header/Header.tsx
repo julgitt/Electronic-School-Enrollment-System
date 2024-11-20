@@ -4,9 +4,16 @@ import styles from './Header.module.scss';
 import {useCandidate} from "../../../shared/providers/candidateProvider.tsx";
 import {NavLink as Link} from "react-router-dom";
 import CandidateDropdown from "../../composite/CandidateDropdown/CandidateDropdown.tsx";
+import {useDeadlineCheck} from "../../../shared/hooks/useDeadlineCheck.ts";
+import ErrorPage from "../../../app/routes/ErrorPage.tsx";
+import LoadingPage from "../../../app/routes/LoadingPage.tsx";
 
 const Header: React.FC = () => {
     const { candidate, candidates, switchCandidate, onLogout, logoutLoading} = useCandidate();
+    const {isPastDeadline, loading, error} = useDeadlineCheck();
+
+    if (error) return <ErrorPage errorMessage={error} />;
+    if (loading) return <LoadingPage/>
 
     return (
         <header className={styles.header}>
@@ -14,7 +21,7 @@ const Header: React.FC = () => {
                 <div className={styles.navMenu}>
                     <Link className={styles.navLink} to="/">System naboru do szkół</Link>
                     <Link className={styles.navLink} to="/dates">Terminy</Link>
-                    {candidate && candidate.id && <Link className={styles.navLink} to="/submitApplication">Złóż kandydaturę</Link>}
+                    {!isPastDeadline && candidate && candidate.id && <Link className={styles.navLink} to="/submitApplication">Złóż kandydaturę</Link>}
                 </div>
                     {candidate && candidate.id ? (
                         <div className={styles.navMenu}>

@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
+import {useFetch} from "./useFetch.ts";
 
-export const useDeadlineCheck = (deadline: string | undefined) => {
+export const useDeadlineCheck = () => {
     const [isPastDeadline, setIsPastDeadline] = useState(false);
+    const { data: deadlineData, loading, error } = useFetch<{ deadline: string | number }>('/api/deadline');
 
+    const deadline = deadlineData?.deadline;
     useEffect(() => {
         if (deadline) {
             const deadlineDate = new Date(deadline);
@@ -10,5 +13,5 @@ export const useDeadlineCheck = (deadline: string | undefined) => {
         }
     }, [deadline]);
 
-    return isPastDeadline;
+    return { isPastDeadline, loading, error };
 };

@@ -10,6 +10,7 @@ import { SubmitApplication } from '../features/SubmitApplication';
 import { Login } from "../features/auth/pages/Login";
 import { RegisterCandidate } from "../features/candidate/pages/RegisterCandidate";
 import { Signup } from "../features/auth/pages/Signup";
+import ApplicationSubmittionPastDeadline from "../features/SubmitApplication/ApplicationSubmittionPastDeadline.tsx";
 
 const AppRoutes = () => {
     return (
@@ -22,6 +23,7 @@ const AppRoutes = () => {
             <Route path="/signup" element={<Signup />} />
             <Route path="/registerCandidate" element={<RegisterCandidate />} />
             <Route path="/applicationSubmitted" element={<ApplicationSubmitted />} />
+            <Route path="ApplicationSubmittionPastDeadline" element={<ApplicationSubmittionPastDeadline/>} />
             <Route path="*" element={<ErrorPage errorMessage={"404: Page Not Found"}/>} />
         </Routes>
     );
