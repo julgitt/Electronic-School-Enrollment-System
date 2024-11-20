@@ -71,6 +71,7 @@ const SelectionForm: React.FC<SchoolSelectionFormProps> = ({
                             return (
                                 <div key={profile.id} className={styles.profilesSectionElement}>
                                     <label className={styles.profileLabel}>
+                                        {/*TODO: Zrób osobny komponent z tego*/}
                                         <input
                                             type="checkbox"
                                             checked={!!selectedProfile}
