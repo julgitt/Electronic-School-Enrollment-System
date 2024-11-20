@@ -49,10 +49,15 @@ export const useApplicationForm = (submission: SchoolSelection[]) => {
         }
     };
 
-    const handleSchoolChange = (suggestion: School, index: number) => {
-        const newSelection = [...selections];
-        newSelection[index] = {school: suggestion, profiles: []};
-        setSelections(newSelection);
+    const handleSchoolChange = (suggestion: School | null, index: number) => {
+        if (suggestion === null) {
+            const newSelection = selections.filter((_, i) => i !== index);
+            setSelections(newSelection);
+        } else {
+            const newSelection = [...selections];
+            newSelection[index] = {school: suggestion, profiles: []};
+            setSelections(newSelection);
+        }
     };
 
     const handleProfileChange = (profile: Profile, index: number) => {

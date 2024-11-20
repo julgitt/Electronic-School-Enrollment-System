@@ -5,6 +5,7 @@ export class ApplicationRepository {
     async getAllByCandidate(candidateId: number): Promise<Application[]> {
         const query = `
             SELECT
+                a.candidate_id as candidate_id,
                 p.name AS profile_name,
                 p.id AS profile_id,
                 s.name AS school_name,

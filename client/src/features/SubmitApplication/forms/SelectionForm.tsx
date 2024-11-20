@@ -17,7 +17,7 @@ interface SchoolSelectionFormProps {
     suggestions: School[];
     error: string | null;
     loading: boolean;
-    onSchoolChange: (school: School, index: number) => void;
+    onSchoolChange: (school: School | null, index: number) => void;
     onProfileChange: (profile: Profile, index: number) => void;
     onPriorityChange: (profileId: number, index: number, priority: number) => void;
     onAddSchool: () => void;
@@ -45,11 +45,15 @@ const SelectionForm: React.FC<SchoolSelectionFormProps> = ({
             <div key={index}>
                 <SuggestionBox
                     placeholder="Szkoła"
-                    suggestions={suggestions.map(s => s.name)}
+                    suggestions={suggestions
+                        .filter((school) =>
+                            !selections.some((selection) =>
+                                selection.school && selection.school.id === school.id))
+                        .map(s => s.name)}
                     defaultValue={selection.school ? selection.school.name : ''}
                     onSuggestionSelected={(selectedName) => {
-                        const selectedSchool = suggestions.find(s => s.name === selectedName);
-                        if (selectedSchool && (!selection.school || selectedSchool.name !== selection.school.name)) {
+                        const selectedSchool = suggestions.find(s => s.name === selectedName) || null;
+                        if (!selection.school || !selectedSchool || selectedSchool.name !== selection.school.name) {
                             onSchoolChange(
                                 selectedSchool,
                                 index
@@ -83,8 +87,8 @@ const SelectionForm: React.FC<SchoolSelectionFormProps> = ({
                                             onChange={(e) =>
                                                 onPriorityChange(profile.id, index, Number(e.target.value))
                                             }
-                                            placeholder="Priorytet"
-                                            width="150px"
+                                            placeholder="0"
+                                            width="75px"
                                             height="20px"
                                         />
                                     )}

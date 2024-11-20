@@ -27,6 +27,7 @@ const SuggestionBox: React.FC<SuggestionBoxProps> = React.memo(({ placeholder, d
         } else {
             setFilteredSuggestions([]);
             setShowSuggestions(false);
+            onSuggestionSelected('');
         }
     };
 
