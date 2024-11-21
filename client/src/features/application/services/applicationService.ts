@@ -1,4 +1,4 @@
-import {UserSelectedProfile} from "./types/userSelectedProfile.ts";
+import {UserSelectedProfile} from "../types/userSelectedProfile.ts";
 
 export const submitApplication = async (
     selections: UserSelectedProfile[],

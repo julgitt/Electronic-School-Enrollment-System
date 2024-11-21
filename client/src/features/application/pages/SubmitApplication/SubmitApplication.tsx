@@ -1,16 +1,16 @@
 import React from 'react';
 
-import { useFetch } from "../../shared/hooks/useFetch";
-import {useApplicationForm} from "./hooks/useApplicationForm.ts";
-import { School } from "../../shared/types/school";
+import { useFetch } from "../../../../shared/hooks/useFetch.ts";
+import {useApplicationForm} from "../../hooks/useApplicationForm.ts";
+import { School } from "../../../../shared/types/school.ts";
 
-import SelectionForm from "./forms/SelectionForm.tsx";
-import PersonalForm from "./forms/PersonalForm.tsx";
-import ErrorPage from "../../app/routes/ErrorPage.tsx";
-import LoadingPage from "../../app/routes/LoadingPage.tsx";
-import ApplicationSubmittionPastDeadline from "../../app/routes/ApplicationSubmittionPastDeadline.tsx";
-import { useDeadlineCheck } from "../../shared/hooks/useDeadlineCheck.ts";
-import {SchoolSelection} from "./types/schoolSelection.ts";
+import SelectionForm from "../../forms/SelectionForm.tsx";
+import PersonalForm from "../../forms/PersonalForm.tsx";
+import ErrorPage from "../../../../app/routes/ErrorPage.tsx";
+import LoadingPage from "../../../../app/routes/LoadingPage.tsx";
+import SubmitApplicationPastDeadline from "../SubmitApplicationPastDeadline/SubmitApplicationPastDeadline.tsx";
+import { useDeadlineCheck } from "../../../../shared/hooks/useDeadlineCheck.ts";
+import {SchoolSelection} from "../../types/schoolSelection.ts";
 
 const SubmitApplication: React.FC = () => {
     const {
@@ -29,7 +29,7 @@ const SubmitApplication: React.FC = () => {
         handleProfileChange, handlePriorityChange
     } = useApplicationForm(submission || []);
 
-    if (isPastDeadline) return <ApplicationSubmittionPastDeadline/>;
+    if (isPastDeadline) return <SubmitApplicationPastDeadline/>;
     if (submissionFetchError) return <ErrorPage errorMessage={submissionFetchError} />;
     if (deadlineFetchError) return <ErrorPage errorMessage={deadlineFetchError} />;
     if (schoolFetchError) return <ErrorPage errorMessage={schoolFetchError} />;

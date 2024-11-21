@@ -1,7 +1,7 @@
 import React from 'react';
 import {NavLink as Link} from "react-router-dom";
 
-const ApplicationSubmittionPastDeadline: React.FC = () => {
+const SubmitApplicationPastDeadline: React.FC = () => {
 
     return (
         <div>
@@ -17,4 +17,4 @@ const ApplicationSubmittionPastDeadline: React.FC = () => {
     );
 };
 
-export default ApplicationSubmittionPastDeadline;
+export default SubmitApplicationPastDeadline;

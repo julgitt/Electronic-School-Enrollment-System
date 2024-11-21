@@ -21,7 +21,8 @@ const Header: React.FC = () => {
                 <div className={styles.navMenu}>
                     <Link className={styles.navLink} to="/">System naboru do szkół</Link>
                     <Link className={styles.navLink} to="/dates">Terminy</Link>
-                    {!isPastDeadline && candidate && candidate.id && <Link className={styles.navLink} to="/submitApplication">Złóż kandydaturę</Link>}
+                    {candidate && candidate.id && !isPastDeadline && <Link className={styles.navLink} to="/submitApplication">Złóż kandydaturę</Link>}
+                    {candidate && candidate.id && !isPastDeadline && <Link className={styles.navLink} to="/submitGrades">Dodaj wyniki</Link>}
                 </div>
                     {candidate && candidate.id ? (
                         <div className={styles.navMenu}>

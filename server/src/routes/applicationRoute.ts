@@ -39,7 +39,7 @@ router.put('/updateApplication', authorize('user'), applicationValidator, handle
 });
 
 //TODO:
-router.get('/deadline', authorize('user'), async (_req: Request, res: Response, _next: NextFunction) => {
+router.get('/deadline', async (_req: Request, res: Response, _next: NextFunction) => {
     return res.status(200).json(new Date('2025-12-24'));
 });
 

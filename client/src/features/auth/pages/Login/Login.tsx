@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import LoginForm from "../../components/LoginForm.tsx";
+import LoginForm from "../../forms/LoginForm.tsx";
 import { login } from "../../services/authService.ts";
 import { LoginFormData } from "../../types/loginFormData.ts";
 import { useFormData } from "../../../../shared/hooks/useFormData.ts";

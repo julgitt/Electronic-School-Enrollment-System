@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {submitApplication, updateApplication} from "../applicationService.ts";
+import {submitApplication, updateApplication} from "../services/applicationService.ts";
 import {School} from "../../../shared/types/school.ts";
 import {SchoolSelection} from "../types/schoolSelection.ts"
 import {Profile} from "../../../shared/types/profile.ts";
