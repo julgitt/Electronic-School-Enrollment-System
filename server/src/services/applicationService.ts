@@ -59,7 +59,7 @@ export class ApplicationService {
     async addApplication(submissions: ApplicationSubmission[], candidateId: number): Promise<void> {
         const applications: ApplicationModel[] = await this.applicationRepository.getAllByCandidate(candidateId);
         if (applications.length !== 0) {
-            throw new DataConflictError('Application already  exists');
+            throw new DataConflictError('Application already exists');
         }
         for (const submission of submissions) {
             const profile = await this.profileRepository.getById(submission.profileId);

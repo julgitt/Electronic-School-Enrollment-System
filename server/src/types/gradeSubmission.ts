@@ -1,5 +1,4 @@
-export interface Grade {
-    candidateId: number,
+export interface GradeSubmission {
     subjectId: number,
     grade: number,
     type: string

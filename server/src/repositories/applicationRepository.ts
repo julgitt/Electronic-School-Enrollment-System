@@ -37,7 +37,7 @@ export class ApplicationRepository {
     async delete(profileId: number, candidateId: number, t: ITask<any>): Promise<void> {
         const query = `
             DELETE FROM applications
-            WHERE profile_id = $1 AND candidate_id = $2;
+            WHERE profile_id = $1 AND candidate_id = $2
         `;
 
         await t.none(query, [profileId, candidateId]);

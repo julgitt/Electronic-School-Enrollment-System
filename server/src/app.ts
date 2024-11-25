@@ -7,6 +7,7 @@ import candidateRoutes from './routes/candidateRoute';
 import applicationRoutes from './routes/applicationRoute';
 import schoolRoutes from './routes/schoolRoute';
 import gradeRoutes from './routes/gradeRoute';
+import subjectRoutes from './routes/subjectRoute';
 import errorHandler from './middlewares/errorHandler';
 
 const app = express();
@@ -20,6 +21,7 @@ app.use('/api', candidateRoutes);
 app.use('/api', applicationRoutes);
 app.use('/api', schoolRoutes);
 app.use('/api', gradeRoutes);
+app.use('/api', subjectRoutes);
 
 app.use(errorHandler);
 
