@@ -22,18 +22,18 @@ form {
   margin-bottom: var(--spacing-md);
 }
 
-.profilesSection {
+.sectionGroup {
   margin-bottom: 50px;
 }
 
-.profilesSectionElement {
+.selectionElement {
   display: flex;
   justify-content: flex-start;
   gap: var(--spacing-lg);
   margin-bottom: var(--spacing-md);
 }
 
-.profileLabel {
+.label {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -44,7 +44,7 @@ form {
   margin-right: 10px;
 }
 
-.profileName {
+.labelItem {
   margin: 0;
   font-size: 16px;
   font-weight: 500;

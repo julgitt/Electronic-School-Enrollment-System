@@ -1,25 +1,31 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Grade} from "../types/grade.ts";
 import {Subject} from "../types/subject.ts";
 import {GradeToSubmit} from "../types/gradeToSubmit.ts";
 import { submitGrades } from "../services/gradeService.ts";
 
 export const useGradeForm = (subjects: Subject[]) => {
-    const initialGrades: Grade[] = subjects.flatMap((subject) => {
-        const certificateGrade = {
-            subject: subject,
-            grade: 0,
-            type: "certificate",
-        };
-
-        return subject.isExamSubject
-            ? [certificateGrade, { subject: subject, grade: 0, type: "exam" }]
-            : [certificateGrade];
-    });
-
-    const [grades, setGrades] = useState<Grade[]>(initialGrades);
+    const [grades, setGrades] = useState<Grade[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (subjects.length > 0 && grades.length == 0) {
+            const initialGrades: Grade[] = subjects.flatMap((subject) => {
+                const certificateGrade = {
+                    subject: subject,
+                    grade: 0,
+                    type: "certificate",
+                };
+
+                return subject.isExamSubject
+                    ? [certificateGrade, { subject: subject, grade: 0, type: "exam" }]
+                    : [certificateGrade];
+            });
+
+            setGrades(initialGrades);
+        }
+    }, [subjects]);
 
 
     const handleSubmit = async (event: React.FormEvent) => {

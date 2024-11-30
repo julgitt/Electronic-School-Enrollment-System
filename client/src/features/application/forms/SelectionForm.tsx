@@ -62,15 +62,15 @@ const SelectionForm: React.FC<SchoolSelectionFormProps> = ({
                     }}
                 />
                 {selection.school && selection.school.profiles && selection.school.profiles.length > 0 && (
-                    <div className={styles.profilesSection}>
+                    <div className={styles.selectionGroup}>
                         {selection.school.profiles.map((profile) => {
                             const selectedProfile = selection.profiles.find(
                                 (p) => p.profileId === profile.id
                             )
 
                             return (
-                                <div key={profile.id} className={styles.profilesSectionElement}>
-                                    <label className={styles.profileLabel}>
+                                <div key={profile.id} className={styles.selectionElement}>
+                                    <label className={styles.label}>
                                         {/*TODO: Zrób osobny komponent z tego*/}
                                         <input
                                             type="checkbox"
@@ -78,7 +78,7 @@ const SelectionForm: React.FC<SchoolSelectionFormProps> = ({
                                             onChange={() => onProfileChange(profile, index)}
                                             className={styles.checkbox}
                                         />
-                                        <h5 className={styles.profileName}>{profile.name}</h5>
+                                        <h5 className={styles.labelItem}>{profile.name}</h5>
                                     </label>
                                     {selectedProfile && (
                                         <InputField

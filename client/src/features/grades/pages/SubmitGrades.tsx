@@ -7,7 +7,7 @@ import LoadingPage from "../../../app/routes/LoadingPage.tsx";
 import SubmitApplicationPastDeadline from "../../application/pages/SubmitApplicationPastDeadline/SubmitApplicationPastDeadline.tsx";
 import { useDeadlineCheck } from "../../../shared/hooks/useDeadlineCheck.ts";
 import {Subject} from "../types/subject.ts";
-import GradeForm from "../forms/GradeForm.tsx";
+import GradeForm from "../components/GradeForm.tsx";
 import {useGradeForm} from "../hooks/useGradeForm.ts";
 
 const SubmitGrades: React.FC = (
