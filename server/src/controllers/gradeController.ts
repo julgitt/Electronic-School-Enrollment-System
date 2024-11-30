@@ -11,7 +11,7 @@ export class GradeController {
     async submitGrades(req: Request, res: Response, next: NextFunction) {
         try {
             const { grades }: {grades: GradeSubmission[]} = req.body;
-            var candidateId = req.signedCookies.candidateId;
+            const candidateId = req.signedCookies.candidateId;
             await this.gradeService.submitGrades(grades, candidateId);
             return res.status(201).json("Grades submission successful");
         } catch (error) {

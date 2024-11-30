@@ -2,14 +2,14 @@ import {db, ITask} from '../db';
 import {Grade} from '../models/gradeModel';
 
 export class GradeRepository {
-    async getByCandidateIdAndSubjectId(candidateId: number, subjectId: number): Promise<Grade[]> {
+    async getByCandidateIdSubjectIdType(candidateId: number, subjectId: number, type: string): Promise<Grade[]> {
         const query = `
             SELECT * 
             FROM grades
-            WHERE candidate_id = $1 AND subject_id = $2
+            WHERE candidate_id = $1 AND subject_id = $2 AND type = $3
         `;
 
-        return await db.query(query, [candidateId, subjectId]);
+        return await db.query(query, [candidateId, subjectId, type]);
     }
 
     async insert(grade: Grade, t: ITask<any>): Promise<void> {

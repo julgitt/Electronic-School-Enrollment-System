@@ -14,11 +14,12 @@ export class GradeService {
     async submitGrades(submissions: GradeSubmission[], candidateId: number): Promise<void> {
         await this.tx(async t => {
             for (const submission of submissions) {
-                const existingGrade = await this.gradeRepository.getByCandidateIdAndSubjectId(
+                const existingGrade = await this.gradeRepository.getByCandidateIdSubjectIdType(
                     candidateId,
-                    submission.subjectId
+                    submission.subjectId,
+                    submission.type
                 );
-                if (existingGrade) throw new DataConflictError('Grade already exists');
+                if (existingGrade.length > 0) throw new DataConflictError('Grade already exists');
 
                 const newGrade: Grade = {
                     candidateId: candidateId,
