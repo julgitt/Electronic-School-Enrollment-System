@@ -8,6 +8,6 @@ export class SubjectRepository {
             FROM subjects
         `;
 
-        return await db.query(query);
+        return await db.query(query) || [];
     }
 }

@@ -25,18 +25,19 @@ const GradeForm: React.FC<GradeFormProps> = ({
     onSubmit,
 }) => (
     <form method="POST" onSubmit={onSubmit} className={styles.form}>
-        <h2>Wpisz swoje wyniki:</h2>
+        <h3>Wpisz swoje wyniki:</h3>
         {error && <ErrorMessage message={error} />}
-        <div className={styles.formInputGroup}>
-            <h2>z egzaminu</h2>
+        <div className={styles.formInputGroupHorizontal}>
+            <div className={styles.formInputGroup}>
+            <h4>z egzaminu</h4>
             {subjects
                 .filter(subject => subject.isExamSubject)
                 .map((subject, index) => {
                     const name = subject.name;
 
                     return (
-                        <div key={index}>
-                            <label> {name}: </label>
+                        <div key={index} className={styles.formInputGroupHorizontal}>
+                            <h5 className={styles.profileName}> {name}: </h5>
                             <InputField
                                 type="number"
                                 min={1}
@@ -51,29 +52,35 @@ const GradeForm: React.FC<GradeFormProps> = ({
                     )
                 })
             }
-            <h2>ze świadectwa</h2>
-            {subjects.map((subject, index) => {
-                const name = subject.name;
-
-                return (
-                    <div key={index}>
-                        <label> {name}: </label>
-                        <InputField
-                            type="number"
-                            min={1}
-                            value={grades.find((g) => g.subject.id === subject.id)?.grade ?? 0}
-                            onChange={(e) =>
-                                onGradesChange({subject: subject, grade: Number(e.target.value), type: "school certificate"})}
-                            placeholder="0"
-                            width="75px"
-                            height="20px"
-                        />
-                    </div>
-                )
-            })}
-        </div>
-        <div>
-            <Button type="submit" disabled={loading}>Wyślij</Button>
+            </div>
+            <div className={styles.formInputGroup}>
+                <h4>ze świadectwa</h4>
+                    {subjects.map((subject, index) => {
+                        const name = subject.name;
+                        return (
+                            <div key={index} className={styles.formInputGroupHorizontal}>
+                                <h5 className={styles.profileName}> {name}: </h5>
+                                <InputField
+                                    type="number"
+                                    min={1}
+                                    value={grades.find((g) => g.subject.id === subject.id)?.grade ?? 0}
+                                    onChange={(e) =>
+                                        onGradesChange({
+                                            subject: subject,
+                                            grade: Number(e.target.value),
+                                            type: "school certificate"
+                                        })}
+                                    placeholder="0"
+                                    width="75px"
+                                    height="20px"
+                                />
+                            </div>
+                        )
+                    })}
+                </div>
+            </div>
+            <div>
+                <Button type="submit" disabled={loading}>Wyślij</Button>
         </div>
     </form>
 )

@@ -21,7 +21,7 @@ const SubmitGrades: React.FC = (
     const {
         error, loading, handleSubmit,
         grades, handleGradesChange,
-    } = useGradeForm(subjects!);
+    } = useGradeForm(subjects || []);
 
     if (isPastDeadline) return <SubmitApplicationPastDeadline/>;
     if (deadlineFetchError) return <ErrorPage errorMessage={deadlineFetchError} />;
