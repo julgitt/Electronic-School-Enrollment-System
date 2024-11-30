@@ -4,8 +4,8 @@ import { useFetch } from "../../../../shared/hooks/useFetch.ts";
 import {useApplicationForm} from "../../hooks/useApplicationForm.ts";
 import { School } from "../../../../shared/types/school.ts";
 
-import SelectionForm from "../../forms/SelectionForm.tsx";
-import PersonalForm from "../../forms/PersonalForm.tsx";
+import SelectionForm from "../../components/SelectionForm.tsx";
+import PersonalForm from "../../components/PersonalForm.tsx";
 import ErrorPage from "../../../../app/routes/ErrorPage.tsx";
 import LoadingPage from "../../../../app/routes/LoadingPage.tsx";
 import SubmitApplicationPastDeadline from "../SubmitApplicationPastDeadline/SubmitApplicationPastDeadline.tsx";
