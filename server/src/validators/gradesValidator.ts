@@ -4,15 +4,15 @@ export const gradesValidator = [
     body("grades")
         .isArray()
         .bail()
-        .custom((grades: { subject: string, value: number, type: string }[]) => {
+        .custom((grades: { subject: string, grade: number, type: string }[]) => {
             for (const grade of grades) {
                 if (grade.type != "exam" && grade.type != "certificate") {
                     throw Error("Wrong type of grade. It should be the type of exam or school certificate.")
                 }
-                if (grade.type == "certificate" && grade.value > 6 || grade.value <= 0) {
+                if (grade.type == "certificate" && grade.grade > 6 || grade.grade <= 0) {
                     throw Error("Grades from the school certificate should be the number between 1 and 6.")
                 }
-                if(grade.type == "exam" && grade.value < 0 || grade.value > 100) {
+                if(grade.type == "exam" && grade.grade < 0 || grade.grade > 100) {
                     throw Error("Grades from the exam should be the number between 0 and 100.")
                 }
             }

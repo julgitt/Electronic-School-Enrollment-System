@@ -41,7 +41,7 @@ export const useGradeForm = (subjects: Subject[]) => {
 
         try {
             const data = await submitGrades(gradesToSubmit);
-            window.location.href = data.redirect;
+            window.location.href = data.redirect || '/';
         } catch (err: any) {
             setError(err.message);
         } finally {
