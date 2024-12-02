@@ -67,4 +67,13 @@ export class UserController {
             return next(error);
         }
     }
+
+    async getUser(req: Request, res: Response, next: NextFunction) {
+        try {
+            const user = req.signedCookies.userId || null;
+            return res.status(200).json({ user: user });
+        } catch (error) {
+            return next(error);
+        }
+    }
 }
