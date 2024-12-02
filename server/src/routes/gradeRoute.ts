@@ -21,8 +21,12 @@ router.post('/submitGrades', authorize("user"),  gradesValidator, handleValidati
     return await gradeController.submitGrades(req, res, next);
 });
 
-router.get('/submitGrades', authorize("user"), async (req: Request, res: Response, next: NextFunction) => {
+router.get('/submitGrades', authorize("user"), async (_req: Request, res: Response, _next: NextFunction) => {
     return res.status(200).json({ message: 'Success' });
+});
+
+router.get('/gradesSubmitted', authorize("user"), async (req: Request, res: Response, next: NextFunction) => {
+    return await gradeController.checkIfGradesSubmitted(req, res, next);
 });
 
 export default router;

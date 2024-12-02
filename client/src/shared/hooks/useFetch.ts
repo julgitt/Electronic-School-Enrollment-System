@@ -9,15 +9,19 @@ interface FetchResult<T> {
     error: string | null;
 }
 
-export const useFetch = <T>(endpoint: string): FetchResult<T> => {
+export const useFetch = <T>(endpoint: string, shouldFetch: boolean = true): FetchResult<T> => {
     const [data, setData] = useState<T | null>(null);
     const [authorized, setAuthorized] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    const fetchData = async () => {
+    const fetchData = async (shouldFetch: boolean) => {
         try {
-            const response = await fetch(endpoint, { method: 'GET', credentials: 'include' });
+            if (!shouldFetch) return;
+            const response = await fetch(endpoint, {
+                method: 'GET',
+                credentials: 'include'
+            });
 
             if (response.ok) {
                 const result: T = await response.json();
@@ -37,8 +41,8 @@ export const useFetch = <T>(endpoint: string): FetchResult<T> => {
     };
 
     useEffect(() => {
-        fetchData();
-    }, [endpoint]);
+        fetchData(shouldFetch);
+    }, [endpoint, shouldFetch]);
 
     return { data, authorized, loading, error };
 };

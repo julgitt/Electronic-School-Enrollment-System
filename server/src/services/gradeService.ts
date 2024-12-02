@@ -19,7 +19,10 @@ export class GradeService {
                     submission.subjectId,
                     submission.type
                 );
-                if (existingGrade.length > 0) throw new DataConflictError('Grade already exists');
+
+                if (existingGrade) throw new DataConflictError('Grade already exists');
+
+                // TODO: validate subjectID
 
                 const newGrade: Grade = {
                     candidateId: candidateId,
@@ -31,5 +34,9 @@ export class GradeService {
                 await this.gradeRepository.insert(newGrade, t);
             }
         });
+    }
+
+    async checkIfGradesSubmitted(candidateId: number): Promise<boolean> {
+        return !!(await this.gradeRepository.getByCandidateId(candidateId));
     }
 }

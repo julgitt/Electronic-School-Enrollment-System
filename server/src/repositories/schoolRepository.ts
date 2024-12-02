@@ -7,6 +7,7 @@ export class SchoolRepository {
             SELECT *
             FROM schools 
             WHERE id = $1
+            LIMIT 1
         `;
 
         return await db.oneOrNone(query, [id]);

@@ -18,4 +18,14 @@ export class GradeController {
             return next(error);
         }
     }
+
+    async checkIfGradesSubmitted(req: Request, res: Response, next: NextFunction) {
+        try {
+            const candidateId = req.signedCookies.candidateId;
+            const status = await this.gradeService.checkIfGradesSubmitted(candidateId);
+            return res.status(200).json({ gradesSubmitted: status });
+        } catch (error) {
+            return next(error);
+        }
+    }
 }

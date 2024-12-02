@@ -6,6 +6,7 @@ export class CandidateRepository {
         const query = `
             SELECT * FROM candidates
             WHERE id = $1 AND user_id = $2
+            LIMIT 1
         `;
         return await db.oneOrNone(query, [id, userId]);
     }
@@ -14,6 +15,7 @@ export class CandidateRepository {
         const query = `
             SELECT * FROM candidates
             WHERE pesel = $1
+            LIMIT 1
         `;
         return await db.oneOrNone(query, [pesel]);
     }

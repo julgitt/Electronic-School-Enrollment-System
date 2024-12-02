@@ -37,6 +37,7 @@ export class UserRepository {
             LEFT JOIN user_roles r ON u.id = r.user_id
             WHERE u.login = $1 or u.email = $2
             GROUP BY u.id
+            LIMIT 1
         `;
         return await db.oneOrNone(query, [login, email]);
     }
