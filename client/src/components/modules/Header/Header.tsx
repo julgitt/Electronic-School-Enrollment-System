@@ -10,7 +10,9 @@ import LoadingPage from "../../../app/routes/LoadingPage.tsx";
 import {useGradeSubmittedCheck} from "../../../shared/hooks/useGradeSubmittedCheck.ts";
 
 const Header: React.FC = () => {
-    const { authorized, candidate, candidates, switchCandidate, onLogout, logoutLoading } = useCandidate();
+    const { authorized, candidate, candidates, switchCandidate, onLogout, logoutLoading, error: userError } = useCandidate();
+    if (userError) return <ErrorPage errorMessage={userError} />;
+
     const { isPastDeadline, loading, error } = useDeadlineCheck(!!candidate);
     const { areGradesSubmitted, loading: gradesLoading, error: gradesError } = useGradeSubmittedCheck(!!candidate);
 

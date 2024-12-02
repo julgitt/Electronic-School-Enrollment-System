@@ -1,5 +1,5 @@
-import React, {createContext, useState, useContext, useEffect, ReactNode} from 'react';
-import { Candidate } from "../types/candidate.ts";
+import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import { Candidate } from "../types/candidate";
 
 interface CandidateContextType {
     authorized: boolean;
@@ -7,7 +7,8 @@ interface CandidateContextType {
     candidates: Candidate[];
     switchCandidate: (candidateId: number) => void;
     onLogout: (event: React.MouseEvent<HTMLAnchorElement>) => void;
-    logoutLoading: boolean
+    logoutLoading: boolean;
+    error: string | null;
 }
 
 const CandidateContext = createContext<CandidateContextType | null>(null);
@@ -29,62 +30,95 @@ export const CandidateProvider: React.FC<CandidateProviderProps> = ({ children }
     const [candidate, setCandidate] = useState<Candidate | null>(null);
     const [candidates, setCandidates] = useState<Candidate[]>([]);
     const [logoutLoading, setLogoutLoading] = useState(false);
-    const [redirected, setRedirected] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    // TODO Add errors
-    //TODO update depth exceeded
     useEffect(() => {
+
         fetch('/api/user')
-            .then(response => response.json())
-            .then(data => {
-                if (data.user == null) return;
+            .then(async response => {
+                if (!response.ok) throw new Error((await response.json()).message)
+                return response.json();
+            })
+            .then(userData => {
+                if (!userData.user) return;
                 setAuthorized(true);
+
                 fetch('/api/candidate')
-                    .then(response => response.json())
+                    .then(async response => {
+                        if (!response.ok) throw new Error((await response.json()).message);
+                        return response.json();
+                    })
                     .then(data => {
-                        if (data.redirect && !redirected && window.location.href != data.redirect) {
-                            setRedirected(true)
+                        if (data.redirect && !window.location.href.includes(data.redirect)) {
                             window.location.href = data.redirect;
                             return;
                         }
-                        if (candidate != data.candidate)
-                            setCandidate(data.candidate);
-                    });
+                        setCandidate(data.candidate);
+                    })
+                    .catch(err => setError(err.message)
+                    );
+
                 fetch('/api/candidates')
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.candidates != candidates)
-                            setCandidates(data.candidates);
-                    });
-            });
+                    .then(async response => {
+                        if (!response.ok) throw new Error((await response.json()).message);
+                        return response.json();
+                    })
+                    .then(data => setCandidates(data.candidates)
+                    );
+            })
+            .catch(err => setError(err.message)
+            );
     }, []);
 
     const switchCandidate = (candidateId: number) => {
         fetch('/api/switchCandidate', {
             method: 'POST',
             body: JSON.stringify({ candidateId }),
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' },
         })
-            .then(response => response.json())
+            .then(async response => {
+                if (!response.ok) throw new Error((await response.json()).message);
+                return response.json();
+            })
             .then(data => {
                 setCandidate(data.candidate);
-            });
+            })
+            .catch(err => setError(err.message));
     };
 
     const onLogout = (event: React.MouseEvent<HTMLAnchorElement>) => {
         event.preventDefault();
         setLogoutLoading(true);
         fetch('/api/logout', { method: 'POST' })
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                return response.json();
+            })
             .then(() => {
                 setCandidate(null);
                 setCandidates([]);
                 setLogoutLoading(false);
                 window.location.reload();
+            })
+            .catch(err => {
+                setError(err.message);
+                setLogoutLoading(false);
             });
     };
 
     return (
-        <CandidateContext.Provider value={{ authorized, candidate, candidates, switchCandidate, onLogout, logoutLoading }}>
+        <CandidateContext.Provider
+            value={{
+                authorized,
+                candidate,
+                candidates,
+                switchCandidate,
+                onLogout,
+                logoutLoading,
+                error,
+            }}
+        >
+            {error && <div className="error">Error: {error}</div>} {/* Wyświetlanie błędów */}
             {children}
         </CandidateContext.Provider>
     );
