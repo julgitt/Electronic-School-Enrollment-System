@@ -1,6 +1,7 @@
-import { School } from '../models/schoolModel';
 import { SchoolRepository } from "../repositories/schoolRepository";
-import {ProfileRepository} from "../repositories/profileRepository";
+import { ProfileRepository } from "../repositories/profileRepository";
+import { School } from "../types/school";
+import {SchoolModel} from "../models/schoolModel";
 
 export class SchoolService {
     constructor(private schoolRepository: SchoolRepository,
@@ -17,7 +18,7 @@ export class SchoolService {
         return schools
     }
 
-    async getByIdWithProfiles(id: number): Promise<School | null> {
+    async getSchoolWithProfiles(id: number): Promise<School | null> {
         let school = await this.schoolRepository.getById(id);
         if (school) {
             school.profiles = await this.profileRepository.getAllBySchool(school.id);
@@ -26,7 +27,7 @@ export class SchoolService {
     }
 
     async addSchool(name: string, ): Promise<void> {
-        const newSchool: School = {
+        const newSchool: SchoolModel = {
             id: 0,
             name: name,
         }

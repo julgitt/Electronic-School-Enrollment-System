@@ -1,8 +1,19 @@
 import {db, ITask} from '../db';
-import {Grade} from '../models/gradeModel';
+import {Grade} from "../models/gradeModel";
 
 export class GradeRepository {
-    async getByCandidateIdSubjectIdType(candidateId: number, subjectId: number, type: string): Promise<Grade | null> {
+
+    async getAllByCandidate(candidateId: number) {
+        const query = `
+            SELECT * 
+            FROM grades
+            WHERE candidate_id = $1
+            LIMIT 1
+        `;
+
+        return await db.query(query, [candidateId]);
+    }
+    async getByCandidateSubjectType(candidateId: number, subjectId: number, type: string): Promise<Grade | null> {
         const query = `
             SELECT * 
             FROM grades
@@ -13,7 +24,7 @@ export class GradeRepository {
         return await db.oneOrNone(query, [candidateId, subjectId, type]);
     }
 
-    async getByCandidateId(candidateId: number): Promise<Grade | null> {
+    async getByCandidate(candidateId: number): Promise<Grade | null> {
         const query = `
             SELECT * 
             FROM grades

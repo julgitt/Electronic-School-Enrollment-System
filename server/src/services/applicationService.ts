@@ -1,24 +1,24 @@
 import { ITask } from "pg-promise";
 
 import { ApplicationRepository } from '../repositories/applicationRepository';
-import { ProfileRepository } from '../repositories/profileRepository';
 import { ResourceNotFoundError } from "../errors/resourceNotFoundError";
 import { DataConflictError } from "../errors/dataConflictError";
 import {ApplicationSubmission} from "../types/applicationSubmission";
 import {ApplicationSubmissionsBySchool} from "../types/applicationSubmissionsBySchool";
 import {SchoolService} from "./schoolService";
+import {ProfileService} from "./profileService";
 import {Application} from "../types/application";
 import {ApplicationModel} from "../models/applicationModel";
 
 export class ApplicationService {
     constructor(
         private applicationRepository: ApplicationRepository,
-        private profileRepository: ProfileRepository,
+        private profileService: ProfileService,
         private schoolService: SchoolService,
         private readonly tx: (callback: (t: ITask<any>) => Promise<void>) => Promise<void>
     ) {
         this.applicationRepository = applicationRepository;
-        this.profileRepository = profileRepository;
+        this.profileService = profileService;
         this.schoolService = schoolService;
         this.tx = tx;
     }
@@ -29,13 +29,14 @@ export class ApplicationService {
         const userFriendlyApplications: Application[] = [];
 
         for (const app of applications) {
-            const profile = await this.profileRepository.getById(app.profileId);
+            const profile = await this.profileService.getProfile(app.profileId);
             if (profile == null) throw new ResourceNotFoundError('Profile ID is not recognized.');
-            const school = await this.schoolService.getByIdWithProfiles(profile.schoolId);
+            const school = await this.schoolService.getSchoolWithProfiles(profile.schoolId);
             if (school == null) throw new ResourceNotFoundError('School ID is not recognized.');
 
             const newApplication: Application = {
                 id: app.id!,
+                candidateId: candidateId,
                 school: school,
                 profile: profile,
                 priority: app.priority,
@@ -50,6 +51,10 @@ export class ApplicationService {
         return userFriendlyApplications;
     }
 
+    async getAllApplicationsByProfile(profileId: number): Promise<Application[]> {
+        return this.applicationRepository.getAllByProfile(profileId);
+    }
+
     async getAllApplicationSubmissions(candidateId: number): Promise<ApplicationSubmissionsBySchool[]> {
         // TODO: musi  być z obecnej tury!
         const applications = await this.getAllApplications(candidateId);
@@ -57,12 +62,12 @@ export class ApplicationService {
     }
 
     async addApplication(submissions: ApplicationSubmission[], candidateId: number): Promise<void> {
-        const applications: ApplicationModel[] = await this.applicationRepository.getAllByCandidate(candidateId);
+        const applications: Application[] = await this.applicationRepository.getAllByCandidate(candidateId);
         if (applications.length !== 0) {
             throw new DataConflictError('Application already exists');
         }
         for (const submission of submissions) {
-            const profile = await this.profileRepository.getById(submission.profileId);
+            const profile = await this.profileService.getProfile(submission.profileId);
             if (profile == null) {
                 throw new ResourceNotFoundError('Profile ID is not recognized.');
             }
@@ -91,7 +96,7 @@ export class ApplicationService {
         // TODO: Add personal form data insert
 
         for (const submission of submissions) {
-            const profile = await this.profileRepository.getById(submission.profileId);
+            const profile = await this.profileService.getProfile(submission.profileId);
             if (profile == null) {
                 throw new ResourceNotFoundError('Profile ID is not recognized.');
             }

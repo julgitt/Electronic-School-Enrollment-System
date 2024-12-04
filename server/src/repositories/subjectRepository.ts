@@ -1,5 +1,5 @@
 import {db} from '../db';
-import {Subject} from "../models/subjectModel";
+import {Subject} from "../entities/subjectModel";
 
 export class SubjectRepository {
     async getAll(): Promise<Subject[]> {

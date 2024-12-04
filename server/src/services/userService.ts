@@ -2,10 +2,10 @@ import { compare, hash } from 'bcrypt';
 
 import { transactionFunction } from "../db";
 
-import { User } from '../models/userModel';
 import { UserRepository } from '../repositories/userRepository';
 import { AuthenticationError } from "../errors/authenticationError";
 import { DataConflictError } from "../errors/dataConflictError";
+import {User} from "../models/userModel";
 
 export class UserService {
     constructor(

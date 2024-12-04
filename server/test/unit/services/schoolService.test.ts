@@ -4,7 +4,7 @@ import sinon from 'sinon';
 
 import { SchoolService } from "../../../src/services/schoolService";
 import { SchoolRepository } from "../../../src/repositories/schoolRepository";
-import { School } from "../../../src/models/schoolModel";
+import { School } from "../../../src/entities/schoolModel";
 
 describe('SchoolService', () => {
     let schoolService: SchoolService;

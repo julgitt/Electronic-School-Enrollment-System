@@ -1,14 +1,23 @@
 import { db } from '../db';
-import { Candidate } from '../models/candidateModel';
+import {Candidate} from "../models/candidateModel";
 
 export class CandidateRepository {
-    async getByIdAndUserId(id: number, userId: number): Promise<Candidate | null> {
+    async getById(id: number): Promise<Candidate | null> {
         const query = `
             SELECT * FROM candidates
-            WHERE id = $1 AND user_id = $2
+            WHERE id = $1
             LIMIT 1
         `;
-        return await db.oneOrNone(query, [id, userId]);
+        return await db.oneOrNone(query, [id]);
+    }
+
+    async getAll(): Promise<Candidate[]> {
+        const query = `
+            SELECT *
+            FROM candidates
+        `;
+
+        return await db.query(query);
     }
 
     async getByPesel(pesel: string): Promise<Candidate | null> {
@@ -20,7 +29,7 @@ export class CandidateRepository {
         return await db.oneOrNone(query, [pesel]);
     }
 
-    async getAllByUserId(userId: number): Promise<Candidate[]> {
+    async getAllByUser(userId: number): Promise<Candidate[]> {
         const query = `
             SELECT * FROM candidates
             WHERE user_id = $1
@@ -29,7 +38,7 @@ export class CandidateRepository {
         return await db.query(query, [userId]);
     }
 
-    async getLastUpdatedByUserId(userId: number): Promise<Candidate | null> {
+    async getLastUpdatedByUser(userId: number): Promise<Candidate | null> {
         const query = `
             SELECT * FROM candidates
             WHERE user_id = $1

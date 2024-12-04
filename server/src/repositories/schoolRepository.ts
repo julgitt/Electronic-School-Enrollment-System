@@ -1,5 +1,5 @@
 import { db } from '../db';
-import { School } from '../models/schoolModel';
+import { School } from '../entities/schoolModel';
 
 export class SchoolRepository {
     async getById(id: number): Promise<School | null> {

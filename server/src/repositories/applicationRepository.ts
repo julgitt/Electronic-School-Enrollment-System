@@ -1,8 +1,8 @@
 import { db, ITask } from '../db';
-import { ApplicationModel } from '../models/applicationModel';
+import { ApplicationEntity } from '../entities/application';
 
 export class ApplicationRepository {
-    async getAllByCandidate(candidateId: number): Promise<ApplicationModel[]> {
+    async getAllByCandidate(candidateId: number): Promise<ApplicationEntity[]> {
         const query = `
             SELECT
                 a.candidate_id as candidate_id,
@@ -22,7 +22,17 @@ export class ApplicationRepository {
         return await db.query(query, [candidateId]);
     }
 
-    async insert(newApp: ApplicationModel, t: ITask<any>): Promise<void> {
+    async getAllByProfile(profileId: number): Promise<ApplicationEntity[]> {
+        const query = `
+            SELECT *
+            FROM applications
+            WHERE profile_id = $1
+        `;
+
+        return await db.query(query, [profileId]);
+    }
+
+    async insert(newApp: ApplicationEntity, t: ITask<any>): Promise<void> {
         const query = `
             INSERT INTO applications (candidate_id, profile_id, priority, stage, status)
             VALUES ($1, $2, $3, $4, $5)

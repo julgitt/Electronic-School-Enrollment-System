@@ -11,14 +11,16 @@ import { ApplicationController } from "../controllers/applicationController";
 import { ProfileRepository } from "../repositories/profileRepository";
 import {SchoolRepository} from "../repositories/schoolRepository";
 import {SchoolService} from "../services/schoolService";
+import {ProfileService} from "../services/profileService";
 
 const applicationRepository: ApplicationRepository = new ApplicationRepository();
 const profileRepository: ProfileRepository = new ProfileRepository();
+const profileService: ProfileService = new ProfileService(profileRepository);
 const schoolRepository: SchoolRepository = new SchoolRepository();
 const schoolService: SchoolService = new SchoolService(schoolRepository, profileRepository);
 const applicationService: ApplicationService = new ApplicationService(
     applicationRepository,
-    profileRepository,
+    profileService,
     schoolService,
     tx
 );

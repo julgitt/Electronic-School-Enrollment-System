@@ -1,8 +1,9 @@
-import {School} from "../models/schoolModel";
 import {Profile} from "../models/profileModel";
+import {School} from "./school";
 
 export interface Application {
     id: number
+    candidateId: number
     stage: number;
     school: School;
     profile: Profile;

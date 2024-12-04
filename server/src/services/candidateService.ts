@@ -1,25 +1,38 @@
 import { CandidateRepository } from "../repositories/candidateRepository";
 import {DataConflictError} from "../errors/dataConflictError";
-import {Candidate} from "../models/candidateModel";
 import {ResourceNotFoundError} from "../errors/resourceNotFoundError";
+import {Candidate} from "../models/candidateModel";
+import {Grade} from "../models/gradeModel";
+import {GradeService} from "./gradeService";
 
 export class CandidateService {
-    constructor(private candidateRepository: CandidateRepository) {}
+    constructor(
+        private readonly gradeService: GradeService,
+        private readonly candidateRepository: CandidateRepository) {}
 
-    async getLastCreatedByUserId(userId: number) {
-        return this.candidateRepository.getLastUpdatedByUserId(userId);
+    async getAllWithGrades() {
+        const gradesByCandidateId = new Map<number, Grade[]>;
+        const candidates = await this.candidateRepository.getAll();
+        for (const candidate of candidates) {
+            gradesByCandidateId.set(candidate.id, await this.gradeService.getAllByCandidate(candidate.id));
+        }
+        return gradesByCandidateId;
     }
 
-    async getByIdAndUserId(id: number, userId: number) {
-        const candidate = await this.candidateRepository.getByIdAndUserId(id, userId);
-        if (candidate == null) {
+    async getLastCreatedCandidateByUser(userId: number) {
+        return this.candidateRepository.getLastUpdatedByUser(userId);
+    }
+
+    async getCandidate(id: number, userId: number) {
+        const candidate = await this.candidateRepository.getById(id);
+        if (candidate == null || candidate.userId !== userId) {
             throw new ResourceNotFoundError('Candidate not found.');
         }
         return candidate;
     }
 
-    async getAllByUserId(userId: number) {
-        return this.candidateRepository.getAllByUserId(userId);
+    async getAllByUser(userId: number) {
+        return this.candidateRepository.getAllByUser(userId);
     }
 
     async register(userId: number, firstName: string, lastName: string, pesel: string): Promise<Candidate> {
@@ -29,6 +42,7 @@ export class CandidateService {
         }
 
         const newCandidate: Candidate = {
+            id: 0,
             userId,
             firstName,
             lastName,

@@ -33,27 +33,27 @@ describe('CandidateService', () => {
         });
     });
 
-    describe('getByIdAndUserId', () => {
+    describe('getByIdAndUser', () => {
         it('should return the candidate if found and the userId matches', async () => {
             const userId = 1;
             const id = 1;
             const candidate = { id, userId, firstName: 'Jan', lastName: 'Kowalski', pesel: '23456789012' };
 
-            candidateRepoStub.getByIdAndUserId.resolves(candidate);
+            candidateRepoStub.getById.resolves(candidate);
 
-            const result = await candidateService.getByIdAndUserId(id, userId);
+            const result = await candidateService.getCandidate(id, userId);
             assert.equal(result, candidate);
-            assert.equal(candidateRepoStub.getByIdAndUserId.callCount, 1);
+            assert.equal(candidateRepoStub.getById.callCount, 1);
         });
 
         it('should throw ResourceNotFoundError if the candidate does not exist', async () => {
             const id = 1;
             const userId = 1;
 
-            candidateRepoStub.getByIdAndUserId.resolves(null);
+            candidateRepoStub.getById.resolves(null);
 
             try {
-                await candidateService.getByIdAndUserId(id, userId)
+                await candidateService.getCandidate(id, userId)
                 assert.fail('Expected an error to be thrown');
             } catch (err) {
                 assert(err instanceof ResourceNotFoundError);
@@ -72,10 +72,10 @@ describe('CandidateService', () => {
                 pesel: '23456789012'
             };
 
-            candidateRepoStub.getByIdAndUserId.resolves(candidate);
+            candidateRepoStub.getById.resolves(candidate);
 
             try {
-                await candidateService.getByIdAndUserId(id, userId);
+                await candidateService.getCandidate(id, userId);
                 assert.fail('Expected an error to be thrown');
             } catch (err) {
                 assert(err instanceof AuthorizationError);

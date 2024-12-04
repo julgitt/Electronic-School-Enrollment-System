@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { School } from '../models/schoolModel';
+import { School } from '../entities/schoolModel';
 import { SchoolService } from "../services/schoolService";
 
 export class SchoolController {

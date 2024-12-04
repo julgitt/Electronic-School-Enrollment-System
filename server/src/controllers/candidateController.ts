@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { CandidateService } from "../services/candidateService";
-import {Candidate} from "../models/candidateModel";
+import {CandidateEntity} from "../entities/candidate";
 
 export class CandidateController {
     constructor(private candidateService: CandidateService) {
@@ -11,7 +11,7 @@ export class CandidateController {
             const candidateId = req.body.candidateId;
             const userId = req.signedCookies.userId;
 
-            const newCandidate = await this.candidateService.getByIdAndUserId(candidateId, userId);
+            const newCandidate = await this.candidateService.getCandidate(candidateId, userId);
 
             res.cookie('candidateId', newCandidate.id, {
                 signed: true,
@@ -71,8 +71,8 @@ export class CandidateController {
 
             let candidateId = req.signedCookies.candidateId;
             const candidate = (candidateId == null)
-                ? await this.candidateService.getLastCreatedByUserId(userId)
-                : await this.candidateService.getByIdAndUserId(candidateId, userId);
+                ? await this.candidateService.getLastCreatedCandidateByUser(userId)
+                : await this.candidateService.getCandidate(candidateId, userId);
 
             if (candidate == null)
                 return res.status(200).json({
@@ -98,10 +98,10 @@ export class CandidateController {
             let candidateId = req.signedCookies.candidateId;
             const userId = req.signedCookies.userId;
 
-            let candidates: Candidate[] = [];
+            let candidates: CandidateEntity[] = [];
 
             if (userId != null) {
-                candidates = await this.candidateService.getAllByUserId(userId);
+                candidates = await this.candidateService.getAllByUser(userId);
                 candidates = candidates.filter(item => item.id != candidateId);
             }
 

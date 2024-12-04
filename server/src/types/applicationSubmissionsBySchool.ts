@@ -1,4 +1,4 @@
-import {School} from "../models/schoolModel";
+import {School} from "../entities/schoolModel";
 import {ApplicationSubmission} from "./applicationSubmission";
 
 export interface ApplicationSubmissionsBySchool {

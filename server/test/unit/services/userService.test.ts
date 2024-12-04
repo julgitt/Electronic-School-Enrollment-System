@@ -4,7 +4,7 @@ import sinon from 'sinon';
 
 import { UserService } from "../../../src/services/userService";
 import { UserRepository } from "../../../src/repositories/userRepository";
-import { User } from "../../../src/models/userModel";
+import { User } from "../../../src/entities/userModel";
 import bcrypt from 'bcrypt';
 
 describe('UserService', () => {

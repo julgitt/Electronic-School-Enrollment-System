@@ -1,7 +1,4 @@
-import { Profile } from "./profileModel";
-
-export interface School {
+export interface SchoolModel {
     id: number;
     name: string;
-    profiles?: Profile[];
 }

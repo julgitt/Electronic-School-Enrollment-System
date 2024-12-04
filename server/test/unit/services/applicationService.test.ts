@@ -5,7 +5,7 @@ import sinon from 'sinon';
 import { ApplicationService } from "../../../src/services/applicationService";
 import { ApplicationRepository } from "../../../src/repositories/applicationRepository";
 import { SchoolRepository } from "../../../src/repositories/schoolRepository";
-import { School } from "../../../src/models/schoolModel";
+import { School } from "../../../src/entities/schoolModel";
 import { ITask } from "pg-promise";
 
 describe('ApplicationService', () => {

@@ -1,5 +1,5 @@
 import { db, ITask } from '../db';
-import { User } from '../models/userModel';
+import { User } from '../entities/userModel';
 
 export class UserRepository {
     async getByLoginOrEmail(login: string, email: string, withRoles: boolean = true): Promise<User | null> {
