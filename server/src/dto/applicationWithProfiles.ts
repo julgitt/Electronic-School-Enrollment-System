@@ -8,6 +8,6 @@ export interface ApplicationWithProfiles {
     profile: Profile;
     priority: number;
     status: string;
-    submittedAt: Date | number;
+    createdAt: Date | number;
     updatedAt: Date | number;
 }

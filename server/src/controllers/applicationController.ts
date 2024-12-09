@@ -43,7 +43,7 @@ export class ApplicationController {
 
     async updateApplication(req: Request, res: Response, next: NextFunction) {
         try {
-            const { selections: applications}: {selections: ApplicationRequest[]} = req.body;
+            const applications: ApplicationRequest[] = req.body;
             const candidateId = req.signedCookies.candidateId;
 
             await this.applicationService.updateApplication(applications, candidateId);

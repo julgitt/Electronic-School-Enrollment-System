@@ -1,7 +1,7 @@
 import {body} from 'express-validator';
 
 export const gradesValidator = [
-    body("grades")
+    body()
         .isArray()
         .bail()
         .custom((grades: { subject: string, grade: number, type: string }[]) => {

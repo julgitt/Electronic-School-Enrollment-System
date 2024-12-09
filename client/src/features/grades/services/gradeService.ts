@@ -12,9 +12,7 @@ export const submitGrades= async (
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-            grades: grades
-        }),
+        body: JSON.stringify(grades),
     });
 
     const data = await response.json();

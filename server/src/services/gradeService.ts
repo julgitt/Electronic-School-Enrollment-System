@@ -27,7 +27,7 @@ export class GradeService {
 
             for (const submission of submissions) {
                 const isInvalidSubject = !subjects.some(
-                    s => s.id === submission.subjectId && (!s.isExamSubject || submission.type === "exam")
+                    s => s.id === submission.subjectId && (submission.type == "certificate" || s.isExamSubject)
                 );
                 if (isInvalidSubject) throw new ValidationError("Wrong grades subject.");
 

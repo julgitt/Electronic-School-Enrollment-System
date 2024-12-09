@@ -33,7 +33,6 @@ export class CandidateService {
         }
         return candidate;
     }
-
     async getAllByUser(userId: number): Promise<Candidate[]> {
         return this.candidateRepository.getAllByUser(userId);
     }

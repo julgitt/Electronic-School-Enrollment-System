@@ -3,8 +3,8 @@ export interface ApplicationEntity {
     candidateId: number;
     profileId: number;
     priority: number;
-    round: number;
+    enrollmentId: number;
     status: 'pending' | 'rejected' | 'accepted';
-    submittedAt: Date | number;
+    createdAt: Date | number;
     updatedAt: Date | number;
 }

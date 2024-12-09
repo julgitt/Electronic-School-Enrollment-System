@@ -2,6 +2,26 @@ import {db, ITask} from '../db';
 import {ApplicationEntity} from "../models/applicationEntity";
 
 export class ApplicationRepository {
+
+    async getAllByCandidateAndEnrollmentId(candidateId: number, enrollmentId: number): Promise<ApplicationEntity[]> {
+        const query = `
+            SELECT a.candidate_id as candidate_id,
+                   p.id           AS profile_id,
+                   s.id           AS school_id,
+                   a.priority,
+                   a.status,
+                   a.enrollment_id,
+                   a.created_at,
+                   a.updated_at
+            FROM applications a
+                     JOIN profiles p ON a.profile_id = p.id
+                     JOIN schools s ON p.school_id = s.id
+            WHERE candidate_id = $1 and enrollment_id = $2
+        `;
+
+        return await db.query(query, [candidateId, enrollmentId]);
+    }
+
     async getAllByCandidate(candidateId: number): Promise<ApplicationEntity[]> {
         const query = `
             SELECT a.candidate_id as candidate_id,
@@ -9,7 +29,7 @@ export class ApplicationRepository {
                    s.id           AS school_id,
                    a.priority,
                    a.status,
-                   a.round,
+                   a.enrollment_id,
                    a.created_at,
                    a.updated_at
             FROM applications a
@@ -59,6 +79,7 @@ export class ApplicationRepository {
             COUNT *
             FROM applications
             WHERE profile_id = $1 and status = 'accepted'
+           
         `;
 
         return await db.query(query, [profileId]);
@@ -66,13 +87,13 @@ export class ApplicationRepository {
 
     async insert(newApp: ApplicationEntity, t: ITask<any>): Promise<void> {
         const query = `
-            INSERT INTO applications (candidate_id, profile_id, priority, round, status)
+            INSERT INTO applications (candidate_id, profile_id, priority, enrollment_id, status)
             VALUES ($1, $2, $3, $4, $5)
         `;
 
         await t.none(
             query,
-            [newApp.candidateId, newApp.profileId, newApp.priority, newApp.round, newApp.status]
+            [newApp.candidateId, newApp.profileId, newApp.priority, newApp.enrollmentId, newApp.status]
         );
     }
 

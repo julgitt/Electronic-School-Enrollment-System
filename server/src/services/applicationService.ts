@@ -12,11 +12,15 @@ import {ApplicationEntity} from "../models/applicationEntity";
 import {Application} from "../dto/application";
 import {Profile} from "../dto/profile";
 import {SchoolWithProfiles} from "../dto/schoolWithProfiles";
+import {EnrollmentService} from "./enrollmentService";
+import {ValidationError} from "../errors/validationError";
+import {Enrollment} from "../dto/enrollment";
 
 export class ApplicationService {
     constructor(
         private applicationRepository: ApplicationRepository,
         private profileService: ProfileService,
+        private enrollmentService: EnrollmentService,
         private schoolService: SchoolService,
         private readonly tx: (callback: (t: ITask<any>) => Promise<void>) => Promise<void>
     ) {}
@@ -27,6 +31,8 @@ export class ApplicationService {
         const applicationsWithProfiles: ApplicationWithProfiles[] = [];
 
         for (const app of applications) {
+            const enrollment: Enrollment | null = await this.enrollmentService.getEnrollmentById(app.enrollmentId);
+            if (enrollment == null) throw new ResourceNotFoundError('Enrollment ID is not recognized.');
             const profile: Profile | null = await this.profileService.getProfile(app.profileId);
             if (profile == null) throw new ResourceNotFoundError('Profile ID is not recognized.');
             const school: SchoolWithProfiles | null = await this.schoolService.getSchoolWithProfiles(profile.schoolId);
@@ -37,9 +43,9 @@ export class ApplicationService {
                 school: school,
                 profile: profile,
                 priority: app.priority,
-                round: app.round,
+                round: enrollment.round,
                 status: app.status,
-                submittedAt: app.submittedAt,
+                createdAt: app.createdAt,
                 updatedAt: app.updatedAt
             };
 
@@ -61,21 +67,20 @@ export class ApplicationService {
     }
 
     async getAllApplicationSubmissions(candidateId: number): Promise<ApplicationBySchool[]> {
-        // TODO: musi  być z obecnej tury!
         const applications: ApplicationWithProfiles[] = await this.getAllApplications(candidateId);
         return this.groupApplicationsBySchool(applications);
     }
 
     async addApplication(submissions: ApplicationRequest[], candidateId: number): Promise<void> {
-        const applications: Application[] = await this.applicationRepository.getAllByCandidate(candidateId);
-        if (applications.length !== 0) {
-            throw new DataConflictError('ApplicationWithProfiles already exists');
-        }
+        const enrollment: Enrollment | null = await this.enrollmentService.getCurrentEnrollment();
+        if (!enrollment) throw new ValidationError('Application cannot be submitted outside the enrollment period.');
+
+        const applications: Application[] = await this.applicationRepository.getAllByCandidateAndEnrollmentId(candidateId, enrollment.id);
+        if (applications.length !== 0) throw new DataConflictError('Application already exists');
+
         for (const submission of submissions) {
             const profile = await this.profileService.getProfile(submission.profileId);
-            if (profile == null) {
-                throw new ResourceNotFoundError('Profile ID is not recognized.');
-            }
+            if (profile == null) throw new ResourceNotFoundError('Profile ID is not recognized.');
         }
 
         await this.tx(async t => {
@@ -85,9 +90,9 @@ export class ApplicationService {
                     candidateId: candidateId,
                     profileId: submission.profileId,
                     priority: submission.priority,
-                    round: 1,
+                    enrollmentId: enrollment.id,
                     status: 'pending',
-                    submittedAt: new Date(),
+                    createdAt: new Date(),
                     updatedAt: new Date(),
                 };
 
@@ -97,12 +102,14 @@ export class ApplicationService {
     }
 
     async updateApplicationStatus(id: number, status: string) {
-        this.applicationRepository.updateStatus(id, status);
-
+        return this.applicationRepository.updateStatus(id, status);
     }
 
     async updateApplication(submissions: ApplicationRequest[], candidateId: number): Promise<void> {
-        let applications: ApplicationEntity[] = await this.applicationRepository.getAllByCandidate(candidateId);
+        const enrollment: Enrollment | null = await this.enrollmentService.getCurrentEnrollment();
+        if (!enrollment) throw new ValidationError('Application cannot be submitted outside the enrollment period.');
+
+        const applications: ApplicationEntity[] = await this.applicationRepository.getAllByCandidateAndEnrollmentId(candidateId, enrollment.id);
         if (applications.length === 0) {
             throw new ResourceNotFoundError('ApplicationWithProfiles not found.');
         }
@@ -125,9 +132,9 @@ export class ApplicationService {
                     candidateId: candidateId,
                     profileId: submission.profileId,
                     priority: submission.priority,
-                    round: 1,
+                    enrollmentId: enrollment.id,
                     status: 'pending',
-                    submittedAt: new Date(),
+                    createdAt: new Date(),
                     updatedAt: new Date(),
                 };
 

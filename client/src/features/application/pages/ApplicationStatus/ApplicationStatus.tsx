@@ -35,9 +35,9 @@ const ApplicationStatus: React.FC = () => {
                             <td>{application.school.name}</td>
                             <td>{application.profile.name}</td>
                             <td>{application.status}</td>
-                            <td>{application.stage}</td>
+                            <td>{application.round}</td>
                             <td>{application.priority}</td>
-                            <td>{new Date(application.submittedAt).toLocaleDateString()}</td>
+                            <td>{new Date(application.createdAt).toLocaleDateString()}</td>
                         </tr>
                     ))}
                     </tbody>

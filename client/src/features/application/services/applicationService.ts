@@ -12,9 +12,7 @@ export const submitApplication = async (
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-            selections: selections
-        }),
+        body: JSON.stringify(selections),
     });
 
     const data = await response.json();
@@ -38,9 +36,7 @@ export const updateApplication = async (
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-            selections: selections
-        }),
+        body: JSON.stringify(selections),
     });
 
     const data = await response.json();

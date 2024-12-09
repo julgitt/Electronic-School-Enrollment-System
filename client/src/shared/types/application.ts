@@ -9,5 +9,5 @@ export interface Application {
     profile: Profile;
     priority: number;
     status: string;
-    submittedAt: Date;
+    createdAt: Date;
 }
