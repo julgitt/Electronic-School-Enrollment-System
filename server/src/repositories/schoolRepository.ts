@@ -1,8 +1,8 @@
-import { db } from '../db';
-import { School } from '../entities/schoolModel';
+import {db} from '../db';
+import {SchoolEntity} from "../models/schoolEntity";
 
 export class SchoolRepository {
-    async getById(id: number): Promise<School | null> {
+    async getById(id: number): Promise<SchoolEntity | null> {
         const query = `
             SELECT *
             FROM schools 
@@ -13,16 +13,16 @@ export class SchoolRepository {
         return await db.oneOrNone(query, [id]);
     }
 
-    async getAll(): Promise<School[]> {
+    async getAll(): Promise<SchoolEntity[]> {
         const query = `
             SELECT id, name 
             FROM schools;
         `;
 
-        return await db.query<School[]>(query);
+        return await db.query<SchoolEntity[]>(query);
     }
 
-    async insert(newSchool: School): Promise<void> {
+    async insert(newSchool: SchoolEntity): Promise<void> {
         const query = `
             INSERT INTO schools (name, type) 
             VALUES ($1, $2)

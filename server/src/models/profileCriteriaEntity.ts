@@ -1,4 +1,4 @@
-export interface ProfileCriteria {
+export interface ProfileCriteriaEntity {
     id: number;
     profileId: number;
     subjectId: number;

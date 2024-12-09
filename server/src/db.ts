@@ -1,4 +1,4 @@
-import pgPromise, { ITask } from 'pg-promise';
+import pgPromise, {ITask} from 'pg-promise';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -38,4 +38,4 @@ const tx: transactionFunction = async (callback) => {
     return db.tx(callback);
 };
 
-export { db, tx, transactionFunction, ITask };
+export {db, tx, transactionFunction, ITask};

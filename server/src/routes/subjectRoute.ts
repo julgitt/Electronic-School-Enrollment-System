@@ -1,11 +1,7 @@
-import {NextFunction, Router, Request, Response} from 'express';
-import {SubjectController} from "../controllers/subjectController";
-import {SubjectService} from "../services/subjectService";
-import {SubjectRepository} from "../repositories/subjectRepository";
+import {NextFunction, Request, Response, Router} from 'express';
 
-const subjectRepository: SubjectRepository = new SubjectRepository();
-const subjectService: SubjectService = new SubjectService(subjectRepository);
-const subjectController = new SubjectController(subjectService);
+import {subjectController} from "../dependencyContainer";
+
 
 const router = Router();
 

@@ -1,8 +1,8 @@
 import {db} from '../db';
-import {Subject} from "../entities/subjectModel";
+import {SubjectEntity} from "../models/subjectEntity";
 
 export class SubjectRepository {
-    async getAll(): Promise<Subject[]> {
+    async getAll(): Promise<SubjectEntity[]> {
         const query = `
             SELECT * 
             FROM subjects

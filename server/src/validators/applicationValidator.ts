@@ -1,4 +1,4 @@
-import { body } from 'express-validator';
+import {body} from 'express-validator';
 
 function validatePesel(pesel: string): boolean {
     if (!/^\d{11}$/.test(pesel)) {

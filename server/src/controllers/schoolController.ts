@@ -1,16 +1,16 @@
-import { NextFunction, Request, Response } from 'express';
+import {NextFunction, Request, Response} from 'express';
 
-import { School } from '../entities/schoolModel';
-import { SchoolService } from "../services/schoolService";
+import {SchoolService} from "../services/schoolService";
+import {SchoolWithProfiles} from "../dto/schoolWithProfiles";
+
+
 
 export class SchoolController {
-    constructor(private schoolService: SchoolService) {
-        this.schoolService = schoolService;
-    }
+    constructor(private schoolService: SchoolService) {}
 
     async getAllSchoolsWithProfiles(_req: Request, res: Response, next: NextFunction) {
         try {
-            const schools: School[] = await this.schoolService.getAllSchoolsWithProfiles();
+            const schools: SchoolWithProfiles[] = await this.schoolService.getAllSchoolsWithProfiles();
             return res.status(200).json(schools);
         } catch (error) {
             return next(error);
@@ -19,7 +19,7 @@ export class SchoolController {
 
     async addSchool(req: Request, res: Response, next: NextFunction) {
         try {
-            const { name } = req.body;
+            const {name} = req.body;
             await this.schoolService.addSchool(name);
             return res.status(201).json("School addition successful");
         } catch (error) {

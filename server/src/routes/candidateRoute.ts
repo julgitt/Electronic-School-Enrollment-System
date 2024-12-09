@@ -1,36 +1,26 @@
-import {NextFunction, Router, Request, Response} from 'express';
+import {NextFunction, Request, Response, Router} from 'express';
 
-import { candidateRegisterValidator } from '../validators/candidateValidator';
-import { handleValidationErrors } from '../middlewares/validationErrorHandler';
+import {candidateController} from '../dependencyContainer'
+import {candidateRegisterValidator} from '../validators/candidateValidator';
+import {handleValidationErrors} from '../middlewares/validationErrorHandler';
+import {authorize} from "../middlewares/authorize";
 
-import { CandidateRepository } from "../repositories/candidateRepository";
-import { CandidateService } from "../services/candidateService";
-import { CandidateController } from '../controllers/candidateController';
-
-
-const candidateRepository: CandidateRepository = new CandidateRepository();
-const candidateService: CandidateService = new CandidateService(candidateRepository);
-const candidateController = new CandidateController(candidateService);
 
 const router = Router();
 
-router.post('/registerCandidate', candidateRegisterValidator, handleValidationErrors, async (req: Request, res: Response, next: NextFunction) => {
+router.post('/registerCandidate', authorize('user'), candidateRegisterValidator, handleValidationErrors, async (req: Request, res: Response, next: NextFunction) => {
     return await candidateController.register(req, res, next);
 });
 
-/*router.post('/editCandidate', candidateRegisterValidator, handleValidationErrors, async (req: Request, res: Response, next: NextFunction) => {
-    return await candidateController.edit(req, res, next);
-});*/
-
-router.post('/switchCandidate', async (req: Request, res: Response, next: NextFunction) => {
+router.post('/switchCandidate', authorize('user'), async (req: Request, res: Response, next: NextFunction) => {
     return await candidateController.switchCandidate(req, res, next);
 });
 
-router.get('/candidate', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/candidate', authorize('user'), async (req: Request, res: Response, next: NextFunction) => {
     return await candidateController.getCandidate(req, res, next);
 });
 
-router.get('/candidates', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/candidates', authorize('user'), async (req: Request, res: Response, next: NextFunction) => {
     return await candidateController.getAllCandidates(req, res, next);
 });
 

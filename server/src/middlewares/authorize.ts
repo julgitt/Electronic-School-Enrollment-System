@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import {NextFunction, Request, Response} from 'express';
 
 export function authorize(...roles: string[]) {
     return async function (req: Request, res: Response, next: NextFunction) {
@@ -11,14 +11,14 @@ export function authorize(...roles: string[]) {
         }
 
         if (!userId) {
-            return res.status(401).json({ message: 'Not authorized', redirect: '/login?returnUrl=' + req.url});
+            return res.status(401).json({message: 'Not authorized', redirect: '/login?returnUrl=' + req.url});
         }
 
         if (userRoles && roles.some(role => userRoles.includes(role))) {
-                req.user = userId;
-                return next();
+            req.user = userId;
+            return next();
         }
 
-        return res.status(403).json({ message: 'Access denied.' });
+        return res.status(403).json({message: 'Access denied.'});
     };
 }

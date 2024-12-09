@@ -1,26 +1,21 @@
-import { Request, Response, NextFunction } from 'express';
+import {NextFunction, Request, Response} from 'express';
 
-import { UserService } from "../services/userService";
-import { CandidateService } from "../services/candidateService";
+import {UserService} from "../services/userService";
+import {userRequest} from "../dto/userRequest";
+import {UserWithRoles} from "../dto/userWithRoles";
+
 
 export class UserController {
-    constructor(private userService: UserService, private candidateService: CandidateService) {
-        this.userService = userService;
-        this.candidateService = candidateService;
-    }
+    constructor(private userService: UserService) {}
 
     async register(req: Request, res: Response, next: NextFunction) {
         try {
-            const {
-                username: login,
-                email: email,
-                password: password,
-            } = req.body;
+            const user: userRequest = req.body;
 
-            await this.userService.register(login, email, password);
+            await this.userService.register(user);
             return res.status(201).json({
                 message: 'Signup successful',
-                user: { username: login },
+                user: {username: user.username},
                 redirect: '/login'
             });
         } catch (error) {
@@ -29,12 +24,12 @@ export class UserController {
     }
 
     async login(req: Request, res: Response, next: NextFunction) {
-        const { username: loginOrEmail, password } = req.body;
+        const {username: loginOrEmail, password} = req.body;
 
         try {
-            const user = await this.userService.login(loginOrEmail, password);
+            const user: UserWithRoles = await this.userService.login(loginOrEmail, password);
             if (user.roles.includes('admin'))
-                return res.status(200).json({ message: 'Login successful', redirect: '/admin_dashboard' });
+                return res.status(200).json({message: 'Login successful', redirect: '/admin_dashboard'});
 
             res.cookie('userId', user.id, {
                 signed: true,
@@ -50,7 +45,7 @@ export class UserController {
                 maxAge: 86400000
             });
 
-            return res.status(200).json({ message: 'Login successful', redirect: req.query.returnUrl || '/' });
+            return res.status(200).json({message: 'Login successful', redirect: req.query.returnUrl || '/'});
         } catch (error) {
             return next(error);
         }
@@ -62,7 +57,7 @@ export class UserController {
             res.clearCookie('candidateName');
             res.clearCookie('userId');
             res.clearCookie('roles');
-            return res.status(200).json({ message: 'Logout successful' });
+            return res.status(200).json({message: 'Logout successful'});
         } catch (error) {
             return next(error);
         }
@@ -70,8 +65,8 @@ export class UserController {
 
     async getUser(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.signedCookies.userId || null;
-            return res.status(200).json({ user: user });
+            const user: number | null = req.signedCookies.userId || null;
+            return res.status(200).json({user: user});
         } catch (error) {
             return next(error);
         }

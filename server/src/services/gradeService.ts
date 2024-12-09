@@ -1,23 +1,24 @@
 import {GradeRepository} from "../repositories/gradeRepository";
 import {DataConflictError} from "../errors/dataConflictError";
 import {ITask} from "pg-promise";
-import {GradeSubmission} from "../types/gradeSubmission";
-import {Grade} from "../models/gradeModel";
+import {GradeRequest} from "../dto/gradeRequest";
 import {SubjectService} from "./subjectService";
 import {ValidationError} from "../errors/validationError";
+import {GradeEntity} from "../models/gradeEntity";
+import {Grade} from "../dto/grade";
 
 export class GradeService {
     constructor(
         private gradeRepository: GradeRepository,
         private subjectService: SubjectService,
-        private readonly tx: (callback: (t: ITask<any>) => Promise<void>) => Promise<void>)
-    {}
+        private readonly tx: (callback: (t: ITask<any>) => Promise<void>) => Promise<void>) {
+    }
 
     async getAllByCandidate(candidateId: number) {
         return this.gradeRepository.getAllByCandidate(candidateId);
     }
 
-    async submitGrades(submissions: GradeSubmission[], candidateId: number): Promise<void> {
+    async submitGrades(submissions: GradeRequest[], candidateId: number): Promise<void> {
         await this.tx(async t => {
             const subjects = await this.subjectService.getAllSubjects();
             const examSubjects = subjects.filter(s => s.isExamSubject);
@@ -30,15 +31,15 @@ export class GradeService {
                 );
                 if (isInvalidSubject) throw new ValidationError("Wrong grades subject.");
 
-                const existingGrade = await this.gradeRepository.getByCandidateSubjectType(
+                const existingGrade: Grade | null = await this.gradeRepository.getByCandidateSubjectType(
                     candidateId,
                     submission.subjectId,
                     submission.type
                 );
 
-                if (existingGrade) throw new DataConflictError('Grade already exists');
+                if (existingGrade) throw new DataConflictError('GradeRequest already exists');
 
-                const newGrade: Grade = {
+                const newGrade: GradeEntity = {
                     candidateId: candidateId,
                     subjectId: submission.subjectId,
                     grade: submission.grade,

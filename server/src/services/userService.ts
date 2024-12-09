@@ -1,22 +1,23 @@
-import { compare, hash } from 'bcrypt';
+import {compare, hash} from 'bcrypt';
 
-import { transactionFunction } from "../db";
+import {transactionFunction} from "../db";
 
-import { UserRepository } from '../repositories/userRepository';
-import { AuthenticationError } from "../errors/authenticationError";
-import { DataConflictError } from "../errors/dataConflictError";
-import {User} from "../models/userModel";
+import {UserRepository} from '../repositories/userRepository';
+import {AuthenticationError} from "../errors/authenticationError";
+import {DataConflictError} from "../errors/dataConflictError";
+import {userRequest} from "../dto/userRequest";
+import {UserWithRoles} from "../dto/userWithRoles";
+import {User} from "../dto/user";
+import {UserEntity} from "../models/userEntity";
 
 export class UserService {
     constructor(
         private userRepository: UserRepository,
-        private readonly tx: transactionFunction) {
-        this.userRepository = userRepository;
-        this.tx = tx
-    }
+        private readonly tx: transactionFunction
+    ) {}
 
-    async login(login: string, password: string): Promise<User> {
-        const existingUser: User | null = await this.userRepository.getByLoginOrEmail(login, login);
+    async login(login: string, password: string): Promise<UserWithRoles> {
+        const existingUser: UserWithRoles | null = await this.userRepository.getWithRolesByLoginOrEmail(login, login);
         if (!existingUser || !(await compare(password, existingUser.password))) {
             throw new AuthenticationError('Invalid credentials.');
         }
@@ -24,28 +25,28 @@ export class UserService {
         return existingUser;
     }
 
-    async register(login: string, email: string, password: string): Promise<void> {
-        const existingUser = await this.userRepository.getByLoginOrEmail(login, email, false);
+    async register(user: userRequest): Promise<void> {
+        const existingUser: User | null = await this.userRepository.getWithoutRolesByLoginOrEmail(user.username, user.email);
         if (existingUser) {
-            if (existingUser.login === login) {
-                throw new DataConflictError('Login is already taken.');
+            if (existingUser.username === user.username) {
+                throw new DataConflictError('Username is already taken.');
             }
-            if (existingUser.email === email) {
+            if (existingUser.email === user.email) {
                 throw new DataConflictError('There is already an account with that email.');
             }
         }
 
-        const hashedPassword = await hash(password, 12);
-        const newUser: User = {
-            login,
-            email,
+        const hashedPassword: string = await hash(user.password, 12);
+        const newUser: UserEntity = {
+            id: 0,
+            username: user.username,
+            email: user.email,
             password: hashedPassword,
-            roles: ['user'],
         };
 
         await this.tx(async t => {
-            const user = await this.userRepository.insert(newUser, t);
-            await this.userRepository.insertUserRoles(user.id!, newUser.roles, t);
+            const user: UserEntity = await this.userRepository.insert(newUser, t);
+            await this.userRepository.insertUserRoles(user.id, ['user'], t);
         });
     }
 }

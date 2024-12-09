@@ -1,6 +1,6 @@
 # Electronic School Enrollment System
 
-## Application created as an engineering thesis.
+## ApplicationWithProfiles created as an engineering thesis.
 
 ### Frontend:
 

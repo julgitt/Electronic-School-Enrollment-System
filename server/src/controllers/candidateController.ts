@@ -1,17 +1,19 @@
-import { Request, Response, NextFunction } from 'express';
-import { CandidateService } from "../services/candidateService";
-import {CandidateEntity} from "../entities/candidate";
+import {NextFunction, Request, Response} from 'express';
+
+import {CandidateService} from "../services/candidateService";
+import {Candidate} from "../dto/candidate";
+import {CandidateRequest} from "../dto/candidateRequest";
+
 
 export class CandidateController {
-    constructor(private candidateService: CandidateService) {
-    }
+    constructor(private candidateService: CandidateService) {}
 
     async switchCandidate(req: Request, res: Response, next: NextFunction) {
         try {
-            const candidateId = req.body.candidateId;
-            const userId = req.signedCookies.userId;
+            const candidateId: number = req.body.candidateId;
+            const userId: number = req.signedCookies.userId;
 
-            const newCandidate = await this.candidateService.getCandidate(candidateId, userId);
+            const newCandidate: Candidate = await this.candidateService.getCandidate(candidateId, userId);
 
             res.cookie('candidateId', newCandidate.id, {
                 signed: true,
@@ -29,31 +31,13 @@ export class CandidateController {
         }
     }
 
-    /*
-        async edit(req: Request, res: Response, next: NextFunction) {
-            try {
-                const {
-                    firstName,
-                    lastName,
-                    pesel
-                } = req.body;
-
-                const userId = req.signedCookies.userId;
-            }
-        }
-    */
-
     async register(req: Request, res: Response, next: NextFunction) {
         try {
-            const {
-                firstName,
-                lastName,
-                pesel
-            } = req.body;
+            const candidate: CandidateRequest = req.body;
 
-            const userId = req.signedCookies.userId;
+            const userId: number = req.signedCookies.userId;
 
-            await this.candidateService.register(userId, firstName, lastName, pesel);
+            await this.candidateService.register(userId, candidate);
 
             return res.status(201).json({
                 message: 'Registering candidate successful',
@@ -66,11 +50,11 @@ export class CandidateController {
 
     async getCandidate(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = req.signedCookies.userId
+            const userId: number = req.signedCookies.userId
             if (userId == null) return res.status(200).json();
 
-            let candidateId = req.signedCookies.candidateId;
-            const candidate = (candidateId == null)
+            const candidateId: number = req.signedCookies.candidateId;
+            const candidate: Candidate | null = (candidateId == null)
                 ? await this.candidateService.getLastCreatedCandidateByUser(userId)
                 : await this.candidateService.getCandidate(candidateId, userId);
 
@@ -80,7 +64,7 @@ export class CandidateController {
                     redirect: '/registerCandidate'
                 });
 
-            res.cookie('candidateId', candidate!.id, {
+            res.cookie('candidateId', candidate.id, {
                 signed: true,
                 secure: true,
                 httpOnly: true,
@@ -95,14 +79,14 @@ export class CandidateController {
 
     async getAllCandidates(req: Request, res: Response, next: NextFunction) {
         try {
-            let candidateId = req.signedCookies.candidateId;
-            const userId = req.signedCookies.userId;
+            const candidateId: number = req.signedCookies.candidateId;
+            const userId: number = req.signedCookies.userId;
 
-            let candidates: CandidateEntity[] = [];
+            let candidates: Candidate[] = [];
 
             if (userId != null) {
                 candidates = await this.candidateService.getAllByUser(userId);
-                candidates = candidates.filter(item => item.id != candidateId);
+                candidates = candidates.filter(candidate => candidate.id != candidateId);
             }
 
             res.status(200).json({candidates: candidates});

@@ -1,4 +1,4 @@
-export interface SchoolModel {
+export interface SchoolEntity {
     id: number;
     name: string;
 }

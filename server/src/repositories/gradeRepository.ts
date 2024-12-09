@@ -1,5 +1,5 @@
 import {db, ITask} from '../db';
-import {Grade} from "../models/gradeModel";
+import {GradeEntity} from "../models/gradeEntity";
 
 export class GradeRepository {
 
@@ -13,7 +13,8 @@ export class GradeRepository {
 
         return await db.query(query, [candidateId]);
     }
-    async getByCandidateSubjectType(candidateId: number, subjectId: number, type: string): Promise<Grade | null> {
+
+    async getByCandidateSubjectType(candidateId: number, subjectId: number, type: string): Promise<GradeEntity | null> {
         const query = `
             SELECT * 
             FROM grades
@@ -24,7 +25,7 @@ export class GradeRepository {
         return await db.oneOrNone(query, [candidateId, subjectId, type]);
     }
 
-    async getByCandidate(candidateId: number): Promise<Grade | null> {
+    async getByCandidate(candidateId: number): Promise<GradeEntity | null> {
         const query = `
             SELECT * 
             FROM grades
@@ -36,7 +37,7 @@ export class GradeRepository {
     }
 
 
-    async insert(grade: Grade, t: ITask<any>): Promise<void> {
+    async insert(grade: GradeEntity, t: ITask<any>): Promise<void> {
         const query = `
             INSERT INTO grades (candidate_id, subject_id, grade, type)
             VALUES ($1, $2, $3, $4)

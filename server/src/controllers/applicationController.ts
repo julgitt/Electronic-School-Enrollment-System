@@ -1,17 +1,18 @@
 import {NextFunction, Request, Response} from 'express';
 
-import { ApplicationService } from "../services/applicationService";
-import {ApplicationSubmission} from "../types/applicationSubmission";
+import {ApplicationService} from "../services/applicationService";
+import {ApplicationRequest} from "../dto/applicationRequest";
+import {ApplicationBySchool} from "../dto/applicationBySchool";
+import {ApplicationWithProfiles} from "../dto/applicationWithProfiles";
+
 
 export class ApplicationController {
-    constructor(private applicationService: ApplicationService) {
-        this.applicationService = applicationService;
-    }
+    constructor(private applicationService: ApplicationService) {}
 
     async getApplications(req: Request, res: Response, next: NextFunction) {
         try {
-            const candidateId = req.signedCookies.candidateId;
-            const applications = await this.applicationService.getAllApplications(candidateId);
+            const candidateId: number = req.signedCookies.candidateId;
+            const applications: ApplicationWithProfiles[] = await this.applicationService.getAllApplications(candidateId);
             return res.status(200).json(applications);
         } catch (error) {
             return next(error);
@@ -20,9 +21,9 @@ export class ApplicationController {
 
     async getApplicationSubmissions(req: Request, res: Response, next: NextFunction) {
         try {
-            const candidateId = req.signedCookies.candidateId;
-            const submissions = await this.applicationService.getAllApplicationSubmissions(candidateId);
-            return res.status(200).json(submissions);
+            const candidateId: number = req.signedCookies.candidateId;
+            const applications: ApplicationBySchool[] = await this.applicationService.getAllApplicationSubmissions(candidateId);
+            return res.status(200).json(applications);
         } catch (error) {
             return next(error);
         }
@@ -30,11 +31,11 @@ export class ApplicationController {
 
     async addApplication(req: Request, res: Response, next: NextFunction) {
         try {
-            const { selections: applicationSubmissions}: {selections: ApplicationSubmission[]} = req.body;
-            const candidateId = req.signedCookies.candidateId;
+            const applications: ApplicationRequest[] = req.body;
+            const candidateId: number = req.signedCookies.candidateId;
 
-            await this.applicationService.addApplication(applicationSubmissions, candidateId);
-            return res.status(201).json({ message: 'Application successful', redirect: '/applicationSubmitted' });
+            await this.applicationService.addApplication(applications, candidateId);
+            return res.status(201).json({message: 'ApplicationWithProfiles successful', redirect: '/applicationSubmitted'});
         } catch (error) {
             return next(error)
         }
@@ -42,11 +43,11 @@ export class ApplicationController {
 
     async updateApplication(req: Request, res: Response, next: NextFunction) {
         try {
-            const { selections: applicationSubmissions}: {selections: ApplicationSubmission[]} = req.body;
+            const { selections: applications}: {selections: ApplicationRequest[]} = req.body;
             const candidateId = req.signedCookies.candidateId;
 
-            await this.applicationService.updateApplication(applicationSubmissions, candidateId);
-            return res.status(200).json({ message: 'Application successfully updated', redirect: '/applicationSubmitted' });
+            await this.applicationService.updateApplication(applications, candidateId);
+            return res.status(201).json({message: 'ApplicationWithProfiles successfully updated', redirect: '/applicationSubmitted'});
         } catch (error) {
             return next(error)
         }

@@ -1,5 +1,5 @@
 import {SubjectRepository} from "../repositories/subjectRepository";
-import {Subject} from "../models/subjectModel";
+import {Subject} from "../dto/subject";
 
 export class SubjectService {
     constructor(private subjectRepository: SubjectRepository) {

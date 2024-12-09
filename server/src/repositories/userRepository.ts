@@ -1,21 +1,17 @@
-import { db, ITask } from '../db';
-import { User } from '../entities/userModel';
+import {db, ITask} from '../db';
+import {UserEntity} from "../models/userEntity";
+import {UserEntityWithRoles} from "../models/userEntityWithRoles";
 
 export class UserRepository {
-    async getByLoginOrEmail(login: string, email: string, withRoles: boolean = true): Promise<User | null> {
-        return withRoles
-            ? this.getWithRolesByLoginOrEmail(login, email)
-            : this.getWithoutRolesByLoginOrEmail(login, email);
-    }
 
-    async insert(newUser: Omit<User, 'id'>, t: ITask<any>): Promise<User> {
+    async insert(newUser: UserEntity, t: ITask<any>): Promise<UserEntity> {
         const userInsertQuery = `
-            INSERT INTO users (login, email, password)
+            INSERT INTO users (username, email, password)
             VALUES ($1, $2, $3)
             RETURNING id;
         `;
 
-        const values = [newUser.login, newUser.email, newUser.password];
+        const values = [newUser.username, newUser.email, newUser.password];
         return t.one(userInsertQuery, values);
     }
 
@@ -30,26 +26,26 @@ export class UserRepository {
         }
     }
 
-    private async getWithRolesByLoginOrEmail(login: string, email: string): Promise<User | null> {
+    async getWithRolesByLoginOrEmail(username: string, email: string): Promise<UserEntityWithRoles | null> {
         const query = `
             SELECT u.*, array_agg(r.role_name) as roles
             FROM users u
             LEFT JOIN user_roles r ON u.id = r.user_id
-            WHERE u.login = $1 or u.email = $2
+            WHERE u.username = $1 or u.email = $2
             GROUP BY u.id
             LIMIT 1
         `;
-        return await db.oneOrNone(query, [login, email]);
+        return await db.oneOrNone(query, [username, email]);
     }
 
-    private async getWithoutRolesByLoginOrEmail(login: string, email: string): Promise<User | null> {
+    async getWithoutRolesByLoginOrEmail(username: string, email: string): Promise<UserEntity | null> {
         const query = `
             SELECT * 
             FROM users 
-            WHERE login = $1 OR email = $2
+            WHERE username = $1 OR email = $2
             LIMIT 1;
         `;
 
-        return await db.oneOrNone(query, [login, email]);
+        return await db.oneOrNone(query, [username, email]);
     }
 }

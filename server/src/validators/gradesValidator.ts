@@ -1,4 +1,4 @@
-import { body } from 'express-validator';
+import {body} from 'express-validator';
 
 export const gradesValidator = [
     body("grades")
@@ -12,7 +12,7 @@ export const gradesValidator = [
                 if (grade.type == "certificate" && grade.grade > 6 || grade.grade <= 0) {
                     throw Error("Grades from the school certificate should be the number between 1 and 6.")
                 }
-                if(grade.type == "exam" && grade.grade < 0 || grade.grade > 100) {
+                if (grade.type == "exam" && grade.grade < 0 || grade.grade > 100) {
                     throw Error("Grades from the exam should be the number between 0 and 100.")
                 }
             }

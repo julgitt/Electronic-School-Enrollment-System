@@ -7,15 +7,17 @@ import {CandidateRepository} from "../../../src/repositories/candidateRepository
 import {ResourceNotFoundError} from "../../../src/errors/resourceNotFoundError";
 import {AuthorizationError} from "../../../src/errors/authorizationError";
 import {DataConflictError} from "../../../src/errors/dataConflictError";
+import {GradeService} from "../../../src/services/gradeService";
 
 
 describe('CandidateService', () => {
     let candidateService: CandidateService;
     let candidateRepoStub: sinon.SinonStubbedInstance<CandidateRepository>;
+    let gradeServiceStub: sinon.SinonStubbedInstance<GradeService>;
 
     beforeEach(() => {
         candidateRepoStub = sinon.createStubInstance(CandidateRepository);
-        candidateService = new CandidateService(candidateRepoStub);
+        candidateService = new CandidateService(gradeServiceStub, candidateRepoStub);
     });
 
     afterEach(() => { sinon.restore(); });

@@ -1,33 +1,41 @@
-import { SchoolRepository } from "../repositories/schoolRepository";
-import { ProfileRepository } from "../repositories/profileRepository";
-import { School } from "../types/school";
-import {SchoolModel} from "../models/schoolModel";
+import {SchoolRepository} from "../repositories/schoolRepository";
+import {ProfileService} from "./profileService";
+import {SchoolWithProfiles} from "../dto/schoolWithProfiles";
+import {SchoolEntity} from "../models/schoolEntity";
 
 export class SchoolService {
     constructor(private schoolRepository: SchoolRepository,
-                private profileRepository: ProfileRepository) {
-        this.schoolRepository = schoolRepository;
-        this.profileRepository = profileRepository;
+                private profileService: ProfileService) {
     }
 
-    async getAllSchoolsWithProfiles(): Promise<School[]> {
-        let schools = await this.schoolRepository.getAll();
+    async getAllSchoolsWithProfiles(): Promise<SchoolWithProfiles[]> {
+        let schools: SchoolEntity[] = await this.schoolRepository.getAll();
+        let schoolsWithProfiles: SchoolWithProfiles[] = [];
         for (let school of schools) {
-            school.profiles = await this.profileRepository.getAllBySchool(school.id!);
+            schoolsWithProfiles.push({
+                id: school.id,
+                name: school.name,
+                profiles: await this.profileService.getProfilesBySchool(school.id),
+            });
         }
-        return schools
+        return schoolsWithProfiles
     }
 
-    async getSchoolWithProfiles(id: number): Promise<School | null> {
-        let school = await this.schoolRepository.getById(id);
+    async getSchoolWithProfiles(id: number): Promise<SchoolWithProfiles | null> {
+        const school: SchoolEntity | null = await this.schoolRepository.getById(id);
+
         if (school) {
-            school.profiles = await this.profileRepository.getAllBySchool(school.id);
+            return {
+                id: school.id,
+                name: school.name,
+                profiles: await this.profileService.getProfilesBySchool(school.id),
+            }
         }
         return school
     }
 
-    async addSchool(name: string, ): Promise<void> {
-        const newSchool: SchoolModel = {
+    async addSchool(name: string,): Promise<void> {
+        const newSchool: SchoolEntity = {
             id: 0,
             name: name,
         }

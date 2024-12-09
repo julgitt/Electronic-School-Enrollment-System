@@ -1,14 +1,17 @@
-import { CandidateRepository } from "../repositories/candidateRepository";
+import {CandidateRepository} from "../repositories/candidateRepository";
 import {DataConflictError} from "../errors/dataConflictError";
 import {ResourceNotFoundError} from "../errors/resourceNotFoundError";
-import {Candidate} from "../models/candidateModel";
-import {Grade} from "../models/gradeModel";
 import {GradeService} from "./gradeService";
+import {Grade} from "../dto/grade";
+import {Candidate} from "../dto/candidate";
+import {CandidateEntity} from "../models/candidateEntity";
+import {CandidateRequest} from "../dto/candidateRequest";
 
 export class CandidateService {
     constructor(
         private readonly gradeService: GradeService,
-        private readonly candidateRepository: CandidateRepository) {}
+        private readonly candidateRepository: CandidateRepository) {
+    }
 
     async getAllWithGrades() {
         const gradesByCandidateId = new Map<number, Grade[]>;
@@ -24,29 +27,29 @@ export class CandidateService {
     }
 
     async getCandidate(id: number, userId: number) {
-        const candidate = await this.candidateRepository.getById(id);
-        if (candidate == null || candidate.userId !== userId) {
+        const candidate: Candidate | null = await this.candidateRepository.getById(id);
+        if (candidate == null || candidate.userId != userId) {
             throw new ResourceNotFoundError('Candidate not found.');
         }
         return candidate;
     }
 
-    async getAllByUser(userId: number) {
+    async getAllByUser(userId: number): Promise<Candidate[]> {
         return this.candidateRepository.getAllByUser(userId);
     }
 
-    async register(userId: number, firstName: string, lastName: string, pesel: string): Promise<Candidate> {
-        const existingCandidate = await this.candidateRepository.getByPesel(pesel);
+    async register(userId: number, candidate: CandidateRequest): Promise<Candidate> {
+        const existingCandidate: Candidate | null = await this.candidateRepository.getByPesel(candidate.pesel);
         if (existingCandidate) {
             throw new DataConflictError('There is already candidate with that pesel.');
         }
 
-        const newCandidate: Candidate = {
+        const newCandidate: CandidateEntity = {
             id: 0,
             userId,
-            firstName,
-            lastName,
-            pesel,
+            firstName: candidate.firstName,
+            lastName: candidate.lastName,
+            pesel: candidate.pesel,
         };
 
         return await this.candidateRepository.insert(newCandidate);

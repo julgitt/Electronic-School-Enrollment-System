@@ -1,15 +1,15 @@
-import { NextFunction, Request, Response } from 'express';
+import {NextFunction, Request, Response} from 'express';
 
 import {SubjectService} from "../services/subjectService";
+import {Subject} from "../dto/subject";
+
 
 export class SubjectController {
-    constructor(private subjectService: SubjectService) {
-        this.subjectService = subjectService;
-    }
+    constructor(private subjectService: SubjectService) {}
 
-    async getAllSubjects(req: Request, res: Response, next: NextFunction) {
+    async getAllSubjects(_req: Request, res: Response, next: NextFunction) {
         try {
-            const subjects = await this.subjectService.getAllSubjects();
+            const subjects: Subject[] = await this.subjectService.getAllSubjects();
             return res.status(201).json(subjects);
         } catch (error) {
             return next(error);

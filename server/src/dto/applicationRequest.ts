@@ -1,4 +1,4 @@
-export interface ApplicationSubmission {
+export interface ApplicationRequest {
     profileId: number;
     priority: number;
 }

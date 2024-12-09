@@ -1,8 +1,8 @@
-import { db } from '../db';
-import {Candidate} from "../models/candidateModel";
+import {db} from '../db';
+import {CandidateEntity} from "../models/candidateEntity";
 
 export class CandidateRepository {
-    async getById(id: number): Promise<Candidate | null> {
+    async getById(id: number): Promise<CandidateEntity | null> {
         const query = `
             SELECT * FROM candidates
             WHERE id = $1
@@ -11,7 +11,7 @@ export class CandidateRepository {
         return await db.oneOrNone(query, [id]);
     }
 
-    async getAll(): Promise<Candidate[]> {
+    async getAll(): Promise<CandidateEntity[]> {
         const query = `
             SELECT *
             FROM candidates
@@ -20,7 +20,7 @@ export class CandidateRepository {
         return await db.query(query);
     }
 
-    async getByPesel(pesel: string): Promise<Candidate | null> {
+    async getByPesel(pesel: string): Promise<CandidateEntity | null> {
         const query = `
             SELECT * FROM candidates
             WHERE pesel = $1
@@ -29,7 +29,7 @@ export class CandidateRepository {
         return await db.oneOrNone(query, [pesel]);
     }
 
-    async getAllByUser(userId: number): Promise<Candidate[]> {
+    async getAllByUser(userId: number): Promise<CandidateEntity[]> {
         const query = `
             SELECT * FROM candidates
             WHERE user_id = $1
@@ -38,7 +38,7 @@ export class CandidateRepository {
         return await db.query(query, [userId]);
     }
 
-    async getLastUpdatedByUser(userId: number): Promise<Candidate | null> {
+    async getLastUpdatedByUser(userId: number): Promise<CandidateEntity | null> {
         const query = `
             SELECT * FROM candidates
             WHERE user_id = $1
@@ -48,7 +48,7 @@ export class CandidateRepository {
         return await db.oneOrNone(query, [userId]);
     }
 
-    async insert(newCandidate: Candidate): Promise<Candidate> {
+    async insert(newCandidate: CandidateEntity): Promise<CandidateEntity> {
         const query = `
             INSERT INTO candidates (first_name, last_name, pesel, user_id)
             VALUES ($1, $2, $3, $4)

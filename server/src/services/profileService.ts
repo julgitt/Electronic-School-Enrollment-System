@@ -1,22 +1,13 @@
-import { ProfileRepository } from "../repositories/profileRepository";
-import { Profile } from "../models/profileModel";
-import { ProfileCriteria } from "../models/profileCriteria";
-import { Grade } from "../models/gradeModel";
+import {ProfileRepository} from "../repositories/profileRepository";
+import {ProfileCriteriaEntity} from "../models/profileCriteriaEntity";
+import {Profile} from "../dto/profile";
+import {Grade} from "../dto/grade";
 
 export class ProfileService {
     constructor(private profileRepository: ProfileRepository) {
-        this.profileRepository = profileRepository;
     }
 
-    async getProfile(profileId: number): Promise<Profile | null> {
-        return this.profileRepository.getById(profileId);
-    }
-
-    async getProfileCriteria(profileId: number): Promise<ProfileCriteria[]> {
-        return this.profileRepository.getProfileCriteria(profileId);
-    }
-
-    static calculatePoints(profileCriteria: ProfileCriteria[],grades: Grade[]) {
+    static calculatePoints(profileCriteria: ProfileCriteriaEntity[], grades: Grade[]) {
         const mandatorySubjects = profileCriteria.filter(s => s.type === 'mandatory');
         const alternativeSubjects = profileCriteria.filter(s => s.type === 'alternative');
         let points = 0;
@@ -27,11 +18,23 @@ export class ProfileService {
                 points += grade.grade;
             } else if (grade.subjectId in mandatorySubjects) {
                 points += grade.grade;
-            } else  if (grade.subjectId in alternativeSubjects) {
+            } else if (grade.subjectId in alternativeSubjects) {
                 alternativeGrades.push(grade.grade);
             }
         }
         return points + alternativeGrades.sort().pop()!;
+    }
+
+    async getProfile(profileId: number): Promise<Profile | null> {
+        return this.profileRepository.getById(profileId);
+    }
+
+    getProfilesBySchool(schoolId: number): Promise<Profile[]> {
+        return this.profileRepository.getAllBySchool(schoolId);
+    }
+
+    async getProfileCriteria(profileId: number): Promise<ProfileCriteriaEntity[]> {
+        return this.profileRepository.getProfileCriteria(profileId);
     }
 
 

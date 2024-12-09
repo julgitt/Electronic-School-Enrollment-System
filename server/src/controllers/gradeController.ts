@@ -1,19 +1,18 @@
-import { NextFunction, Request, Response } from 'express';
+import {NextFunction, Request, Response} from 'express';
 
 import {GradeService} from "../services/gradeService";
-import {GradeSubmission} from "../types/gradeSubmission";
+import {GradeRequest} from "../dto/gradeRequest";
+
 
 export class GradeController {
-    constructor(private gradeService: GradeService) {
-        this.gradeService = gradeService;
-    }
+    constructor(private gradeService: GradeService) {}
 
     async submitGrades(req: Request, res: Response, next: NextFunction) {
         try {
-            const { grades }: {grades: GradeSubmission[]} = req.body;
-            const candidateId = req.signedCookies.candidateId;
+            const grades: GradeRequest[] = req.body;
+            const candidateId: number = req.signedCookies.candidateId;
             await this.gradeService.submitGrades(grades, candidateId);
-            return res.status(201).json({ message: "Grades submission successful", redirect: "/"});
+            return res.status(201).json({message: "Grades submission successful", redirect: "/"});
         } catch (error) {
             return next(error);
         }
@@ -21,9 +20,9 @@ export class GradeController {
 
     async checkIfGradesSubmitted(req: Request, res: Response, next: NextFunction) {
         try {
-            const candidateId = req.signedCookies.candidateId;
-            const status = await this.gradeService.checkIfGradesSubmitted(candidateId);
-            return res.status(200).json({ gradesSubmitted: status });
+            const candidateId: number = req.signedCookies.candidateId;
+            const isSubmitted: boolean = await this.gradeService.checkIfGradesSubmitted(candidateId);
+            return res.status(200).json({gradesSubmitted: isSubmitted});
         } catch (error) {
             return next(error);
         }
