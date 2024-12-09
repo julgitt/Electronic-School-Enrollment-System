@@ -101,8 +101,8 @@ export class ApplicationService {
         });
     }
 
-    async updateApplicationStatus(id: number, status: string) {
-        return this.applicationRepository.updateStatus(id, status);
+    async updateApplicationStatus(id: number, status: string, t: ITask<any>) {
+        return this.applicationRepository.updateStatus(id, status, t);
     }
 
     async updateApplication(submissions: ApplicationRequest[], candidateId: number): Promise<void> {

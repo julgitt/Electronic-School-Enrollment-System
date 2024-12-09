@@ -9,6 +9,7 @@ import schoolRoutes from './routes/schoolRoute';
 import gradeRoutes from './routes/gradeRoute';
 import subjectRoutes from './routes/subjectRoute';
 import enrollmentRoutes from './routes/enrollmentRoute';
+import adminRoutes from './routes/adminRoute';
 import errorHandler from './middlewares/errorHandler';
 
 const app = express();
@@ -24,6 +25,7 @@ app.use('/api', schoolRoutes);
 app.use('/api', gradeRoutes);
 app.use('/api', subjectRoutes);
 app.use('/api', enrollmentRoutes);
+app.use('/api', adminRoutes);
 
 app.use(errorHandler);
 

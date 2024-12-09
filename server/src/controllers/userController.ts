@@ -28,8 +28,6 @@ export class UserController {
 
         try {
             const user: UserWithRoles = await this.userService.login(loginOrEmail, password);
-            if (user.roles.includes('admin'))
-                return res.status(200).json({message: 'Login successful', redirect: '/admin_dashboard'});
 
             res.cookie('userId', user.id, {
                 signed: true,
@@ -65,8 +63,9 @@ export class UserController {
 
     async getUser(req: Request, res: Response, next: NextFunction) {
         try {
-            const user: number | null = req.signedCookies.userId || null;
-            return res.status(200).json({user: user});
+            const id: number | null = req.signedCookies.userId || null;
+            const roles: number | null = req.signedCookies.roles || null;
+            return res.status(200).json({id: id, roles: roles});
         } catch (error) {
             return next(error);
         }

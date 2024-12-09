@@ -15,7 +15,7 @@ export class CandidateService {
 
     async getAllWithGrades() {
         const gradesByCandidateId = new Map<number, Grade[]>;
-        const candidates = await this.candidateRepository.getAll();
+        const candidates: Candidate[] = await this.candidateRepository.getAll();
         for (const candidate of candidates) {
             gradesByCandidateId.set(candidate.id, await this.gradeService.getAllByCandidate(candidate.id));
         }

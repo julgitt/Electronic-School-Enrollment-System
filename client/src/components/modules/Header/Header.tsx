@@ -11,7 +11,7 @@ import {useGradeSubmittedCheck} from "../../../shared/hooks/useGradeSubmittedChe
 
 const Header: React.FC = () => {
     const {
-        authorized, candidate, candidates,
+        roles, candidate, candidates,
         switchCandidate, deleteCandidate, onLogout,
         logoutLoading, error: userError
     } = useCandidate();
@@ -65,6 +65,24 @@ const Header: React.FC = () => {
         </div>
     );
 
+    const renderAdminMenu = () => (
+        <div className={styles.navMenu}>
+            <Link className={styles.navLink} to="/enroll">Włącz nabór</Link>
+            <Link className={styles.navLink} to="/editSchools">Szkoły</Link>
+            <Link className={styles.navLink} to="/editDeadlines">Terminy</Link>
+            <Link
+                className={styles.navLink}
+                to="#"
+                onClick={(e) => {
+                    e.preventDefault();
+                    if (!logoutLoading) onLogout(e);
+                }}
+            >
+                {logoutLoading ? 'Wylogowywanie...' : 'Wyloguj'}
+            </Link>
+        </div>
+    );
+
     const renderGuestMenu = () => (
         <div className={styles.navMenu}>
             <Link className={styles.navLink} to="/login">Zaloguj się</Link>
@@ -72,11 +90,18 @@ const Header: React.FC = () => {
         </div>
     );
 
+    const hasRole = (roles: string[], requiredRole: string) =>
+        roles.includes(requiredRole);
+
     return (
         <header className={styles.header}>
             <nav className={styles.nav}>
-                {renderNavLinks()}
-                {authorized ? renderUserMenu() : renderGuestMenu()}
+                { renderNavLinks() }
+                { hasRole(roles, 'admin')
+                    ? renderAdminMenu()
+                    : hasRole(roles, 'user')
+                        ? renderUserMenu()
+                        : renderGuestMenu()}
             </nav>
         </header>
     );

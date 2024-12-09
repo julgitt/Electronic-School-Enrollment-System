@@ -24,31 +24,33 @@ export class ApplicationRepository {
 
     async getAllByCandidate(candidateId: number): Promise<ApplicationEntity[]> {
         const query = `
-            SELECT a.candidate_id as candidate_id,
-                   p.id           AS profile_id,
-                   s.id           AS school_id,
-                   a.priority,
-                   a.status,
-                   a.enrollment_id,
-                   a.created_at,
-                   a.updated_at
+            SELECT
+                a.id,
+                a.candidate_id,
+                p.id    AS profile_id,
+                s.id    AS school_id,
+                a.priority,
+                a.status,
+                a.enrollment_id,
+                a.created_at,
+                a.updated_at
             FROM applications a
-                     JOIN profiles p ON a.profile_id = p.id
-                     JOIN schools s ON p.school_id = s.id
+                JOIN profiles p ON a.profile_id = p.id
+                JOIN schools s ON p.school_id = s.id
             WHERE candidate_id = $1
         `;
 
         return await db.query(query, [candidateId]);
     }
 
-    async updateStatus(id: number, status: string): Promise<void> {
+    async updateStatus(id: number, status: string, t: ITask<any>): Promise<void> {
         const query = `
             UPDATE applications
             SET status = $2
             WHERE id = $1
         `;
 
-        return await db.query(query, [id, status]);
+        await t.none(query, [id, status]);
     }
 
     async getMaxPriority(): Promise<number> {
@@ -59,7 +61,7 @@ export class ApplicationRepository {
             LIMIT 1;
         `;
 
-        return await db.query(query);
+        return (await db.query(query))[0].priority;
     }
 
     async getAllPendingByProfileAndPriority(profileId: number, priority: number): Promise<ApplicationEntity[]> {
@@ -71,18 +73,17 @@ export class ApplicationRepository {
               and status = 'pending'
         `;
 
-        return await db.query(query, [profileId, priority]);
+        return db.query(query, [profileId, priority]);
     }
 
     async getEnrolledByProfile(profileId: number): Promise<number> {
         const query = `
-            COUNT *
+            SELECT COUNT (*)
             FROM applications
-            WHERE profile_id = $1 and status = 'accepted'
-           
+            WHERE profile_id = $1 and status = 'accepted' 
         `;
 
-        return await db.query(query, [profileId]);
+        return Number((await db.query(query, [profileId]))[0].count);
     }
 
     async insert(newApp: ApplicationEntity, t: ITask<any>): Promise<void> {

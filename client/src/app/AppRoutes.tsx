@@ -13,6 +13,7 @@ import {ApplicationStatus} from '../features/application/pages/ApplicationStatus
 import {ApplicationSubmitted} from "../features/application/pages/ApplicationSubmitted";
 import {SubmitApplicationPastDeadline} from "../features/application/pages/SubmitApplicationPastDeadline";
 import SubmitGrades from "../features/grades/pages/SubmitGrades.tsx";
+import Enroll from "./routes/Enroll.tsx";
 
 const AppRoutes = () => {
     return (
@@ -27,6 +28,7 @@ const AppRoutes = () => {
             <Route path="/applicationSubmitted" element={<ApplicationSubmitted/>}/>
             <Route path="/submitApplicationPastDeadline" element={<SubmitApplicationPastDeadline/>}/>
             <Route path="/submitGrades" element={<SubmitGrades/>}/>
+            <Route path="/enroll" element={<Enroll/>}/>
             <Route path="*" element={<ErrorPage errorMessage={"404: Page Not Found"}/>}/>
         </Routes>
     );

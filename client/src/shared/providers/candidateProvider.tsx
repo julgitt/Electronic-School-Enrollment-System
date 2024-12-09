@@ -1,8 +1,9 @@
 import React, {createContext, ReactNode, useContext, useEffect, useState} from 'react';
 import {Candidate} from "../types/candidate";
+import {User} from "../types/user.ts";
 
 interface CandidateContextType {
-    authorized: boolean;
+    roles: string[];
     candidate: Candidate | null;
     candidates: Candidate[];
     switchCandidate: (candidateId: number) => void;
@@ -27,22 +28,23 @@ interface CandidateProviderProps {
 }
 
 export const CandidateProvider: React.FC<CandidateProviderProps> = ({children}) => {
-    const [authorized, setAuthorized] = useState<boolean>(false);
+    /*const [authorized, setAuthorized] = useState<boolean>(false);*/
+    const [roles, setRoles] = useState<string[]>([]);
     const [candidate, setCandidate] = useState<Candidate | null>(null);
     const [candidates, setCandidates] = useState<Candidate[]>([]);
     const [logoutLoading, setLogoutLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-
         fetch('/api/user')
             .then(async response => {
                 if (!response.ok) throw new Error((await response.json()).message)
                 return response.json();
             })
-            .then(userData => {
-                if (!userData.user) return;
-                setAuthorized(true);
+            .then((userData: User) => {
+                if (!userData.roles || userData.roles.length === 0 ) return;
+                setRoles(userData.roles);
+                if(userData.roles.includes('admin')) return;
 
                 fetch('/api/candidate')
                     .then(async response => {
@@ -83,6 +85,7 @@ export const CandidateProvider: React.FC<CandidateProviderProps> = ({children}) 
             })
             .then(data => {
                 setCandidate(data.candidate);
+                window.location.reload();
             })
             .catch(err => setError(err.message));
     };
@@ -124,7 +127,7 @@ export const CandidateProvider: React.FC<CandidateProviderProps> = ({children}) 
     return (
         <CandidateContext.Provider
             value={{
-                authorized,
+                roles,
                 candidate,
                 candidates,
                 switchCandidate,

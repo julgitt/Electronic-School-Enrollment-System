@@ -3,12 +3,11 @@ import {GradeEntity} from "../models/gradeEntity";
 
 export class GradeRepository {
 
-    async getAllByCandidate(candidateId: number) {
+    async getAllByCandidate(candidateId: number): Promise<GradeEntity[]> {
         const query = `
             SELECT * 
             FROM grades
             WHERE candidate_id = $1
-            LIMIT 1
         `;
 
         return await db.query(query, [candidateId]);
