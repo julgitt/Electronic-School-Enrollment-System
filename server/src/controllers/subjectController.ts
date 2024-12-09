@@ -5,7 +5,8 @@ import {Subject} from "../dto/subject";
 
 
 export class SubjectController {
-    constructor(private subjectService: SubjectService) {}
+    constructor(private subjectService: SubjectService) {
+    }
 
     async getAllSubjects(_req: Request, res: Response, next: NextFunction) {
         try {

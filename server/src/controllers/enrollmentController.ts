@@ -5,7 +5,8 @@ import {Enrollment} from "../dto/enrollment";
 
 
 export class EnrollmentController {
-    constructor(private enrollmentService: EnrollmentService) {}
+    constructor(private enrollmentService: EnrollmentService) {
+    }
 
     async isPastDeadline(_req: Request, res: Response, next: NextFunction) {
         try {

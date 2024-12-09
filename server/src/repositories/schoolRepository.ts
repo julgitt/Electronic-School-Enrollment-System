@@ -24,7 +24,7 @@ export class SchoolRepository {
 
     async insert(newSchool: SchoolEntity): Promise<void> {
         const query = `
-            INSERT INTO schools (name, type) 
+            INSERT INTO schools (name, type)
             VALUES ($1, $2)
         `;
         const values = [newSchool.name];

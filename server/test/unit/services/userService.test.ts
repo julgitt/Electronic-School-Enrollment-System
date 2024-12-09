@@ -1,10 +1,10 @@
 import assert from 'assert';
-import { afterEach } from 'mocha';
+import {afterEach} from 'mocha';
 import sinon from 'sinon';
 
-import { UserService } from "../../../src/services/userService";
-import { UserRepository } from "../../../src/repositories/userRepository";
-import { User } from "../../../src/entities/userModel";
+import {UserService} from "../../../src/services/userService";
+import {UserRepository} from "../../../src/repositories/userRepository";
+import {User} from "../../../src/entities/userModel";
 import bcrypt from 'bcrypt';
 
 describe('UserService', () => {
@@ -26,7 +26,9 @@ describe('UserService', () => {
         bcryptHashStub = sinon.stub(bcrypt, 'hash');
     });
 
-    afterEach(() => { sinon.restore(); })
+    afterEach(() => {
+        sinon.restore();
+    })
 
     describe('login', () => {
         it('should authenticate user with correct credentials', async () => {
@@ -131,7 +133,7 @@ describe('UserService', () => {
         });
 
         it('should throw an error if email is already taken', async () => {
-            userRepoStub.getByLoginOrEmail.resolves({ email: 'existing@example.com'} as User);
+            userRepoStub.getByLoginOrEmail.resolves({email: 'existing@example.com'} as User);
 
             try {
                 await userService.register('newuser', 'existing@example.com', 'password123');

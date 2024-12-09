@@ -4,7 +4,8 @@ import {AdminService} from "../services/adminService";
 
 
 export class AdminController {
-    constructor(private adminService: AdminService) {}
+    constructor(private adminService: AdminService) {
+    }
 
     async enroll(_req: Request, res: Response, next: NextFunction) {
         try {

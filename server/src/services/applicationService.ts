@@ -23,7 +23,8 @@ export class ApplicationService {
         private enrollmentService: EnrollmentService,
         private schoolService: SchoolService,
         private readonly tx: (callback: (t: ITask<any>) => Promise<void>) => Promise<void>
-    ) {}
+    ) {
+    }
 
     async getAllApplications(candidateId: number): Promise<ApplicationWithProfiles[]> {
         const applications: Application[] = await this.applicationRepository.getAllByCandidate(candidateId);

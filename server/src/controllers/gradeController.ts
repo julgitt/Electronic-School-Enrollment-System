@@ -5,7 +5,8 @@ import {GradeRequest} from "../dto/gradeRequest";
 
 
 export class GradeController {
-    constructor(private gradeService: GradeService) {}
+    constructor(private gradeService: GradeService) {
+    }
 
     async submitGrades(req: Request, res: Response, next: NextFunction) {
         try {

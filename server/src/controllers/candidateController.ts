@@ -6,7 +6,8 @@ import {CandidateRequest} from "../dto/candidateRequest";
 
 
 export class CandidateController {
-    constructor(private candidateService: CandidateService) {}
+    constructor(private candidateService: CandidateService) {
+    }
 
     async switchCandidate(req: Request, res: Response, next: NextFunction) {
         try {

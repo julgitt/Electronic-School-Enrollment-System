@@ -1,10 +1,10 @@
 import assert from 'assert';
-import { afterEach } from 'mocha';
+import {afterEach} from 'mocha';
 import sinon from 'sinon';
 
-import { ApplicationService } from "../../../src/services/applicationService";
-import { ApplicationRepository } from "../../../src/repositories/applicationRepository";
-import { ITask } from "pg-promise";
+import {ApplicationService} from "../../../src/services/applicationService";
+import {ApplicationRepository} from "../../../src/repositories/applicationRepository";
+import {ITask} from "pg-promise";
 import {SchoolService} from "../../../src/services/schoolService";
 import {ProfileService} from "../../../src/services/profileService";
 import {SchoolWithProfiles} from "../../../src/dto/schoolWithProfiles";
@@ -27,7 +27,9 @@ describe('ApplicationService', () => {
         appService = new ApplicationService(appRepoStub, profileServiceStub, schoolServiceStub, txStub);
     });
 
-    afterEach(() => { sinon.restore(); })
+    afterEach(() => {
+        sinon.restore();
+    })
 
     describe('addApplication', () => {
 

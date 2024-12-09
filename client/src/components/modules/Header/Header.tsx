@@ -96,8 +96,8 @@ const Header: React.FC = () => {
     return (
         <header className={styles.header}>
             <nav className={styles.nav}>
-                { renderNavLinks() }
-                { hasRole(roles, 'admin')
+                {renderNavLinks()}
+                {hasRole(roles, 'admin')
                     ? renderAdminMenu()
                     : hasRole(roles, 'user')
                         ? renderUserMenu()

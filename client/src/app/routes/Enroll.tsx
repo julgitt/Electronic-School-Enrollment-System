@@ -33,7 +33,7 @@ const Enroll: React.FC = () => {
         }
     };
 
-    if (error) return <ErrorPage errorMessage={error} />;
+    if (error) return <ErrorPage errorMessage={error}/>;
     if (loading) return <LoadingPage/>
 
     return (

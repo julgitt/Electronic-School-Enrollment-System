@@ -4,8 +4,8 @@
 
 ### Frontend:
 
-- Framework: React 
-- Build Tool: Vite 
+- Framework: React
+- Build Tool: Vite
 - Language: TypeScript
 
 ### Backend:

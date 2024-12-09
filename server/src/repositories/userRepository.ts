@@ -30,8 +30,9 @@ export class UserRepository {
         const query = `
             SELECT u.*, array_agg(r.role_name) as roles
             FROM users u
-            LEFT JOIN user_roles r ON u.id = r.user_id
-            WHERE u.username = $1 or u.email = $2
+                     LEFT JOIN user_roles r ON u.id = r.user_id
+            WHERE u.username = $1
+               or u.email = $2
             GROUP BY u.id
             LIMIT 1
         `;
@@ -40,9 +41,10 @@ export class UserRepository {
 
     async getWithoutRolesByLoginOrEmail(username: string, email: string): Promise<UserEntity | null> {
         const query = `
-            SELECT * 
-            FROM users 
-            WHERE username = $1 OR email = $2
+            SELECT *
+            FROM users
+            WHERE username = $1
+               OR email = $2
             LIMIT 1;
         `;
 

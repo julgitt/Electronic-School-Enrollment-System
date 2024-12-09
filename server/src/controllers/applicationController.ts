@@ -7,7 +7,8 @@ import {ApplicationWithProfiles} from "../dto/applicationWithProfiles";
 
 
 export class ApplicationController {
-    constructor(private applicationService: ApplicationService) {}
+    constructor(private applicationService: ApplicationService) {
+    }
 
     async getApplications(req: Request, res: Response, next: NextFunction) {
         try {
@@ -35,7 +36,10 @@ export class ApplicationController {
             const candidateId: number = req.signedCookies.candidateId;
 
             await this.applicationService.addApplication(applications, candidateId);
-            return res.status(201).json({message: 'ApplicationWithProfiles successful', redirect: '/applicationSubmitted'});
+            return res.status(201).json({
+                message: 'Application successful',
+                redirect: '/applicationSubmitted'
+            });
         } catch (error) {
             return next(error)
         }
@@ -47,7 +51,10 @@ export class ApplicationController {
             const candidateId = req.signedCookies.candidateId;
 
             await this.applicationService.updateApplication(applications, candidateId);
-            return res.status(201).json({message: 'ApplicationWithProfiles successfully updated', redirect: '/applicationSubmitted'});
+            return res.status(201).json({
+                message: 'Application successfully updated',
+                redirect: '/applicationSubmitted'
+            });
         } catch (error) {
             return next(error)
         }

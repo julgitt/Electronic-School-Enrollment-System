@@ -1,4 +1,4 @@
-export interface EnrollmentEntity{
+export interface EnrollmentEntity {
     id: number,
     round: number,
     startDate: Date,

@@ -1,10 +1,10 @@
 import assert from 'assert';
-import { afterEach } from 'mocha';
+import {afterEach} from 'mocha';
 import sinon from 'sinon';
 
-import { SchoolService } from "../../../src/services/schoolService";
-import { SchoolRepository } from "../../../src/repositories/schoolRepository";
-import { School } from "../../../src/entities/schoolModel";
+import {SchoolService} from "../../../src/services/schoolService";
+import {SchoolRepository} from "../../../src/repositories/schoolRepository";
+import {School} from "../../../src/entities/schoolModel";
 
 describe('SchoolService', () => {
     let schoolService: SchoolService;
@@ -16,7 +16,9 @@ describe('SchoolService', () => {
         schoolService = new SchoolService(schoolRepoStub);
     });
 
-    afterEach(() => { sinon.restore(); })
+    afterEach(() => {
+        sinon.restore();
+    })
 
     describe('getAllSchools', () => {
         it('should return a list of schools', async () => {

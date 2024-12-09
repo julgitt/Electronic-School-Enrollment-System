@@ -42,9 +42,9 @@ export const CandidateProvider: React.FC<CandidateProviderProps> = ({children}) 
                 return response.json();
             })
             .then((userData: User) => {
-                if (!userData.roles || userData.roles.length === 0 ) return;
+                if (!userData.roles || userData.roles.length === 0) return;
                 setRoles(userData.roles);
-                if(userData.roles.includes('admin')) return;
+                if (userData.roles.includes('admin')) return;
 
                 fetch('/api/candidate')
                     .then(async response => {

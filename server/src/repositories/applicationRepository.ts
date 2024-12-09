@@ -16,7 +16,8 @@ export class ApplicationRepository {
             FROM applications a
                      JOIN profiles p ON a.profile_id = p.id
                      JOIN schools s ON p.school_id = s.id
-            WHERE candidate_id = $1 and enrollment_id = $2
+            WHERE candidate_id = $1
+              and enrollment_id = $2
         `;
 
         return await db.query(query, [candidateId, enrollmentId]);
@@ -24,19 +25,18 @@ export class ApplicationRepository {
 
     async getAllByCandidate(candidateId: number): Promise<ApplicationEntity[]> {
         const query = `
-            SELECT
-                a.id,
-                a.candidate_id,
-                p.id    AS profile_id,
-                s.id    AS school_id,
-                a.priority,
-                a.status,
-                a.enrollment_id,
-                a.created_at,
-                a.updated_at
+            SELECT a.id,
+                   a.candidate_id,
+                   p.id AS profile_id,
+                   s.id AS school_id,
+                   a.priority,
+                   a.status,
+                   a.enrollment_id,
+                   a.created_at,
+                   a.updated_at
             FROM applications a
-                JOIN profiles p ON a.profile_id = p.id
-                JOIN schools s ON p.school_id = s.id
+                     JOIN profiles p ON a.profile_id = p.id
+                     JOIN schools s ON p.school_id = s.id
             WHERE candidate_id = $1
         `;
 
@@ -78,9 +78,10 @@ export class ApplicationRepository {
 
     async getEnrolledByProfile(profileId: number): Promise<number> {
         const query = `
-            SELECT COUNT (*)
+            SELECT COUNT(*)
             FROM applications
-            WHERE profile_id = $1 and status = 'accepted' 
+            WHERE profile_id = $1
+              and status = 'accepted'
         `;
 
         return Number((await db.query(query, [profileId]))[0].count);

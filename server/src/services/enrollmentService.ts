@@ -3,9 +3,10 @@ import {EnrollmentRepository} from "../repositories/enrollmentRepository";
 export class EnrollmentService {
     constructor(
         private enrollmentRepository: EnrollmentRepository,
-    ) {}
+    ) {
+    }
 
-    async getEnrollmentById(id: number){
+    async getEnrollmentById(id: number) {
         return this.enrollmentRepository.getById(id);
     }
 

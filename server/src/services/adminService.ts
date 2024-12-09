@@ -15,7 +15,8 @@ export class AdminService {
         private profileService: ProfileService,
         private applicationService: ApplicationService,
         private readonly tx: (callback: (t: ITask<any>) => Promise<void>) => Promise<void>
-    ) {}
+    ) {
+    }
 
     async enroll(): Promise<void> {
         const schools: SchoolWithProfiles[] = await this.schoolService.getAllSchoolsWithProfiles();
@@ -47,7 +48,7 @@ export class AdminService {
 
         let enrolledCandidateIds: number[] = [];
 
-        let applications: Application[]  = (await this.applicationService.getAllPendingApplicationsByProfileAndPriority(profile.id, priority))
+        let applications: Application[] = (await this.applicationService.getAllPendingApplicationsByProfileAndPriority(profile.id, priority))
             .sort((a, b) =>
                 ProfileService.calculatePoints(criteria, gradesByCandidate.get(b.candidateId)!)
                 - ProfileService.calculatePoints(criteria, gradesByCandidate.get(a.candidateId)!)

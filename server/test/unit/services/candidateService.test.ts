@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { afterEach } from 'mocha';
+import {afterEach} from 'mocha';
 import sinon from 'sinon';
 
 import {CandidateService} from "../../../src/services/candidateService";
@@ -20,12 +20,14 @@ describe('CandidateService', () => {
         candidateService = new CandidateService(gradeServiceStub, candidateRepoStub);
     });
 
-    afterEach(() => { sinon.restore(); });
+    afterEach(() => {
+        sinon.restore();
+    });
 
     describe('getLastCreatedByUserId', () => {
         it('should return the last created candidate for a given user', async () => {
             const userId = 1;
-            const candidate = { userId, firstName: 'Jan', lastName: 'Kowalski', pesel: '12345678901' };
+            const candidate = {userId, firstName: 'Jan', lastName: 'Kowalski', pesel: '12345678901'};
 
             candidateRepoStub.getLastUpdatedByUserId.resolves(candidate);
 
@@ -39,7 +41,7 @@ describe('CandidateService', () => {
         it('should return the candidate if found and the userId matches', async () => {
             const userId = 1;
             const id = 1;
-            const candidate = { id, userId, firstName: 'Jan', lastName: 'Kowalski', pesel: '23456789012' };
+            const candidate = {id, userId, firstName: 'Jan', lastName: 'Kowalski', pesel: '23456789012'};
 
             candidateRepoStub.getById.resolves(candidate);
 
@@ -94,7 +96,7 @@ describe('CandidateService', () => {
 
             candidateRepoStub.getByPesel.resolves(null);
 
-            const newCandidate = { userId, firstName, lastName, pesel };
+            const newCandidate = {userId, firstName, lastName, pesel};
             candidateRepoStub.insert.resolves(newCandidate);
 
             const result = await candidateService.register(userId, firstName, lastName, pesel);
@@ -109,7 +111,7 @@ describe('CandidateService', () => {
             const lastName = 'Kowalski';
             const pesel = '34567890123';
 
-            const existingCandidate = { userId, firstName, lastName, pesel };
+            const existingCandidate = {userId, firstName, lastName, pesel};
             candidateRepoStub.getByPesel.resolves(existingCandidate);
 
             try {

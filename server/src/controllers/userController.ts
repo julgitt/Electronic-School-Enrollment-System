@@ -6,7 +6,8 @@ import {UserWithRoles} from "../dto/userWithRoles";
 
 
 export class UserController {
-    constructor(private userService: UserService) {}
+    constructor(private userService: UserService) {
+    }
 
     async register(req: Request, res: Response, next: NextFunction) {
         try {

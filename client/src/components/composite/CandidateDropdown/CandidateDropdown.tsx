@@ -54,7 +54,7 @@ const CandidateDropdown: React.FC<CandidateDropdownProps> = ({
                         }}
                         className={styles.dropdownItem}
                     >
-                       Usuń Obecnego Kandydata
+                        Usuń Obecnego Kandydata
                     </button>
                 </div>
             )}
