@@ -1,9 +1,9 @@
 import React from "react";
 
-import { InputField } from "../../../components/atomic/InputField";
-import { Button } from "../../../components/atomic/Button";
-import { ErrorMessage } from "../../../components/atomic/ErrorMessage";
-import { Candidate } from "../../../shared/types/candidate.ts";
+import {InputField} from "../../../components/atomic/InputField";
+import {Button} from "../../../components/atomic/Button";
+import {ErrorMessage} from "../../../components/atomic/ErrorMessage";
+import {Candidate} from "../../../shared/types/candidate.ts";
 
 import styles from "../../../assets/css/forms.module.scss";
 
@@ -17,15 +17,15 @@ interface RegisterFormProps {
 }
 
 const RegisterForm: React.FC<RegisterFormProps> = ({
-    formData,
-    onInputChange,
-    error,
-    loading,
-    onSubmit,
-}) => (
+                                                       formData,
+                                                       onInputChange,
+                                                       error,
+                                                       loading,
+                                                       onSubmit,
+                                                   }) => (
     <form method="POST" onSubmit={onSubmit} className={styles.form}>
         <h1>Rejestracja kandydata</h1>
-        {error && <ErrorMessage message={error} />}
+        {error && <ErrorMessage message={error}/>}
         <div className={styles.formInputGroup}>
             <InputField
                 type="text"

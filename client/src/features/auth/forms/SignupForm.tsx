@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { InputField } from '../../../components/atomic/InputField';
-import { ErrorMessage } from '../../../components/atomic/ErrorMessage';
-import { Button } from '../../../components/atomic/Button';
-import { TextLink } from "../../../components/atomic/TextLink";
+import {InputField} from '../../../components/atomic/InputField';
+import {ErrorMessage} from '../../../components/atomic/ErrorMessage';
+import {Button} from '../../../components/atomic/Button';
+import {TextLink} from "../../../components/atomic/TextLink";
 import {SignupFormData} from "../types/signUpFormData.ts";
 
 import styles from '../../../assets/css/forms.module.scss';
@@ -18,12 +18,12 @@ interface SignupFormProps {
 }
 
 const SignupForm: React.FC<SignupFormProps> = ({
-    formData,
-    onInputChange,
-    error,
-    loading,
-    onSubmit,
-}) => (
+                                                   formData,
+                                                   onInputChange,
+                                                   error,
+                                                   loading,
+                                                   onSubmit,
+                                               }) => (
     <form method="POST" onSubmit={onSubmit} className={styles.form}>
         <h1>Rejestracja</h1>
         {error && <ErrorMessage message={error}/>}
@@ -54,9 +54,9 @@ const SignupForm: React.FC<SignupFormProps> = ({
                 value={formData.password}
                 onChange={onInputChange("password")}
                 required
-                pattern="[a-zA-Z0-9!@#$%^&*_=+-]+"
+                pattern="[a-zA-Z0-9.*[@$!%*?&]]+"
                 minLength={8}
-                title="Hasło może zawierać jedynie litery, cyfry oraz znaki: !@#$%^&*_=+-"
+                title="Hasło może zawierać jedynie litery, cyfry oraz znaki: .*[@$!%*?&]"
             />
             <InputField
                 type="password"

@@ -1,9 +1,9 @@
 import React from "react";
 
-import { SuggestionBox } from '../../../components/composite/SuggestionBox';
-import { School } from "../../../shared/types/school.ts";
-import { SchoolSelection } from "../types/schoolSelection.ts";
-import { Profile } from "../../../shared/types/profile.ts";
+import {SuggestionBox} from '../../../components/composite/SuggestionBox';
+import {School} from "../../../shared/types/school.ts";
+import {SchoolSelection} from "../types/schoolSelection.ts";
+import {Profile} from "../../../shared/types/profile.ts";
 import ProfileSelection from "./ProfileSelectionItem.tsx";
 
 const SchoolSelectionItem: React.FC<{
@@ -14,7 +14,7 @@ const SchoolSelectionItem: React.FC<{
     onProfileChange: (profile: Profile, index: number) => void;
     onPriorityChange: (profileId: number, index: number, priority: number) => void;
     selections: SchoolSelection[];
-}> = ({ selection, suggestions, index, onSchoolChange, onProfileChange, onPriorityChange, selections }) => {
+}> = ({selection, suggestions, index, onSchoolChange, onProfileChange, onPriorityChange, selections}) => {
     const availableSuggestions = suggestions.filter(
         (school) =>
             !selections.some(

@@ -1,1 +1,1 @@
-export { default as ApplicationSubmitted } from "./ApplicationSubmitted.tsx";
+export {default as ApplicationSubmitted} from "./ApplicationSubmitted.tsx";

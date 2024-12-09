@@ -8,7 +8,15 @@ export class CandidateRepository {
             WHERE id = $1
             LIMIT 1
         `;
-        return await db.oneOrNone(query, [id]);
+        return db.oneOrNone(query, [id]);
+    }
+
+    async deleteById(id: number): Promise<void> {
+        const query = `
+            DELETE FROM candidates
+            WHERE id = $1
+        `;
+        await db.query(query, [id]);
     }
 
     async getAll(): Promise<CandidateEntity[]> {
@@ -17,7 +25,7 @@ export class CandidateRepository {
             FROM candidates
         `;
 
-        return await db.query(query);
+        return db.query(query);
     }
 
     async getByPesel(pesel: string): Promise<CandidateEntity | null> {
@@ -26,7 +34,7 @@ export class CandidateRepository {
             WHERE pesel = $1
             LIMIT 1
         `;
-        return await db.oneOrNone(query, [pesel]);
+        return db.oneOrNone(query, [pesel]);
     }
 
     async getAllByUser(userId: number): Promise<CandidateEntity[]> {
@@ -35,7 +43,7 @@ export class CandidateRepository {
             WHERE user_id = $1
         `
 
-        return await db.query(query, [userId]);
+        return db.query(query, [userId]);
     }
 
     async getLastUpdatedByUser(userId: number): Promise<CandidateEntity | null> {
@@ -45,7 +53,7 @@ export class CandidateRepository {
             ORDER BY updated_at DESC
             LIMIT 1;
         `;
-        return await db.oneOrNone(query, [userId]);
+        return db.oneOrNone(query, [userId]);
     }
 
     async insert(newCandidate: CandidateEntity): Promise<CandidateEntity> {

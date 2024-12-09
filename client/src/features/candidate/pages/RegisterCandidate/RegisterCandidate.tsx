@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 
-import { Candidate } from "../../../../shared/types/candidate.ts";
-import { register } from "../../services/candidateService.ts";
-import { useFormData } from "../../../../shared/hooks/useFormData.ts";
+import {Candidate} from "../../../../shared/types/candidate.ts";
+import {register} from "../../services/candidateService.ts";
+import {useFormData} from "../../../../shared/hooks/useFormData.ts";
 import RegisterCandidateForm from "../../forms/RegisterForm.tsx";
 
 const RegisterCandidate: React.FC = () => {
-    const { formData, handleChange } = useFormData<Candidate>({
+    const {formData, handleChange} = useFormData<Candidate>({
         id: 0,
         user_id: 0,
         firstName: '',

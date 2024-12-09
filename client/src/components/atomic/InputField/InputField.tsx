@@ -18,20 +18,20 @@ interface InputFieldProps {
 }
 
 const InputField: React.FC<InputFieldProps> = ({
-    type,
-    name,
-    placeholder,
-    value,
-    onChange,
-    autoFocus,
-    required,
-    pattern,
-    minLength,
-    min,
-    title,
-    height,
-    width = "100%",
-}) => {
+                                                   type,
+                                                   name,
+                                                   placeholder,
+                                                   value,
+                                                   onChange,
+                                                   autoFocus,
+                                                   required,
+                                                   pattern,
+                                                   minLength,
+                                                   min,
+                                                   title,
+                                                   height,
+                                                   width = "100%",
+                                               }) => {
     return (
         <input
             type={type}
@@ -46,7 +46,7 @@ const InputField: React.FC<InputFieldProps> = ({
             minLength={minLength}
             min={min}
             title={title}
-            style={{ width, height }}
+            style={{width, height}}
         />
     );
 };

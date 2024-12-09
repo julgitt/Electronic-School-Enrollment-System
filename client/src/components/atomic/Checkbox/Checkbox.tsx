@@ -9,10 +9,10 @@ interface CheckboxProps {
 }
 
 const Checkbox: React.FC<CheckboxProps> = ({
-    checked,
-    onChange,
-    itemName,
-}) => (
+                                               checked,
+                                               onChange,
+                                               itemName,
+                                           }) => (
     <label className={styles.label}>
         <input
             type="checkbox"

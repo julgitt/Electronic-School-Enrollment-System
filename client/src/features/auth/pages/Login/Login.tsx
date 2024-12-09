@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 
 import LoginForm from "../../forms/LoginForm.tsx";
-import { login } from "../../services/authService.ts";
-import { LoginFormData } from "../../types/loginFormData.ts";
-import { useFormData } from "../../../../shared/hooks/useFormData.ts";
+import {login} from "../../services/authService.ts";
+import {LoginFormData} from "../../types/loginFormData.ts";
+import {useFormData} from "../../../../shared/hooks/useFormData.ts";
 
 const Login: React.FC = () => {
-    const { formData, handleChange } = useFormData<LoginFormData>({
+    const {formData, handleChange} = useFormData<LoginFormData>({
         username: '',
         password: '',
     });

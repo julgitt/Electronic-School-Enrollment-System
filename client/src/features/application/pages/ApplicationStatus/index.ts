@@ -1,1 +1,1 @@
-export { default as ApplicationStatus } from "./ApplicationStatus.tsx";
+export {default as ApplicationStatus} from "./ApplicationStatus.tsx";

@@ -16,6 +16,10 @@ router.post('/switchCandidate', authorize('user'), async (req: Request, res: Res
     return await candidateController.switchCandidate(req, res, next);
 });
 
+router.delete('/deleteCandidate', authorize('user'), async (req: Request, res: Response, next: NextFunction) => {
+    return await candidateController.deleteCandidate(req, res, next);
+});
+
 router.get('/candidate', authorize('user'), async (req: Request, res: Response, next: NextFunction) => {
     return await candidateController.getCandidate(req, res, next);
 });

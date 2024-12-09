@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import {useEffect, useState} from 'react';
 
-import { status } from "../constants/responseStatuses.ts";
+import {status} from "../constants/responseStatuses.ts";
 
 interface FetchResult<T> {
     authorized: boolean;
@@ -44,5 +44,5 @@ export const useFetch = <T>(endpoint: string, shouldFetch: boolean = true): Fetc
         fetchData(shouldFetch);
     }, [endpoint, shouldFetch]);
 
-    return { data, authorized, loading, error };
+    return {data, authorized, loading, error};
 };

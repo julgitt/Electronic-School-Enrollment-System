@@ -9,7 +9,7 @@ const ProfileSelection: React.FC<{
     selectedProfiles: { profileId: number; priority: number }[];
     onProfileChange: (profile: Profile) => void;
     onPriorityChange: (profileId: number, priority: number) => void;
-}> = ({ profiles, selectedProfiles, onProfileChange, onPriorityChange }) => (
+}> = ({profiles, selectedProfiles, onProfileChange, onPriorityChange}) => (
     <div className={styles.selectionGroup}>
         {profiles.map((profile) => {
             const selectedProfile = selectedProfiles.find(

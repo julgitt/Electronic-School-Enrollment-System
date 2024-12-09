@@ -1,11 +1,11 @@
 import React from "react";
 
-import { Button } from '../../../components/atomic/Button'
-import { PlusButton } from '../../../components/atomic/PlusButton'
-import { ErrorMessage } from "../../../components/atomic/ErrorMessage";
-import { School } from "../../../shared/types/school.ts"
-import { SchoolSelection } from "../types/schoolSelection.ts"
-import { Profile } from "../../../shared/types/profile.ts";
+import {Button} from '../../../components/atomic/Button'
+import {PlusButton} from '../../../components/atomic/PlusButton'
+import {ErrorMessage} from "../../../components/atomic/ErrorMessage";
+import {School} from "../../../shared/types/school.ts"
+import {SchoolSelection} from "../types/schoolSelection.ts"
+import {Profile} from "../../../shared/types/profile.ts";
 
 
 import styles from "../../../assets/css/forms.module.scss";
@@ -25,33 +25,33 @@ interface SchoolSelectionFormProps {
 }
 
 const SelectionForm: React.FC<SchoolSelectionFormProps> = ({
-    selections,
-    suggestions,
-    error,
-    loading,
-    onSchoolChange,
-    onProfileChange,
-    onPriorityChange,
-    onAddSchool,
-    onPrev,
-    onSubmit,
- }) => (
+                                                               selections,
+                                                               suggestions,
+                                                               error,
+                                                               loading,
+                                                               onSchoolChange,
+                                                               onProfileChange,
+                                                               onPriorityChange,
+                                                               onAddSchool,
+                                                               onPrev,
+                                                               onSubmit,
+                                                           }) => (
     <form method="POST" onSubmit={onSubmit} className={styles.form}>
         <h2>Wybór szkół</h2>
-        {error && <ErrorMessage message={error} />}
+        {error && <ErrorMessage message={error}/>}
 
         {selections.map((selection, index) => (
-                <SchoolSelectionItem
-                    key={selection.school?.id || index}
-                    selection={selection}
-                    suggestions={suggestions}
-                    index={index}
-                    onSchoolChange={onSchoolChange}
-                    onProfileChange={onProfileChange}
-                    onPriorityChange={onPriorityChange}
-                    selections={selections}
-                />
-            ))}
+            <SchoolSelectionItem
+                key={selection.school?.id || index}
+                selection={selection}
+                suggestions={suggestions}
+                index={index}
+                onSchoolChange={onSchoolChange}
+                onProfileChange={onProfileChange}
+                onPriorityChange={onPriorityChange}
+                selections={selections}
+            />
+        ))}
         <PlusButton
             disabled={selections.length >= 5}
             onClick={onAddSchool}/>

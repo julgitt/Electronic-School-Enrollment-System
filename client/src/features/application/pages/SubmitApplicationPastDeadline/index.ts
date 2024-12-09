@@ -1,1 +1,1 @@
-export { default as SubmitApplicationPastDeadline } from "./SubmitApplicationPastDeadline.tsx";
+export {default as SubmitApplicationPastDeadline} from "./SubmitApplicationPastDeadline.tsx";

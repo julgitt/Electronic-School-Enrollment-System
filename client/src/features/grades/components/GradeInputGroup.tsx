@@ -20,27 +20,27 @@ const GradeInputGroup: React.FC<{
                     (g) => g.subject.id === subject.id && g.type === type
                 )?.grade ?? 0;
 
-            return (
-                <div key={subject.id} className={styles.formInputGroupHorizontal}>
-                    <h5 className={styles.labelItem}>{subject.name}:</h5>
-                    <InputField
-                        type="number"
-                        min={1}
-                        value={gradeValue}
-                        onChange={(e) =>
-                            onGradesChange({
-                                subject,
-                                grade: Number(e.target.value),
-                                type,
-                            })
-                        }
-                        placeholder="0"
-                        width="75px"
-                        height="20px"
-                    />
-                </div>
-            );
-        })}
+                return (
+                    <div key={subject.id} className={styles.formInputGroupHorizontal}>
+                        <h5 className={styles.labelItem}>{subject.name}:</h5>
+                        <InputField
+                            type="number"
+                            min={1}
+                            value={gradeValue}
+                            onChange={(e) =>
+                                onGradesChange({
+                                    subject,
+                                    grade: Number(e.target.value),
+                                    type,
+                                })
+                            }
+                            placeholder="0"
+                            width="75px"
+                            height="20px"
+                        />
+                    </div>
+                );
+            })}
     </div>
 );
 

@@ -1,6 +1,6 @@
 import {GradeToSubmit} from "../types/gradeToSubmit.ts";
 
-export const submitGrades= async (
+export const submitGrades = async (
     grades: GradeToSubmit[],
 ) => {
 

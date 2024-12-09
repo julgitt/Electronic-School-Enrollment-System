@@ -1,11 +1,12 @@
-import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import { Candidate } from "../types/candidate";
+import React, {createContext, ReactNode, useContext, useEffect, useState} from 'react';
+import {Candidate} from "../types/candidate";
 
 interface CandidateContextType {
     authorized: boolean;
     candidate: Candidate | null;
     candidates: Candidate[];
     switchCandidate: (candidateId: number) => void;
+    deleteCandidate: (candidateId: number) => void;
     onLogout: (event: React.MouseEvent<HTMLAnchorElement>) => void;
     logoutLoading: boolean;
     error: string | null;
@@ -25,7 +26,7 @@ interface CandidateProviderProps {
     children: ReactNode;
 }
 
-export const CandidateProvider: React.FC<CandidateProviderProps> = ({ children }) => {
+export const CandidateProvider: React.FC<CandidateProviderProps> = ({children}) => {
     const [authorized, setAuthorized] = useState<boolean>(false);
     const [candidate, setCandidate] = useState<Candidate | null>(null);
     const [candidates, setCandidates] = useState<Candidate[]>([]);
@@ -73,8 +74,8 @@ export const CandidateProvider: React.FC<CandidateProviderProps> = ({ children }
     const switchCandidate = (candidateId: number) => {
         fetch('/api/switchCandidate', {
             method: 'POST',
-            body: JSON.stringify({ candidateId }),
-            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({candidateId}),
+            headers: {'Content-Type': 'application/json'},
         })
             .then(async response => {
                 if (!response.ok) throw new Error((await response.json()).message);
@@ -86,10 +87,24 @@ export const CandidateProvider: React.FC<CandidateProviderProps> = ({ children }
             .catch(err => setError(err.message));
     };
 
+    const deleteCandidate = (candidateId: number) => {
+        fetch('/api/deleteCandidate', {
+            method: 'DELETE',
+            body: JSON.stringify({candidateId}),
+            headers: {'Content-Type': 'application/json'},
+        })
+            .then(async response => {
+                if (!response.ok) throw new Error((await response.json()).message);
+                window.location.reload();
+
+            })
+            .catch(err => setError(err.message));
+    };
+
     const onLogout = (event: React.MouseEvent<HTMLAnchorElement>) => {
         event.preventDefault();
         setLogoutLoading(true);
-        fetch('/api/logout', { method: 'POST' })
+        fetch('/api/logout', {method: 'POST'})
             .then(response => {
                 if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                 return response.json();
@@ -113,6 +128,7 @@ export const CandidateProvider: React.FC<CandidateProviderProps> = ({ children }
                 candidate,
                 candidates,
                 switchCandidate,
+                deleteCandidate,
                 onLogout,
                 logoutLoading,
                 error,

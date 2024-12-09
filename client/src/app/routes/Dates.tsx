@@ -5,10 +5,10 @@ import ErrorPage from "./ErrorPage.tsx";
 import LoadingPage from "./LoadingPage.tsx";
 
 const Dates: React.FC = () => {
-    const { data: enrollments, loading, error} = useFetch<Enrollment[]>('api/deadlines')
+    const {data: enrollments, loading, error} = useFetch<Enrollment[]>('api/deadlines')
 
-    if (error) return <ErrorPage errorMessage={error} />;
-    if (loading) return <LoadingPage />;
+    if (error) return <ErrorPage errorMessage={error}/>;
+    if (loading) return <LoadingPage/>;
 
     return (
         <div>
@@ -16,25 +16,25 @@ const Dates: React.FC = () => {
             {(!enrollments || (enrollments && enrollments.length === 0)) ? (
                 <p> Terminy nie zostały jeszcze ogłoszone</p>
             ) : (
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>Tura</th>
-                            <th>Data rozpoczęcia</th>
-                            <th>Data zakończenia</th>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Tura</th>
+                        <th>Data rozpoczęcia</th>
+                        <th>Data zakończenia</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {enrollments.map((enrollment) => (
+                        <tr key={enrollment.id}>
+                            <td>{enrollment.round}</td>
+                            <td>{new Date(enrollment.startDate).toLocaleDateString()}</td>
+                            <td>{new Date(enrollment.endDate).toLocaleDateString()}</td>
                         </tr>
-                        </thead>
-                        <tbody>
-                        {enrollments.map((enrollment) => (
-                            <tr key={enrollment.id}>
-                                <td>{enrollment.round}</td>
-                                <td>{new Date(enrollment.startDate).toLocaleDateString()}</td>
-                                <td>{new Date(enrollment.endDate).toLocaleDateString()}</td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                )
+                    ))}
+                    </tbody>
+                </table>
+            )
             }
 
         </div>

@@ -10,16 +10,20 @@ import LoadingPage from "../../../app/routes/LoadingPage.tsx";
 import {useGradeSubmittedCheck} from "../../../shared/hooks/useGradeSubmittedCheck.ts";
 
 const Header: React.FC = () => {
-    const { authorized, candidate, candidates, switchCandidate, onLogout, logoutLoading, error: userError } = useCandidate();
-    if (userError) return <ErrorPage errorMessage={userError} />;
+    const {
+        authorized, candidate, candidates,
+        switchCandidate, deleteCandidate, onLogout,
+        logoutLoading, error: userError
+    } = useCandidate();
+    if (userError) return <ErrorPage errorMessage={userError}/>;
 
-    const { isPastDeadline, loading, error } = useDeadlineCheck(!!candidate);
-    const { areGradesSubmitted, loading: gradesLoading, error: gradesError } = useGradeSubmittedCheck(!!candidate);
+    const {isPastDeadline, loading, error} = useDeadlineCheck(!!candidate);
+    const {areGradesSubmitted, loading: gradesLoading, error: gradesError} = useGradeSubmittedCheck(!!candidate);
 
     const candidateExist = candidate?.id != null;
 
-    if (error) return <ErrorPage errorMessage={error} />;
-    if (gradesError) return <ErrorPage errorMessage={gradesError} />;
+    if (error) return <ErrorPage errorMessage={error}/>;
+    if (gradesError) return <ErrorPage errorMessage={gradesError}/>;
     if (loading || gradesLoading) return <LoadingPage/>
 
     const renderNavLinks = () => (
@@ -43,6 +47,7 @@ const Header: React.FC = () => {
                         currentCandidate={candidate}
                         candidates={candidates}
                         onSelectCandidate={switchCandidate}
+                        onDeleteCandidate={deleteCandidate}
                     />
                     <Link className={styles.navLink} to="/applicationStatus">Status Aplikacji</Link>
                 </>

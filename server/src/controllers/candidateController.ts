@@ -31,6 +31,24 @@ export class CandidateController {
         }
     }
 
+    async deleteCandidate(req: Request, res: Response, next: NextFunction) {
+        try {
+            const candidateId: number = req.body.candidateId;
+            const userId: number = req.signedCookies.userId;
+
+            await this.candidateService.deleteCandidate(candidateId, userId);
+
+            res.clearCookie('candidateId');
+            res.clearCookie('candidateName');
+
+            return res.status(200).json({
+                message: 'Candidate deleted successfully',
+            });
+        } catch (error) {
+            return next(error);
+        }
+    }
+
     async register(req: Request, res: Response, next: NextFunction) {
         try {
             const candidate: CandidateRequest = req.body;

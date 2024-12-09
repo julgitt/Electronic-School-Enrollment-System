@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 
-import { InputField } from "../../atomic/InputField";
+import {InputField} from "../../atomic/InputField";
 import styles from './SuggestionBox.module.scss';
 
 interface SuggestionBoxProps {
@@ -10,7 +10,12 @@ interface SuggestionBoxProps {
     onSuggestionSelected: (suggestion: string) => void;
 }
 
-const SuggestionBox: React.FC<SuggestionBoxProps> = React.memo(({ placeholder, defaultValue, suggestions, onSuggestionSelected }) => {
+const SuggestionBox: React.FC<SuggestionBoxProps> = React.memo(({
+                                                                    placeholder,
+                                                                    defaultValue,
+                                                                    suggestions,
+                                                                    onSuggestionSelected
+                                                                }) => {
     const [query, setQuery] = useState<string>(defaultValue || '');
     const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
     const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
@@ -44,7 +49,9 @@ const SuggestionBox: React.FC<SuggestionBoxProps> = React.memo(({ placeholder, d
                 type="text"
                 value={query}
                 placeholder={placeholder}
-                onChange={(event) => { handleChange(event.target.value) }}
+                onChange={(event) => {
+                    handleChange(event.target.value)
+                }}
             />
             {showSuggestions && (
                 <ul className={styles.suggestionsList}>

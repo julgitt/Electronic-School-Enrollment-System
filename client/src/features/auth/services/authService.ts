@@ -1,5 +1,5 @@
-import { SignupFormData } from "../types/signUpFormData.ts";
-import { LoginFormData } from "../types/loginFormData.ts";
+import {SignupFormData} from "../types/signUpFormData.ts";
+import {LoginFormData} from "../types/loginFormData.ts";
 
 export const login = async (formData: LoginFormData) => {
     const response = await fetch('/api/login', {
@@ -44,7 +44,7 @@ export const logout = async () => {
     const data = await response.json();
 
     if (!response.ok) {
-       throw Error(data.message || 'Nie udało się wylogować.');
+        throw Error(data.message || 'Nie udało się wylogować.');
     }
 
     return data;

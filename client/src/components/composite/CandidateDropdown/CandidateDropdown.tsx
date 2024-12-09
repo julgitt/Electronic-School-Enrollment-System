@@ -1,19 +1,21 @@
-import React, { useState } from 'react';
-import { NavLink as Link } from 'react-router-dom';
+import React, {useState} from 'react';
+import {NavLink as Link} from 'react-router-dom';
 import styles from './CandidateDropdown.module.scss';
-import { Candidate } from "../../../shared/types/candidate.ts";
+import {Candidate} from "../../../shared/types/candidate.ts";
 
 interface CandidateDropdownProps {
     currentCandidate: Candidate;
     candidates: Candidate[];
     onSelectCandidate: (candidateId: number) => void;
+    onDeleteCandidate: (candidateId: number) => void;
 }
 
 const CandidateDropdown: React.FC<CandidateDropdownProps> = ({
-    currentCandidate,
-    candidates,
-    onSelectCandidate
-}) => {
+                                                                 currentCandidate,
+                                                                 candidates,
+                                                                 onSelectCandidate,
+                                                                 onDeleteCandidate
+                                                             }) => {
     const [isDropdownOpen, setDropdownOpen] = useState(false);
 
     return (
@@ -45,6 +47,15 @@ const CandidateDropdown: React.FC<CandidateDropdownProps> = ({
                     >
                         Nowy Kandydat
                     </Link>
+                    <button
+                        onClick={() => {
+                            setDropdownOpen(false);
+                            onDeleteCandidate(currentCandidate.id);
+                        }}
+                        className={styles.dropdownItem}
+                    >
+                       Usuń Obecnego Kandydata
+                    </button>
                 </div>
             )}
         </div>

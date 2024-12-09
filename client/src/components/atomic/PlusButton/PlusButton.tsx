@@ -6,7 +6,7 @@ interface PlusButtonProps {
     disabled?: boolean
 }
 
-const PlusButton: React.FC<PlusButtonProps> = ({ onClick}) => {
+const PlusButton: React.FC<PlusButtonProps> = ({onClick}) => {
     return (
         <button type="button" onClick={onClick} className={styles.secondaryButton}>
             +

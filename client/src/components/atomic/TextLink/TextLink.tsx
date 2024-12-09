@@ -6,7 +6,7 @@ interface TextLinkProps {
     children: React.ReactNode;
 }
 
-const TextLink: React.FC<TextLinkProps> = ({ to, children }) => {
+const TextLink: React.FC<TextLinkProps> = ({to, children}) => {
     return (
         <p className={styles.text}>
             <a href={to} className={styles.link}>{children}</a>

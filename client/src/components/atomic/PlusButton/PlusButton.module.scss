@@ -8,9 +8,11 @@
   background: var(--input-color);
   color: var(--text-secondary-color);
 }
+
 .secondaryButton:hover {
   background: var(--input-focus-color);
 }
+
 .secondaryButton:disabled {
   border: 1px solid var(--input-focus-color);
   background: var(--input-color);

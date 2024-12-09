@@ -1,10 +1,10 @@
 import React from "react";
 
-import { InputField } from "../../../components/atomic/InputField";
-import { Button } from "../../../components/atomic/Button";
-import { ErrorMessage } from "../../../components/atomic/ErrorMessage";
-import { TextLink } from "../../../components/atomic/TextLink";
-import { LoginFormData } from "../types/loginFormData.ts";
+import {InputField} from "../../../components/atomic/InputField";
+import {Button} from "../../../components/atomic/Button";
+import {ErrorMessage} from "../../../components/atomic/ErrorMessage";
+import {TextLink} from "../../../components/atomic/TextLink";
+import {LoginFormData} from "../types/loginFormData.ts";
 
 import styles from "../../../assets/css/forms.module.scss";
 
@@ -18,15 +18,15 @@ interface LoginFormProps {
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({
-     formData,
-     onInputChange,
-     error,
-     loading,
-     onSubmit,
-}) => (
+                                                 formData,
+                                                 onInputChange,
+                                                 error,
+                                                 loading,
+                                                 onSubmit,
+                                             }) => (
     <form method="POST" onSubmit={onSubmit} className={styles.form}>
         <h1>Logowanie</h1>
-        {error && <ErrorMessage message={error} />}
+        {error && <ErrorMessage message={error}/>}
         <div className={styles.formInputGroup}>
             <InputField
                 type="text"

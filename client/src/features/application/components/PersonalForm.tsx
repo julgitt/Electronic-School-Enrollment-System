@@ -1,8 +1,8 @@
 import React from "react";
 
-import { Button } from '../../../components/atomic/Button'
-import { ErrorMessage } from "../../../components/atomic/ErrorMessage";
-import { InputField } from "../../../components/atomic/InputField";
+import {Button} from '../../../components/atomic/Button'
+import {ErrorMessage} from "../../../components/atomic/ErrorMessage";
+import {InputField} from "../../../components/atomic/InputField";
 
 import styles from "../../../assets/css/forms.module.scss";
 
@@ -19,16 +19,16 @@ interface PersonalFormProps {
 }
 
 const PersonalForm: React.FC<PersonalFormProps> = ({
-    firstName,
-    lastName,
-    pesel,
-    error,
-    loading,
-    onFirstNameChange,
-    onLastNameChange,
-    onPeselChange,
-    onSubmit,
-}) => (
+                                                       firstName,
+                                                       lastName,
+                                                       pesel,
+                                                       error,
+                                                       loading,
+                                                       onFirstNameChange,
+                                                       onLastNameChange,
+                                                       onPeselChange,
+                                                       onSubmit,
+                                                   }) => (
     <form method="POST" onSubmit={onSubmit}>
         <h1>Formularz osobowy</h1>
         {error && <ErrorMessage message={error}/>}

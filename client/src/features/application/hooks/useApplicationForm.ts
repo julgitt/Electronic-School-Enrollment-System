@@ -81,7 +81,8 @@ export const useApplicationForm = (submission: SchoolSelection[]) => {
 
         schoolSelection.profiles[profileIndex] = {
             profileId: schoolSelection.profiles[profileIndex].profileId,
-            priority: priority};
+            priority: priority
+        };
 
         setSelections(newSelection);
     }

@@ -1,1 +1,1 @@
-export { default as InputField } from "./InputField.tsx";
+export {default as InputField} from "./InputField.tsx";

@@ -17,15 +17,15 @@ interface GradeFormProps {
 }
 
 const GradeForm: React.FC<GradeFormProps> = ({
-    subjects,
-    grades,
-    error,
-    loading,
-    onGradesChange,
-    onSubmit,
-}) => (
+                                                 subjects,
+                                                 grades,
+                                                 error,
+                                                 loading,
+                                                 onGradesChange,
+                                                 onSubmit,
+                                             }) => (
     <form method="POST" onSubmit={onSubmit} className={styles.form}>
-        {error && <ErrorMessage message={error} />}
+        {error && <ErrorMessage message={error}/>}
         <h3>Wpisz swoje wyniki:</h3>
         <div className={styles.formInputGroupHorizontal}>
             <GradeInputGroup
@@ -42,9 +42,9 @@ const GradeForm: React.FC<GradeFormProps> = ({
                 onGradesChange={onGradesChange}
                 title="Ze świadectwa"
             />
-            </div>
-            <div>
-                <Button type="submit" disabled={loading}>Wyślij</Button>
+        </div>
+        <div>
+            <Button type="submit" disabled={loading}>Wyślij</Button>
         </div>
     </form>
 )

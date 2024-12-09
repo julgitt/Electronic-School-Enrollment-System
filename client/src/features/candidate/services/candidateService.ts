@@ -1,4 +1,4 @@
-import { Candidate } from "../../../shared/types/candidate.ts";
+import {Candidate} from "../../../shared/types/candidate.ts";
 
 export const register = async (formData: Candidate) => {
     const response = await fetch('/api/registerCandidate', {
