@@ -1,3 +1,5 @@
+import {ApplicationStatus} from "../dto/applicationStatus";
+
 export interface ApplicationEntity {
     id: number;
     candidateId: number;

@@ -57,5 +57,5 @@ const applicationRepository = new ApplicationRepository();
 const applicationService = new ApplicationService(applicationRepository, profileService, enrollmentService, schoolService, tx);
 export const applicationController = new ApplicationController(applicationService);
 
-const adminService = new AdminService(schoolService, candidateService, profileService, applicationService);
+const adminService = new AdminService(candidateService, profileService, applicationService, tx);
 export const adminController = new AdminController(adminService);

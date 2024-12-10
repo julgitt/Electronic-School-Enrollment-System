@@ -1,5 +1,6 @@
 import {db, ITask} from '../db';
 import {ApplicationEntity} from "../models/applicationEntity";
+import {ApplicationStatus} from "../dto/applicationStatus";
 
 export class ApplicationRepository {
 

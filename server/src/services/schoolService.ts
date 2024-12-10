@@ -2,11 +2,12 @@ import {SchoolRepository} from "../repositories/schoolRepository";
 import {ProfileService} from "./profileService";
 import {SchoolWithProfiles} from "../dto/schoolWithProfiles";
 import {SchoolEntity} from "../models/schoolEntity";
+import {ResourceNotFoundError} from "../errors/resourceNotFoundError";
 
 export class SchoolService {
-    constructor(private schoolRepository: SchoolRepository,
-                private profileService: ProfileService) {
-    }
+    constructor(
+        private schoolRepository: SchoolRepository,
+        private profileService: ProfileService) {}
 
     async getAllSchoolsWithProfiles(): Promise<SchoolWithProfiles[]> {
         let schools: SchoolEntity[] = await this.schoolRepository.getAll();
@@ -21,17 +22,16 @@ export class SchoolService {
         return schoolsWithProfiles
     }
 
-    async getSchoolWithProfiles(id: number): Promise<SchoolWithProfiles | null> {
+    async getSchoolWithProfiles(id: number): Promise<SchoolWithProfiles> {
         const school: SchoolEntity | null = await this.schoolRepository.getById(id);
 
-        if (school) {
-            return {
-                id: school.id,
-                name: school.name,
-                profiles: await this.profileService.getProfilesBySchool(school.id),
-            }
+        if (!school) throw new ResourceNotFoundError('School not found.');
+
+        return {
+            id: school.id,
+            name: school.name,
+            profiles: await this.profileService.getProfilesBySchool(school.id),
         }
-        return school
     }
 
     async addSchool(name: string,): Promise<void> {

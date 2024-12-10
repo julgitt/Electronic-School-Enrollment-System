@@ -14,8 +14,7 @@ export class UserService {
     constructor(
         private userRepository: UserRepository,
         private readonly tx: transactionFunction
-    ) {
-    }
+    ) {}
 
     async login(login: string, password: string): Promise<UserWithRoles> {
         const existingUser: UserWithRoles | null = await this.userRepository.getWithRolesByLoginOrEmail(login, login);

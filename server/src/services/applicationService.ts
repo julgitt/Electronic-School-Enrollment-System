@@ -10,11 +10,10 @@ import {ApplicationBySchool} from "../dto/applicationBySchool";
 import {ApplicationRequest} from "../dto/applicationRequest";
 import {ApplicationEntity} from "../models/applicationEntity";
 import {Application} from "../dto/application";
-import {Profile} from "../dto/profile";
-import {SchoolWithProfiles} from "../dto/schoolWithProfiles";
 import {EnrollmentService} from "./enrollmentService";
 import {ValidationError} from "../errors/validationError";
 import {Enrollment} from "../dto/enrollment";
+import {ApplicationStatus} from "../dto/applicationStatus";
 
 export class ApplicationService {
     constructor(
@@ -27,21 +26,15 @@ export class ApplicationService {
     }
 
     async getAllApplications(candidateId: number): Promise<ApplicationWithProfiles[]> {
-        const applications: Application[] = await this.applicationRepository.getAllByCandidate(candidateId);
+        const applications = await this.applicationRepository.getAllByCandidate(candidateId);
 
         return Promise.all(
             applications.map(async (app) => {
                 const [enrollment, profile, school] = await Promise.all([
-                    this.enrollmentService.getEnrollmentById(app.enrollmentId),
+                    this.enrollmentService.getEnrollment(app.enrollmentId),
                     this.profileService.getProfile(app.profileId),
-                    app.profileId
-                        ? this.schoolService.getSchoolWithProfiles(app.profileId)
-                        : null,
+                    this.schoolService.getSchoolWithProfiles(app.profileId)
                 ]);
-
-                if (!enrollment) throw new ResourceNotFoundError('Enrollment not found.');
-                if (!profile) throw new ResourceNotFoundError('Profile not found.');
-                if (!school) throw new ResourceNotFoundError('School not found.');
 
                 return {
                     id: app.id,
@@ -74,6 +67,10 @@ export class ApplicationService {
         return this.applicationRepository.getMaxPriority();
     }
 
+    async updateApplicationStatus(id: number, status: string, t: ITask<any>) {
+        return this.applicationRepository.updateStatus(id, status, t);
+    }
+
     async addApplication(submissions: ApplicationRequest[], candidateId: number): Promise<void> {
         const enrollment: Enrollment | null = await this.enrollmentService.getCurrentEnrollment();
         if (!enrollment) throw new ValidationError('Outside the enrollment period.');
@@ -90,10 +87,6 @@ export class ApplicationService {
                 await this.applicationRepository.insert(newApplication, t);
             }
         });
-    }
-
-    async updateApplicationStatus(id: number, status: string, t: ITask<any>) {
-        return this.applicationRepository.updateStatus(id, status, t);
     }
 
     async updateApplication(submissions: ApplicationRequest[], candidateId: number): Promise<void> {
@@ -132,8 +125,7 @@ export class ApplicationService {
 
     private async validateProfilesExist(submissions: ApplicationRequest[]) {
         for (const submission of submissions) {
-            const profile = await this.profileService.getProfile(submission.profileId);
-            if (profile == null) throw new ResourceNotFoundError('Profile ID is not recognized.');
+            await this.profileService.getProfile(submission.profileId);
         }
     }
 
@@ -148,22 +140,24 @@ export class ApplicationService {
     }
 
     private groupApplicationsBySchool(applications: ApplicationWithProfiles[]) {
-        const groupedBySchool = new Map<number, ApplicationBySchool>();
-
+        const groupedBySchool: ApplicationBySchool[] = [];
         for (const app of applications) {
-            if (!groupedBySchool.has(app.school.id)) {
-                groupedBySchool.set(app.school.id, {
+            let schoolGroup = groupedBySchool.find(group =>
+                group.school.id === app.school.id
+            );
+            if (!schoolGroup) {
+                schoolGroup = {
                     school: app.school,
                     profiles: [],
-                });
+                };
+                groupedBySchool.push(schoolGroup);
             }
 
-            groupedBySchool.get(app.school.id)!.profiles.push({
+            schoolGroup.profiles.push({
                 profileId: app.profile.id,
                 priority: app.priority,
             });
         }
-
-        return Array.from(groupedBySchool.values());
+        return groupedBySchool;
     };
 }

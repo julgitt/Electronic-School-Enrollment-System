@@ -7,10 +7,12 @@ import {Application} from "../dto/application";
 import {SchoolWithProfiles} from "../dto/schoolWithProfiles";
 import {Grade} from "../dto/grade";
 import {ITask} from "pg-promise";
+import {ProfileCriteriaEntity, ProfileCriteriaType} from "../models/profileCriteriaEntity";
+import {ApplicationStatus} from "../dto/applicationStatus";
+import {ResourceNotFoundError} from "../errors/resourceNotFoundError";
 
 export class AdminService {
     constructor(
-        private schoolService: SchoolService,
         private candidateService: CandidateService,
         private profileService: ProfileService,
         private applicationService: ApplicationService,
@@ -19,8 +21,8 @@ export class AdminService {
     }
 
     async enroll(): Promise<void> {
-        const schools: SchoolWithProfiles[] = await this.schoolService.getAllSchoolsWithProfiles();
-        const profiles: Profile[] = schools.flatMap(school => school.profiles);
+        const profiles: Profile[] = await this.profileService.getAllProfiles();
+        const profilesCriteria: Map<number, ProfileCriteriaEntity[]> = await this.profileService.getAllProfilesCriteria();
 
         const maxPriority: number = await this.applicationService.getMaxPriority();
         const gradesByCandidate = await this.candidateService.getAllWithGrades();
@@ -28,7 +30,9 @@ export class AdminService {
         await this.tx(async t => {
             for (let priority = 1; priority < maxPriority; priority++) {
                 for (let profile of profiles) {
-                    await this.processEnrollmentForProfile(profile, priority, gradesByCandidate, t);
+                    const profileCriteria = profilesCriteria.get(profile.id);
+                    if (!profileCriteria) throw new ResourceNotFoundError('Criteria not found');
+                    await this.processEnrollmentForProfile(profile, profileCriteria, priority, gradesByCandidate, t);
                 }
             }
         });
@@ -36,22 +40,19 @@ export class AdminService {
 
     private async processEnrollmentForProfile(
         profile: Profile,
+        criteria: ProfileCriteriaEntity[],
         priority: number,
         gradesByCandidate: Map<number, Grade[]>,
         t: ITask<any>
     ): Promise<void> {
         const capacity: number = profile.capacity;
         let enrolledNumber: number = await this.applicationService.getAllEnrolledByProfile(profile.id);
-
-        const criteria = await this.profileService.getProfileCriteria(profile.id);
-        if (!criteria) throw new Error(`Criteria not found for profile ID ${profile.id}`);
-
         let enrolledCandidateIds: number[] = [];
 
         let applications: Application[] = (await this.applicationService.getAllPendingApplicationsByProfileAndPriority(profile.id, priority))
             .sort((a, b) =>
-                ProfileService.calculatePoints(criteria, gradesByCandidate.get(a.candidateId)!)
-                - ProfileService.calculatePoints(criteria, gradesByCandidate.get(b.candidateId)!)
+                this.calculatePoints(criteria, gradesByCandidate.get(a.candidateId)!)
+                - this.calculatePoints(criteria, gradesByCandidate.get(b.candidateId)!)
             );
         while (enrolledNumber < capacity && applications.length > 0) {
             enrolledCandidateIds.push(applications.pop()!.candidateId);
@@ -80,5 +81,23 @@ export class AdminService {
             await this.applicationService.updateApplicationStatus(applicationId, ApplicationStatus.Rejected, t);
         }
 
+    }
+
+    private calculatePoints(profileCriteria: ProfileCriteriaEntity[], grades: Grade[]) {
+        const mandatorySubjects = profileCriteria.filter(s => s.type === ProfileCriteriaType.Mandatory);
+        const alternativeSubjects = profileCriteria.filter(s => s.type === ProfileCriteriaType.Alternative);
+        let points = 0;
+
+        let alternativeGrades = []
+        for (let grade of grades) {
+            if (grade.type == "exam") {
+                points += grade.grade;
+            } else if (grade.subjectId in mandatorySubjects) {
+                points += grade.grade;
+            } else if (grade.subjectId in alternativeSubjects) {
+                alternativeGrades.push(grade.grade);
+            }
+        }
+        return points + alternativeGrades.sort().pop()!;
     }
 }

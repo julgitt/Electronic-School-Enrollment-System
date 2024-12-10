@@ -24,13 +24,21 @@ export class ProfileRepository {
         return await db.query(query, [schoolId]);
     }
 
-    async getProfileCriteria(profileId: number): Promise<ProfileCriteriaEntity[]> {
+    async getAll(): Promise<ProfileEntity[]> {
+        const query = `
+            SELECT *
+            FROM profiles
+        `;
+
+        return await db.query(query);
+    }
+
+    async getAllProfilesCriteria(): Promise<ProfileCriteriaEntity[]> {
         const query = `
             SELECT *
             FROM profile_criteria
-            WHERE profile_id = $1;
         `;
 
-        return await db.query(query, [profileId]);
+        return await db.query(query);
     }
 }

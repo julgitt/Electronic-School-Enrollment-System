@@ -4,8 +4,12 @@ import sinon from 'sinon';
 
 import {UserService} from "../../../src/services/userService";
 import {UserRepository} from "../../../src/repositories/userRepository";
-import {User} from "../../../src/entities/userModel";
 import bcrypt from 'bcrypt';
+import {User} from "../../../src/dto/user";
+import {UserWithRoles} from "../../../src/dto/userWithRoles";
+import {AuthenticationError} from "../../../src/errors/authenticationError";
+import {DataConflictError} from "../../../src/errors/dataConflictError";
+import {UserEntity} from "../../../src/models/userEntity";
 
 describe('UserService', () => {
     let userService: UserService;
@@ -32,119 +36,136 @@ describe('UserService', () => {
 
     describe('login', () => {
         it('should authenticate user with correct credentials', async () => {
-            const mockUser: User = {
+            const mockUser: UserWithRoles = {
                 id: 1,
-                login: 'testuser',
+                username: 'testuser',
                 email: 'test@example.com',
                 password: 'hashedPassword',
                 roles: ['user']
             };
 
-            userRepoStub.getByLoginOrEmail.resolves(mockUser);
+            userRepoStub.getWithRolesByLoginOrEmail.resolves(mockUser);
             bcryptCompareStub.resolves(true);
 
             const result = await userService.login('testuser', 'password123');
 
             assert.deepEqual(result, mockUser);
-            assert.equal(userRepoStub.getByLoginOrEmail.callCount, 1);
+            assert.equal(userRepoStub.getWithRolesByLoginOrEmail.callCount, 1);
             assert.equal(bcryptCompareStub.callCount, 1);
         });
 
         it('should throw an error if user is not found', async () => {
-            userRepoStub.getByLoginOrEmail.resolves(null);
+            userRepoStub.getWithRolesByLoginOrEmail.resolves(null);
 
-            try {
-                await userService.login('nonexistent', 'password123');
-                assert.fail('Expected an error to be thrown');
-            } catch (err) {
-                assert.equal((err as Error).message, 'Invalid credentials.');
-            }
+            await assert.rejects(
+                () => userService.login('nonexistent', 'password123'),
+                (err) => err instanceof AuthenticationError && err.message === 'Invalid credentials.'
+            );
 
-            assert.equal(userRepoStub.getByLoginOrEmail.callCount, 1);
+            assert.equal(userRepoStub.getWithRolesByLoginOrEmail.callCount, 1);
             assert.equal(bcryptCompareStub.callCount, 0);
         });
 
         it('should throw an error if password is incorrect', async () => {
-            const mockUser: User = {
+            const mockUser: UserWithRoles = {
                 id: 1,
-                login: 'testuser',
+                username: 'testuser',
                 email: 'test@example.com',
                 password: 'hashedPassword',
                 roles: ['user']
             };
 
-            userRepoStub.getByLoginOrEmail.resolves(mockUser);
+            userRepoStub.getWithRolesByLoginOrEmail.resolves(mockUser);
             bcryptCompareStub.resolves(false);
 
-            try {
-                await userService.login('testuser', 'wrongpassword');
-                assert.fail('Expected an error to be thrown');
-            } catch (err) {
-                assert.equal((err as Error).message, 'Invalid credentials.');
-            }
+            await assert.rejects(
+                () => userService.login('testuser', 'wrongpassword'),
+                (err) => err instanceof AuthenticationError && err.message === 'Invalid credentials.'
+            );
 
-            assert.equal(userRepoStub.getByLoginOrEmail.callCount, 1);
+            assert.equal(userRepoStub.getWithRolesByLoginOrEmail.callCount, 1);
             assert.equal(bcryptCompareStub.callCount, 1);
         });
     });
 
     describe('register', () => {
-        it('should register a new auth with hashed password', async () => {
-            const mockUser: User = {
-                login: 'newuser',
+        it('should register a new user with hashed password', async () => {
+            const mockUser: UserEntity = {
+                id: 0,
+                username: 'newuser',
                 email: 'new@example.com',
                 password: 'hashedPassword',
-                roles: ['user']
             };
 
-            userRepoStub.getByLoginOrEmail.resolves(null);
+            userRepoStub.getWithoutRolesByLoginOrEmail.resolves(null);
             bcryptHashStub.resolves('hashedPassword');
-            userRepoStub.insert.resolves({id: 1, ...mockUser});
+            userRepoStub.insert.resolves(mockUser);
 
-            await userService.register('newuser', 'new@example.com', 'password123');
+            await userService.register(
+                {username: 'newuser', email: 'new@example.com', password: 'password123'}
+            );
 
-            assert.equal(userRepoStub.getByLoginOrEmail.callCount, 1);
+            assert.equal(userRepoStub.getWithoutRolesByLoginOrEmail.callCount, 1);
             assert.equal(bcryptHashStub.callCount, 1);
             assert.equal(userRepoStub.insert.callCount, 1);
-            assert(userRepoStub.insert.calledWith(mockUser));
+            assert.deepEqual(userRepoStub.insert.getCall(0).args[0], mockUser);
+            assert.equal(userRepoStub.insertUserRoles.callCount, 1);
+            assert(userRepoStub.insertUserRoles.calledWithMatch(
+                mockUser.id,
+                ['user'],
+                sinon.match.any
+            ));
+
         });
 
         it('should throw an error if login is already taken', async () => {
             const existingUser: User = {
                 id: 1,
-                login: 'existinguser',
+                username: 'existinguser',
                 email: 'existing@example.com',
                 password: 'hashedPassword',
-                roles: ['user']
             };
 
-            userRepoStub.getByLoginOrEmail.resolves(existingUser);
+            userRepoStub.getWithoutRolesByLoginOrEmail.resolves(existingUser);
 
-            try {
-                await userService.register('existinguser', 'new@example.com', 'password123');
-                assert.fail('Expected an error to be thrown');
-            } catch (err) {
-                assert.match((err as Error).message, /Login is already taken./);
-            }
+            await assert.rejects(
+                () => userService.register({
+                    username: 'existinguser',
+                    email: 'new@example.com',
+                    password: 'password123'
+                }),
+                (err) => err instanceof DataConflictError && err.message === 'Username is already taken.'
+            );
 
-            assert.equal(userRepoStub.getByLoginOrEmail.callCount, 1);
+            assert.equal(userRepoStub.getWithoutRolesByLoginOrEmail.callCount, 1);
             assert.equal(bcryptHashStub.callCount, 0);
             assert.equal(userRepoStub.insert.callCount, 0);
+            assert.equal(userRepoStub.insertUserRoles.callCount, 0);
         });
 
         it('should throw an error if email is already taken', async () => {
-            userRepoStub.getByLoginOrEmail.resolves({email: 'existing@example.com'} as User);
+            userRepoStub.getWithoutRolesByLoginOrEmail.resolves(
+                {
+                    id: 1,
+                    username: 'otheruser',
+                    email: 'existing@example.com',
+                    password: 'hashedPassword'
+                }
+            );
 
-            try {
-                await userService.register('newuser', 'existing@example.com', 'password123');
-                assert.fail('Expected an error to be thrown');
-            } catch (err) {
-                assert.match((err as Error).message, /There is already an account with that email./);
-            }
+            await assert.rejects(
+                () => userService.register({
+                    username: 'newUser',
+                    email: 'existing@example.com',
+                    password: 'password123'
+                }),
+                (err) => err instanceof DataConflictError && err.message === 'There is already an account with that email.'
+            );
 
-            assert.equal(userRepoStub.getByLoginOrEmail.callCount, 1);
+            assert.equal(userRepoStub.getWithoutRolesByLoginOrEmail.callCount, 1);
             assert.equal(bcryptHashStub.callCount, 0);
             assert.equal(userRepoStub.insert.callCount, 0);
+            assert.equal(userRepoStub.insertUserRoles.callCount, 0);
         });
     });
 })
