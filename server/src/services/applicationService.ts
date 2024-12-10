@@ -29,34 +29,41 @@ export class ApplicationService {
     async getAllApplications(candidateId: number): Promise<ApplicationWithProfiles[]> {
         const applications: Application[] = await this.applicationRepository.getAllByCandidate(candidateId);
 
-        const applicationsWithProfiles: ApplicationWithProfiles[] = [];
+        return Promise.all(
+            applications.map(async (app) => {
+                const [enrollment, profile, school] = await Promise.all([
+                    this.enrollmentService.getEnrollmentById(app.enrollmentId),
+                    this.profileService.getProfile(app.profileId),
+                    app.profileId
+                        ? this.schoolService.getSchoolWithProfiles(app.profileId)
+                        : null,
+                ]);
 
-        for (const app of applications) {
-            const enrollment: Enrollment | null = await this.enrollmentService.getEnrollmentById(app.enrollmentId);
-            if (enrollment == null) throw new ResourceNotFoundError('Enrollment ID is not recognized.');
-            const profile: Profile | null = await this.profileService.getProfile(app.profileId);
-            if (profile == null) throw new ResourceNotFoundError('Profile ID is not recognized.');
-            const school: SchoolWithProfiles | null = await this.schoolService.getSchoolWithProfiles(profile.schoolId);
-            if (school == null) throw new ResourceNotFoundError('School ID is not recognized.');
+                if (!enrollment) throw new ResourceNotFoundError('Enrollment not found.');
+                if (!profile) throw new ResourceNotFoundError('Profile not found.');
+                if (!school) throw new ResourceNotFoundError('School not found.');
 
-            const newApplication: ApplicationWithProfiles = {
-                id: app.id,
-                school: school,
-                profile: profile,
-                priority: app.priority,
-                round: enrollment.round,
-                status: app.status,
-                createdAt: app.createdAt,
-                updatedAt: app.updatedAt
-            };
-
-            applicationsWithProfiles.push(newApplication);
-        }
-        return applicationsWithProfiles;
+                return {
+                    id: app.id,
+                    school: school,
+                    profile: profile,
+                    priority: app.priority,
+                    round: enrollment.round,
+                    status: app.status,
+                    createdAt: app.createdAt,
+                    updatedAt: app.updatedAt
+                };
+            })
+        )
     }
 
     async getAllPendingApplicationsByProfileAndPriority(profileId: number, priority: number): Promise<Application[]> {
         return this.applicationRepository.getAllPendingByProfileAndPriority(profileId, priority);
+    }
+
+    async getAllApplicationSubmissions(candidateId: number): Promise<ApplicationBySchool[]> {
+        const applications: ApplicationWithProfiles[] = await this.getAllApplications(candidateId);
+        return this.groupApplicationsBySchool(applications);
     }
 
     async getAllEnrolledByProfile(profileId: number): Promise<number> {
@@ -67,36 +74,19 @@ export class ApplicationService {
         return this.applicationRepository.getMaxPriority();
     }
 
-    async getAllApplicationSubmissions(candidateId: number): Promise<ApplicationBySchool[]> {
-        const applications: ApplicationWithProfiles[] = await this.getAllApplications(candidateId);
-        return this.groupApplicationsBySchool(applications);
-    }
-
     async addApplication(submissions: ApplicationRequest[], candidateId: number): Promise<void> {
         const enrollment: Enrollment | null = await this.enrollmentService.getCurrentEnrollment();
-        if (!enrollment) throw new ValidationError('Application cannot be submitted outside the enrollment period.');
+        if (!enrollment) throw new ValidationError('Outside the enrollment period.');
 
-        const applications: Application[] = await this.applicationRepository.getAllByCandidateAndEnrollmentId(candidateId, enrollment.id);
-        if (applications.length !== 0) throw new DataConflictError('Application already exists');
+        const existingApplications: Application[] = await this.applicationRepository.getAllByCandidateAndEnrollmentId(candidateId, enrollment.id);
+        if (existingApplications.length > 0) throw new DataConflictError('Application already exists');
 
-        for (const submission of submissions) {
-            const profile = await this.profileService.getProfile(submission.profileId);
-            if (profile == null) throw new ResourceNotFoundError('Profile ID is not recognized.');
-        }
+        await this.validateProfilesExist(submissions);
+        this.assignPriorities(submissions);
 
         await this.tx(async t => {
             for (const submission of submissions) {
-                const newApplication: ApplicationEntity = {
-                    id: 0,
-                    candidateId: candidateId,
-                    profileId: submission.profileId,
-                    priority: submission.priority,
-                    enrollmentId: enrollment.id,
-                    status: 'pending',
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                };
-
+                const newApplication = this.createApplicationEntity(submission, candidateId, enrollment.id);
                 await this.applicationRepository.insert(newApplication, t);
             }
         });
@@ -108,43 +98,56 @@ export class ApplicationService {
 
     async updateApplication(submissions: ApplicationRequest[], candidateId: number): Promise<void> {
         const enrollment: Enrollment | null = await this.enrollmentService.getCurrentEnrollment();
-        if (!enrollment) throw new ValidationError('Application cannot be submitted outside the enrollment period.');
+        if (!enrollment) throw new ValidationError('Outside the enrollment period.');
 
-        const applications: ApplicationEntity[] = await this.applicationRepository.getAllByCandidateAndEnrollmentId(candidateId, enrollment.id);
-        if (applications.length === 0) {
-            throw new ResourceNotFoundError('ApplicationWithProfiles not found.');
-        }
-        // TODO: Add personal form data insert
+        const applications: Application[] = await this.applicationRepository.getAllByCandidateAndEnrollmentId(candidateId, enrollment.id);
+        if (applications.length === 0) throw new ResourceNotFoundError('Applications not found.');
 
-        for (const submission of submissions) {
-            const profile = await this.profileService.getProfile(submission.profileId);
-            if (profile == null) {
-                throw new ResourceNotFoundError('Profile ID is not recognized.');
-            }
-        }
+        await this.validateProfilesExist(submissions);
+        this.assignPriorities(submissions);
 
         await this.tx(async t => {
             for (const application of applications) {
                 await this.applicationRepository.delete(application.profileId, application.candidateId, t);
             }
             for (const submission of submissions) {
-                const newApplication: ApplicationEntity = {
-                    id: 0,
-                    candidateId: candidateId,
-                    profileId: submission.profileId,
-                    priority: submission.priority,
-                    enrollmentId: enrollment.id,
-                    status: 'pending',
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                };
-
+                const newApplication = this.createApplicationEntity(submission, candidateId, enrollment.id);
                 await this.applicationRepository.insert(newApplication, t);
             }
         });
     }
 
-    private async groupApplicationsBySchool(applications: ApplicationWithProfiles[]) {
+    private createApplicationEntity(submission: ApplicationRequest, candidateId: number, enrollmentId: number): ApplicationEntity {
+        return {
+            id: 0,
+            candidateId,
+            profileId: submission.profileId,
+            priority: submission.priority,
+            enrollmentId,
+            status: ApplicationStatus.Pending,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        };
+    }
+
+    private async validateProfilesExist(submissions: ApplicationRequest[]) {
+        for (const submission of submissions) {
+            const profile = await this.profileService.getProfile(submission.profileId);
+            if (profile == null) throw new ResourceNotFoundError('Profile ID is not recognized.');
+        }
+    }
+
+    private assignPriorities(submissions: ApplicationRequest[]) {
+        submissions = submissions.sort(
+            (a, b) => a.priority - b.priority
+        );
+
+        submissions.forEach((item, index) => {
+            item.priority = index + 1;
+        });
+    }
+
+    private groupApplicationsBySchool(applications: ApplicationWithProfiles[]) {
         const groupedBySchool = new Map<number, ApplicationBySchool>();
 
         for (const app of applications) {

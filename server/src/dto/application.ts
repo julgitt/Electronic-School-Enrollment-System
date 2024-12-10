@@ -4,7 +4,7 @@ export interface Application {
     candidateId: number;
     priority: number;
     enrollmentId: number;
-    status: 'pending' | 'rejected' | 'accepted';
+    status: ApplicationStatus;
     createdAt: Date | number;
     updatedAt: Date | number;
 }

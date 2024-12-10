@@ -65,26 +65,28 @@ export class ApplicationRepository {
     }
 
     async getAllPendingByProfileAndPriority(profileId: number, priority: number): Promise<ApplicationEntity[]> {
+        const status = ApplicationStatus.Pending;
         const query = `
             SELECT *
             FROM applications
             WHERE profile_id = $1
               and priority = $2
-              and status = 'pending'
+              and status = $3
         `;
 
-        return db.query(query, [profileId, priority]);
+        return db.query(query, [profileId, priority, status]);
     }
 
     async getEnrolledByProfile(profileId: number): Promise<number> {
+        const status = ApplicationStatus.Accepted
         const query = `
             SELECT COUNT(*)
             FROM applications
             WHERE profile_id = $1
-              and status = 'accepted'
+              and status = $2
         `;
 
-        return Number((await db.query(query, [profileId]))[0].count);
+        return Number((await db.query(query, [profileId, status]))[0].count);
     }
 
     async insert(newApp: ApplicationEntity, t: ITask<any>): Promise<void> {

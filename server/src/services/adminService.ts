@@ -50,8 +50,8 @@ export class AdminService {
 
         let applications: Application[] = (await this.applicationService.getAllPendingApplicationsByProfileAndPriority(profile.id, priority))
             .sort((a, b) =>
-                ProfileService.calculatePoints(criteria, gradesByCandidate.get(b.candidateId)!)
-                - ProfileService.calculatePoints(criteria, gradesByCandidate.get(a.candidateId)!)
+                ProfileService.calculatePoints(criteria, gradesByCandidate.get(a.candidateId)!)
+                - ProfileService.calculatePoints(criteria, gradesByCandidate.get(b.candidateId)!)
             );
         while (enrolledNumber < capacity && applications.length > 0) {
             enrolledCandidateIds.push(applications.pop()!.candidateId);
@@ -69,15 +69,15 @@ export class AdminService {
                 await this.applicationService.updateApplicationStatus(
                     application.id,
                     (application.profile.id === profileId)
-                        ? 'accepted'
-                        : 'rejected',
+                        ? ApplicationStatus.Accepted
+                        : ApplicationStatus.Rejected,
                     t
                 );
             }
         }
 
         for (let applicationId of rejected) {
-            await this.applicationService.updateApplicationStatus(applicationId, 'rejected', t);
+            await this.applicationService.updateApplicationStatus(applicationId, ApplicationStatus.Rejected, t);
         }
 
     }
