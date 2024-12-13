@@ -30,11 +30,11 @@ export class ApplicationService {
 
         return Promise.all(
             applications.map(async (app) => {
-                const [enrollment, profile, school] = await Promise.all([
+                const [enrollment, profile] = await Promise.all([
                     this.enrollmentService.getEnrollment(app.enrollmentId),
                     this.profileService.getProfile(app.profileId),
-                    this.schoolService.getSchoolWithProfiles(app.profileId)
                 ]);
+                const school = await this.schoolService.getSchoolWithProfiles(profile.schoolId)
 
                 return {
                     id: app.id,
@@ -50,8 +50,8 @@ export class ApplicationService {
         )
     }
 
-    async getAllPendingApplicationsByProfileAndPriority(profileId: number, priority: number): Promise<Application[]> {
-        return this.applicationRepository.getAllPendingByProfileAndPriority(profileId, priority);
+    async getAllPendingApplicationsByProfile(profileId: number): Promise<Application[]> {
+        return this.applicationRepository.getAllPendingByProfile(profileId);
     }
 
     async getAllApplicationSubmissions(candidateId: number): Promise<ApplicationBySchool[]> {
@@ -59,12 +59,8 @@ export class ApplicationService {
         return this.groupApplicationsBySchool(applications);
     }
 
-    async getAllEnrolledByProfile(profileId: number): Promise<number> {
+    async getAcceptedCountByProfile(profileId: number): Promise<number> {
         return this.applicationRepository.getEnrolledByProfile(profileId)
-    }
-
-    async getMaxPriority(): Promise<number> {
-        return this.applicationRepository.getMaxPriority();
     }
 
     async updateApplicationStatus(id: number, status: string, t: ITask<any>) {

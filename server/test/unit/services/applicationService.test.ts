@@ -290,19 +290,19 @@ describe('ApplicationService', () => {
 
 
 
-    describe('getAllPendingApplicationsByProfileAndPriority', async() => {
+    describe('getAllPendingApplicationsByProfile', async() => {
         it('should return all pending applications for the given profile and priority', async () => {
             const mockApplications: ApplicationEntity[] = [{
                 id: 1, candidateId: 1, profileId: 1, enrollmentId: 1, priority: 1, status: ApplicationStatus.Pending,
                 createdAt: new Date(), updatedAt: new Date(),
             }];
 
-            applicationRepoStub.getAllPendingByProfileAndPriority.resolves(mockApplications);
+            applicationRepoStub.getAllPendingByProfile.resolves(mockApplications);
 
-            const result = await applicationService.getAllPendingApplicationsByProfileAndPriority(1, 1);
+            const result = await applicationService.getAllPendingApplicationsByProfile(1);
 
             assert.deepEqual(result, mockApplications);
-            assert(applicationRepoStub.getAllPendingByProfileAndPriority.calledOnceWith(1, 1));
+            assert(applicationRepoStub.getAllPendingByProfile.calledOnceWith(1));
         });
     });
 
@@ -310,21 +310,10 @@ describe('ApplicationService', () => {
         it('should return the number of enrolled candidates for the given profile', async () => {
             applicationRepoStub.getEnrolledByProfile.resolves(10);
 
-            const result = await applicationService.getAllEnrolledByProfile(1);
+            const result = await applicationService.getAcceptedCountByProfile(1);
 
             assert.equal(result, 10);
             assert(applicationRepoStub.getEnrolledByProfile.calledOnceWith(1));
-        });
-    });
-
-    describe('getMaxPriority', async () => {
-        it('should return the maximum priority among applications', async () => {
-            applicationRepoStub.getMaxPriority.resolves(5);
-
-            const result = await applicationService.getMaxPriority();
-
-            assert.equal(result, 5);
-            assert(applicationRepoStub.getMaxPriority.calledOnce);
         });
     });
 

@@ -6,6 +6,7 @@ import {Grade} from "../dto/grade";
 import {Candidate} from "../dto/candidate";
 import {CandidateEntity} from "../models/candidateEntity";
 import {CandidateRequest} from "../dto/candidateRequest";
+import {GradeByCandidate} from "../dto/gradesByCandidate";
 
 export class CandidateService {
     constructor(
@@ -13,7 +14,7 @@ export class CandidateService {
         private readonly candidateRepository: CandidateRepository) {
     }
 
-    async getAllWithGrades() {
+    async getGradesByCandidates(): Promise<GradeByCandidate> {
         const gradesByCandidateId = new Map<number, Grade[]>;
         const candidates: Candidate[] = await this.candidateRepository.getAll();
         for (const candidate of candidates) {

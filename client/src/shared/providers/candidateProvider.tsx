@@ -28,7 +28,6 @@ interface CandidateProviderProps {
 }
 
 export const CandidateProvider: React.FC<CandidateProviderProps> = ({children}) => {
-    /*const [authorized, setAuthorized] = useState<boolean>(false);*/
     const [roles, setRoles] = useState<string[]>([]);
     const [candidate, setCandidate] = useState<Candidate | null>(null);
     const [candidates, setCandidates] = useState<Candidate[]>([]);
@@ -137,7 +136,7 @@ export const CandidateProvider: React.FC<CandidateProviderProps> = ({children}) 
                 error,
             }}
         >
-            {error && <div className="error">Error: {error}</div>} {/* Wyświetlanie błędów */}
+            {error && <div className="error">Error: {error}</div>}
             {children}
         </CandidateContext.Provider>
     );

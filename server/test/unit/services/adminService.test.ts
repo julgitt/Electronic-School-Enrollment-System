@@ -6,12 +6,9 @@ import {ITask} from "pg-promise";
 import {ProfileService} from "../../../src/services/profileService";
 import {CandidateService} from "../../../src/services/candidateService";
 import {ApplicationService} from "../../../src/services/applicationService";
-import {Grade} from "../../../src/dto/grade";
-import {Application} from "../../../src/dto/application";
 import {ApplicationStatus} from "../../../src/dto/applicationStatus";
 import assert from "assert";
-import {ProfileCriteriaEntity, ProfileCriteriaType} from "../../../src/models/profileCriteriaEntity";
-import {Profile} from "../../../src/dto/profile";
+import {ProfileCriteriaType} from "../../../src/models/profileCriteriaEntity";
 
 describe('AdminService', () => {
     let adminService: AdminService;
@@ -40,101 +37,146 @@ describe('AdminService', () => {
         sinon.restore();
     })
 
-    describe('enroll', async () => {
-        it('should enroll candidates based on profile priorities and capacities', async () => {
-            const mockProfiles: Profile[] = createMockProfiles();
-            const mockGradesByCandidate: Map<number, Grade[]> = createMockGradesByCandidate();
-            const mockApplications: Application[] = createMockApplications();
-            const mockProfileCriteria: Map<number, ProfileCriteriaEntity[]> = createMockProfileCriteria();
+    describe('processProfileEnrollments', () => {
+        it('should process profile enrollments successfully', async () => {
+            const mockProfiles = createMockProfiles();
+            const mockCriteria = createMockProfileCriteria();
+            const gradesByCandidate = createMockGradesByCandidate();
 
             profileServiceStub.getAllProfiles.resolves(mockProfiles);
-            profileServiceStub.getAllProfilesCriteria.resolves(mockProfileCriteria)
+            profileServiceStub.getAllProfilesCriteria.resolves(mockCriteria);
+            candidateServiceStub.getGradesByCandidates.resolves(gradesByCandidate);
+            applicationServiceStub.getAcceptedCountByProfile.resolves(0);
+            applicationServiceStub.getAllPendingApplicationsByProfile.callsFake((profileId) => {
+                return Promise.resolve(getPendingApplicationsByProfile(profileId));
+            });
 
-            applicationServiceStub.getMaxPriority.resolves(2);
-            candidateServiceStub.getAllWithGrades.resolves(mockGradesByCandidate);
+            // when
+            await adminService.processProfileEnrollments();
 
-            applicationServiceStub.getAllPendingApplicationsByProfileAndPriority.resolves(mockApplications);
-            applicationServiceStub.getAllEnrolledByProfile.resolves(0);
+            // then
+            assert(profileServiceStub.getAllProfiles.calledOnce);
 
-            await adminService.enroll();
+            const calls = applicationServiceStub.updateApplicationStatus.getCalls();
+            assert.strictEqual(calls.length, 8);
 
-            assert(applicationServiceStub.updateApplicationStatus.calledWith(1, ApplicationStatus.Accepted));
-            assert(applicationServiceStub.updateApplicationStatus.calledWith(2, ApplicationStatus.Accepted));
-            assert(applicationServiceStub.updateApplicationStatus.calledWith(3, ApplicationStatus.Accepted));
+            const expectedArgs = [
+                [1, ApplicationStatus.Accepted],
+                [2, ApplicationStatus.Rejected],
+                [3, ApplicationStatus.Rejected],
+                [4, ApplicationStatus.Accepted],
+                [5, ApplicationStatus.Rejected],
+                [6, ApplicationStatus.Accepted],
+                [7, ApplicationStatus.Rejected],
+                [8, ApplicationStatus.Rejected]
+            ];
 
-            assert(applicationServiceStub.updateApplicationStatus.calledWith(4, ApplicationStatus.Rejected));
-            assert(applicationServiceStub.updateApplicationStatus.calledWith(5, ApplicationStatus.Rejected));
-            assert(applicationServiceStub.updateApplicationStatus.calledWith(6, ApplicationStatus.Rejected));
+            assert.strictEqual(calls.length, expectedArgs.length);
 
-            assert(applicationServiceStub.updateApplicationStatus.calledWith(7, ApplicationStatus.Accepted));
-            assert(applicationServiceStub.updateApplicationStatus.calledWith(8, ApplicationStatus.Rejected));
-            assert(applicationServiceStub.updateApplicationStatus.calledWith(9, ApplicationStatus.Accepted));
+            for (let i = 0; i < calls.length; i++) {
+                const appId: number = calls[i].args[0];
+                const appStatus = calls[i].args[1];
+                assert.deepStrictEqual(
+                    appStatus,
+                    expectedArgs.find(args => args[0] === appId)![1],
+                    `for ID ${appId}`
+                );
+            }
+        });
+    });
+
+    describe('calculatePoints', () => {
+        it('should calculate points correctly for mandatory and alternative subjects', () => {
+            const mockProfileCriteria = [
+                {id: 1, subjectId: 1, profileId: 1, type: ProfileCriteriaType.Mandatory},
+                {id: 2, subjectId: 2, profileId: 1, type: ProfileCriteriaType.Alternative},
+                {id: 3, subjectId: 3, profileId: 1, type: ProfileCriteriaType.Alternative}
+            ];
+            const mockGrades = [
+                {grade: 60, subjectId: 1, type: 'exam'},
+                {grade: 5, subjectId: 2, type: 'certificate'},
+                {grade: 4, subjectId: 2, type: 'certificate'}
+            ];
+
+            const result = adminService.calculatePoints(mockProfileCriteria, mockGrades);
+
+            assert.equal(result, 17);
         });
     });
 
     function createMockProfileCriteria() {
-        return  new Map([
+        return new Map([
             [1, [
-                { id: 1, subjectId: 1, profileId: 1, type: ProfileCriteriaType.Mandatory },
-                { id: 2, subjectId: 2, profileId: 1, type: ProfileCriteriaType.Mandatory }
-                ]
-            ], [2, [
-                { id: 3, subjectId: 1, profileId: 2, type: ProfileCriteriaType.Mandatory },
-                { id: 4, subjectId: 2, profileId: 2, type: ProfileCriteriaType.Mandatory }
-                ]
-            ], [3, [
-                { id: 5, subjectId: 1, profileId: 3, type: ProfileCriteriaType.Mandatory },
-                { id: 6, subjectId: 2, profileId: 3, type: ProfileCriteriaType.Mandatory }
-                ]
+                {id: 1, subjectId: 1, profileId: 1, type: ProfileCriteriaType.Mandatory},
+                {id: 2, subjectId: 2, profileId: 1, type: ProfileCriteriaType.Mandatory},
             ]
+            ], [2, [
+                {id: 8, subjectId: 2, profileId: 2, type: ProfileCriteriaType.Mandatory},
+                {id: 9, subjectId: 3, profileId: 2, type: ProfileCriteriaType.Mandatory},
+            ]
+            ], [3, [
+                {id: 10, subjectId: 1, profileId: 3, type: ProfileCriteriaType.Mandatory},
+                {id: 13, subjectId: 2, profileId: 3, type: ProfileCriteriaType.Alternative},
+                {id: 14, subjectId: 3, profileId: 3, type: ProfileCriteriaType.Alternative}
+            ]
+            ],
         ]);
     }
 
     function createMockProfiles() {
         return [
-            { id: 1, name: 'Profile1', capacity: 3, schoolId: 1 },
-            { id: 2, name: 'Profile2', capacity: 2, schoolId: 1 },
-            { id: 3, name: 'Profile3', capacity: 2, schoolId: 2 },
-            { id: 4, name: 'Profile4', capacity: 3, schoolId: 2 },
+            {id: 1, name: 'informatyczny', capacity: 1, schoolId: 1},
+            {id: 2, name: 'biologiczno-chemiczny', capacity: 1, schoolId: 1},
+            {id: 3, name: 'historyczny', capacity: 1, schoolId: 2},
         ];
     }
 
     function createMockGradesByCandidate() {
         return new Map([
-            [1, [{ subjectId: 1, type: 'exam', grade: 8 }, { subjectId: 2, type: 'exam', grade: 10 }]],
-            [2, [{ subjectId: 1, type: 'exam', grade: 9 }, { subjectId: 2, type: 'exam', grade: 9 }]],
-            [3, [{ subjectId: 1, type: 'exam', grade: 10 }, { subjectId: 2, type: 'exam', grade: 10 }]],
-            [4, [{ subjectId: 1, type: 'exam', grade: 7 }, { subjectId: 2, type: 'exam', grade: 6 }]],
-            [5, [{ subjectId: 1, type: 'exam', grade: 9 }, { subjectId: 2, type: 'exam', grade: 8 }]],
-            [6, [{ subjectId: 1, type: 'exam', grade: 5 }, { subjectId: 2, type: 'exam', grade: 7 }]]
-        ]);
+            [1, [
+                {subjectId: 1, type: 'exam', grade: 50}, {subjectId: 1, type: 'certificate', grade: 3},
+                {subjectId: 2, type: 'exam', grade: 50}, {subjectId: 2, type: 'certificate', grade: 3},
+                {subjectId: 3, type: 'exam', grade: 100}, {subjectId: 3, type: 'certificate', grade: 5},
+            ]
+            ],
+            [2, [
+                {subjectId: 1, type: 'exam', grade: 75}, {subjectId: 1, type: 'certificate', grade: 4},
+                {subjectId: 2, type: 'exam', grade: 75}, {subjectId: 2, type: 'certificate', grade: 4},
+                {subjectId: 3, type: 'exam', grade: 75}, {subjectId: 3, type: 'certificate', grade: 4},
+            ]
+            ],
+            [3, [
+                {subjectId: 1, type: 'exam', grade: 100}, {subjectId: 1, type: 'certificate', grade: 5},
+                {subjectId: 2, type: 'exam', grade: 100}, {subjectId: 2, type: 'certificate', grade: 5},
+                {subjectId: 3, type: 'exam', grade: 100}, {subjectId: 3, type: 'certificate', grade: 5}
+            ]
+            ],
+            [4, [
+                {subjectId: 1, type: 'exam', grade: 80}, {subjectId: 1, type: 'certificate', grade: 5},
+                {subjectId: 2, type: 'exam', grade: 60}, {subjectId: 2, type: 'certificate', grade: 4},
+                {subjectId: 3, type: 'exam', grade: 60}, {subjectId: 3, type: 'certificate', grade: 4}
+            ]
+            ],
+        ])
     }
 
-    function createMockApplications() {
-        return [
-            { id: 1, candidateId: 1, profileId: 1, status: ApplicationStatus.Pending, priority: 1 },
-            { id: 2, candidateId: 1, profileId: 2, status: ApplicationStatus.Pending, priority: 1 },
-            { id: 3, candidateId: 1, profileId: 3, status: ApplicationStatus.Pending, priority: 1 },
-
-            { id: 4, candidateId: 2, profileId: 1, status: ApplicationStatus.Pending, priority: 1 },
-            { id: 5, candidateId: 2, profileId: 2, status: ApplicationStatus.Pending, priority: 1 },
-            { id: 6, candidateId: 2, profileId: 3, status: ApplicationStatus.Pending, priority: 2 },
-
-            { id: 7, candidateId: 3, profileId: 1, status: ApplicationStatus.Pending, priority: 1 },
-            { id: 8, candidateId: 3, profileId: 2, status: ApplicationStatus.Pending, priority: 2 },
-            { id: 9, candidateId: 3, profileId: 3, status: ApplicationStatus.Pending, priority: 1 },
-
-            { id: 10, candidateId: 4, profileId: 1, status: ApplicationStatus.Pending, priority: 1 },
-            { id: 11, candidateId: 4, profileId: 2, status: ApplicationStatus.Pending, priority: 1 },
-            { id: 12, candidateId: 4, profileId: 3, status: ApplicationStatus.Pending, priority: 2 },
-
-            { id: 13, candidateId: 5, profileId: 1, status: ApplicationStatus.Pending, priority: 1 },
-            { id: 14, candidateId: 5, profileId: 2, status: ApplicationStatus.Pending, priority: 2 },
-            { id: 15, candidateId: 5, profileId: 3, status: ApplicationStatus.Pending, priority: 1 },
-
-            { id: 16, candidateId: 6, profileId: 1, status: ApplicationStatus.Pending, priority: 1 },
-            { id: 17, candidateId: 6, profileId: 2, status: ApplicationStatus.Pending, priority: 1 },
-            { id: 18, candidateId: 6, profileId: 3, status: ApplicationStatus.Pending, priority: 2 }
-        ];
+    function getPendingApplicationsByProfile(profileId: number) {
+        const applicationsMap = new Map([
+            [1, [
+                {id: 1, candidateId: 3, profileId: 1, status: ApplicationStatus.Pending, priority: 1},
+                {id: 3, candidateId: 2, profileId: 1, status: ApplicationStatus.Pending, priority: 1},
+                {id: 5, candidateId: 1, profileId: 1, status: ApplicationStatus.Pending, priority: 1},
+                {id: 7, candidateId: 4, profileId: 1, status: ApplicationStatus.Pending, priority: 1}
+            ]],
+            [2, [
+                {id: 2, candidateId: 3, profileId: 2, status: ApplicationStatus.Pending, priority: 2},
+                {id: 4, candidateId: 2, profileId: 2, status: ApplicationStatus.Pending, priority: 2},
+                {id: 8, candidateId: 4, profileId: 2, status: ApplicationStatus.Pending, priority: 2}
+            ]],
+            [3, [
+                {id: 6, candidateId: 1, profileId: 3, status: ApplicationStatus.Pending, priority: 2}
+            ]]
+        ]);
+        return applicationsMap.get(profileId) || [];
     }
 })

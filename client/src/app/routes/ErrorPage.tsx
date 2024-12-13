@@ -5,7 +5,7 @@ interface ErrorProps {
 }
 
 const ErrorPage: React.FC<ErrorProps> = ({errorMessage}) => {
-    return <div>{errorMessage}</div>;
+    return <div className="error">{errorMessage}</div>;
 }
 
 export default ErrorPage;

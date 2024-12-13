@@ -54,28 +54,16 @@ export class ApplicationRepository {
         await t.none(query, [id, status]);
     }
 
-    async getMaxPriority(): Promise<number> {
-        const query = `
-            SELECT priority
-            FROM applications
-            ORDER BY priority DESC
-            LIMIT 1;
-        `;
-
-        return (await db.query(query))[0].priority;
-    }
-
-    async getAllPendingByProfileAndPriority(profileId: number, priority: number): Promise<ApplicationEntity[]> {
+    async getAllPendingByProfile(profileId: number): Promise<ApplicationEntity[]> {
         const status = ApplicationStatus.Pending;
         const query = `
             SELECT *
             FROM applications
             WHERE profile_id = $1
-              and priority = $2
-              and status = $3
+              and status = $2
         `;
 
-        return db.query(query, [profileId, priority, status]);
+        return db.query(query, [profileId, status]);
     }
 
     async getEnrolledByProfile(profileId: number): Promise<number> {

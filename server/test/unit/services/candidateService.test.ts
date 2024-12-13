@@ -41,7 +41,7 @@ describe('CandidateService', () => {
             candidateRepoStub.getAll.resolves(mockCandidates);
             gradeServiceStub.getAllByCandidate.resolves(mockGrades);
 
-            const result = await candidateService.getAllWithGrades();
+            const result = await candidateService.getGradesByCandidates();
 
             assert.equal(result.size, 2);
             assert.deepEqual(result.get(1), mockGrades);
