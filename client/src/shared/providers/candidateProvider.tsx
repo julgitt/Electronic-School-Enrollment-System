@@ -8,8 +8,6 @@ interface CandidateContextType {
     candidates: Candidate[];
     switchCandidate: (candidateId: number) => void;
     deleteCandidate: (candidateId: number) => void;
-    onLogout: (event: React.MouseEvent<HTMLAnchorElement>) => void;
-    logoutLoading: boolean;
     error: string | null;
 }
 
@@ -31,7 +29,6 @@ export const CandidateProvider: React.FC<CandidateProviderProps> = ({children}) 
     const [roles, setRoles] = useState<string[]>([]);
     const [candidate, setCandidate] = useState<Candidate | null>(null);
     const [candidates, setCandidates] = useState<Candidate[]>([]);
-    const [logoutLoading, setLogoutLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -57,8 +54,7 @@ export const CandidateProvider: React.FC<CandidateProviderProps> = ({children}) 
                         }
                         setCandidate(data.candidate);
                     })
-                    .catch(err => setError(err.message)
-                    );
+                    .catch(err => setError(err.message));
 
                 fetch('/api/candidates')
                     .then(async response => {
@@ -103,26 +99,6 @@ export const CandidateProvider: React.FC<CandidateProviderProps> = ({children}) 
             .catch(err => setError(err.message));
     };
 
-    const onLogout = (event: React.MouseEvent<HTMLAnchorElement>) => {
-        event.preventDefault();
-        setLogoutLoading(true);
-        fetch('/api/logout', {method: 'POST'})
-            .then(response => {
-                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-                return response.json();
-            })
-            .then(() => {
-                setCandidate(null);
-                setCandidates([]);
-                setLogoutLoading(false);
-                window.location.reload();
-            })
-            .catch(err => {
-                setError(err.message);
-                setLogoutLoading(false);
-            });
-    };
-
     return (
         <CandidateContext.Provider
             value={{
@@ -131,8 +107,6 @@ export const CandidateProvider: React.FC<CandidateProviderProps> = ({children}) 
                 candidates,
                 switchCandidate,
                 deleteCandidate,
-                onLogout,
-                logoutLoading,
                 error,
             }}
         >

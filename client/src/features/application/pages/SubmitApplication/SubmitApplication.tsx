@@ -30,10 +30,10 @@ const SubmitApplication: React.FC = () => {
     } = useApplicationForm(submission || []);
 
     if (isPastDeadline) return <SubmitApplicationPastDeadline/>;
+    if (applicationLoading || schoolLoading || deadlineLoading || !authorized) return <LoadingPage/>
     if (submissionFetchError) return <ErrorPage errorMessage={submissionFetchError}/>;
     if (deadlineFetchError) return <ErrorPage errorMessage={deadlineFetchError}/>;
     if (schoolFetchError) return <ErrorPage errorMessage={schoolFetchError}/>;
-    if (applicationLoading || schoolLoading || deadlineLoading || !authorized) return <LoadingPage/>
 
     return (
         <div>

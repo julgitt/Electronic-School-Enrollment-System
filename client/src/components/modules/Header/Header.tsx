@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import styles from './Header.module.scss';
 import {useCandidate} from "../../../shared/providers/candidateProvider.tsx";
@@ -8,23 +8,40 @@ import {useDeadlineCheck} from "../../../shared/hooks/useDeadlineCheck.ts";
 import ErrorPage from "../../../app/routes/ErrorPage.tsx";
 import LoadingPage from "../../../app/routes/LoadingPage.tsx";
 import {useGradeSubmittedCheck} from "../../../shared/hooks/useGradeSubmittedCheck.ts";
+import {logout} from "../../../features/auth/services/authService.ts";
 
 const Header: React.FC = () => {
     const {
         roles, candidate, candidates,
-        switchCandidate, deleteCandidate, onLogout,
-        logoutLoading, error: userError
+        switchCandidate, deleteCandidate,
+        error: userError
     } = useCandidate();
     if (userError) return <ErrorPage errorMessage={userError}/>;
 
     const {isPastDeadline, loading, error} = useDeadlineCheck(!!candidate);
     const {areGradesSubmitted, loading: gradesLoading, error: gradesError} = useGradeSubmittedCheck(!!candidate);
+    const [logoutLoading, setLogoutLoading] = useState(false);
+    const [logoutError, setError] = useState("");
 
     const candidateExist = candidate?.id != null;
 
-    if (error) return <ErrorPage errorMessage={error}/>;
-    if (gradesError) return <ErrorPage errorMessage={gradesError}/>;
     if (loading || gradesLoading) return <LoadingPage/>
+    if (error) return <ErrorPage errorMessage={error}/>;
+    if (logoutError) return <ErrorPage errorMessage={logoutError}/>;
+    if (gradesError) return <ErrorPage errorMessage={gradesError}/>;
+
+    const handleLogout = async (event: React.MouseEvent<HTMLAnchorElement>) => {
+        event.preventDefault();
+        setLogoutLoading(true);
+        try {
+            await logout();
+            window.location.href = '/';
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setLogoutLoading(false);
+        }
+    };
 
     const renderNavLinks = () => (
         <div className={styles.navMenu}>
@@ -57,7 +74,7 @@ const Header: React.FC = () => {
                 to="#"
                 onClick={(e) => {
                     e.preventDefault();
-                    if (!logoutLoading) onLogout(e);
+                    if (!logoutLoading) handleLogout(e);
                 }}
             >
                 {logoutLoading ? 'Wylogowywanie...' : 'Wyloguj'}
@@ -75,7 +92,7 @@ const Header: React.FC = () => {
                 to="#"
                 onClick={(e) => {
                     e.preventDefault();
-                    if (!logoutLoading) onLogout(e);
+                    if (!logoutLoading) handleLogout(e);
                 }}
             >
                 {logoutLoading ? 'Wylogowywanie...' : 'Wyloguj'}

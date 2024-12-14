@@ -15,7 +15,9 @@ export const useApplicationForm = (submission: SchoolSelection[]) => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        setSelections(submission);
+        if (submission && submission.length > 0) {
+            setSelections(submission);
+        }
     }, [submission]);
 
 
