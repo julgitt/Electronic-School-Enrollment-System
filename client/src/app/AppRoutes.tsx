@@ -1,4 +1,4 @@
-import {Route, Routes} from 'react-router-dom';
+import {Route, Routes, useLocation} from 'react-router-dom';
 
 import Home from './routes/Home.tsx';
 import Dates from './routes/Dates.tsx';
@@ -14,8 +14,22 @@ import {ApplicationSubmitted} from "../features/application/pages/ApplicationSub
 import {SubmitApplicationPastDeadline} from "../features/application/pages/SubmitApplicationPastDeadline";
 import SubmitGrades from "../features/grades/pages/SubmitGrades.tsx";
 import Enroll from "./routes/Enroll.tsx";
+import {useError} from "../shared/providers/errorProvider.tsx";
+import {useEffect} from "react";
 
 const AppRoutes = () => {
+    const { setError, error } = useError();
+    const location = useLocation();
+
+    useEffect(() => {
+        setError(null);
+    }, [location, setError]);
+
+
+    if (error) {
+        return <ErrorPage errorMessage={error} />;
+    }
+
     return (
         <Routes>
             <Route path="/" element={<Home/>}/>

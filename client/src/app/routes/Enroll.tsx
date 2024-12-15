@@ -2,10 +2,10 @@ import React, {useState} from 'react';
 
 import {Button} from "../../components/atomic/Button";
 import LoadingPage from "./LoadingPage.tsx";
-import ErrorPage from "./ErrorPage.tsx";
+import {useError} from "../../shared/providers/errorProvider.tsx";
 
 const Enroll: React.FC = () => {
-    const [error, setError] = useState<string | null>(null);
+    const {setError} = useError();
     const [loading, setLoading] = useState<boolean>(false);
 
     const handleEnrollClick = async () => {
@@ -33,7 +33,6 @@ const Enroll: React.FC = () => {
         }
     };
 
-    if (error) return <ErrorPage errorMessage={error}/>;
     if (loading) return <LoadingPage/>
 
     return (

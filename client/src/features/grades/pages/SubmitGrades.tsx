@@ -2,7 +2,6 @@ import React from 'react';
 
 import {useFetch} from "../../../shared/hooks/useFetch.ts";
 
-import ErrorPage from "../../../app/routes/ErrorPage.tsx";
 import LoadingPage from "../../../app/routes/LoadingPage.tsx";
 import SubmitApplicationPastDeadline
     from "../../application/pages/SubmitApplicationPastDeadline/SubmitApplicationPastDeadline.tsx";
@@ -12,10 +11,10 @@ import GradeForm from "../components/GradeForm.tsx";
 import {useGradeForm} from "../hooks/useGradeForm.ts";
 
 const SubmitGrades: React.FC = () => {
-    const {loading: submitGradesLoading, authorized, error: submitGradesFetchError} = useFetch('/api/submitGrades');
-    const {data: subjects, loading: subjectsLoading, error: subjectsFetchError} = useFetch<Subject[]>('/api/subjects');
+    const {loading: submitGradesLoading, authorized} = useFetch('/api/submitGrades');
+    const {data: subjects, loading: subjectsLoading} = useFetch<Subject[]>('/api/subjects');
 
-    const {isPastDeadline, loading: deadlineLoading, error: deadlineFetchError} = useDeadlineCheck();
+    const {isPastDeadline, loading: deadlineLoading} = useDeadlineCheck();
 
     const {
         error, loading, handleSubmit,
@@ -23,9 +22,6 @@ const SubmitGrades: React.FC = () => {
     } = useGradeForm(subjects || []);
 
     if (isPastDeadline) return <SubmitApplicationPastDeadline/>;
-    if (deadlineFetchError) return <ErrorPage errorMessage={deadlineFetchError}/>;
-    if (subjectsFetchError) return <ErrorPage errorMessage={subjectsFetchError}/>;
-    if (submitGradesFetchError) return <ErrorPage errorMessage={submitGradesFetchError}/>;
     if (loading || deadlineLoading || subjectsLoading || submitGradesLoading || !authorized) return <LoadingPage/>
 
     return (

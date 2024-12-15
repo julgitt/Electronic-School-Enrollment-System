@@ -6,12 +6,13 @@ import {LoginFormData} from "../../types/loginFormData.ts";
 import {useFormData} from "../../../../shared/hooks/useFormData.ts";
 
 const Login: React.FC = () => {
+    const [error, setError] = useState<string | null>(null);
+
     const {formData, handleChange} = useFormData<LoginFormData>({
         username: '',
         password: '',
     });
 
-    const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
     const handleLogin = async (event: React.FormEvent) => {

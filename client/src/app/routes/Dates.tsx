@@ -1,13 +1,11 @@
 import React from 'react';
 import {useFetch} from "../../shared/hooks/useFetch.ts";
 import {Enrollment} from "../../shared/types/enrollment.ts";
-import ErrorPage from "./ErrorPage.tsx";
 import LoadingPage from "./LoadingPage.tsx";
 
 const Dates: React.FC = () => {
-    const {data: enrollments, loading, error} = useFetch<Enrollment[]>('api/deadlines')
+    const {data: enrollments, loading} = useFetch<Enrollment[]>('api/deadlines')
 
-    if (error) return <ErrorPage errorMessage={error}/>;
     if (loading) return <LoadingPage/>;
 
     return (

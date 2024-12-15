@@ -1,6 +1,7 @@
 import React, {createContext, ReactNode, useContext, useEffect, useState} from 'react';
 import {Candidate} from "../types/candidate";
 import {User} from "../types/user.ts";
+import {useError} from "./errorProvider.tsx";
 
 interface CandidateContextType {
     roles: string[];
@@ -8,7 +9,6 @@ interface CandidateContextType {
     candidates: Candidate[];
     switchCandidate: (candidateId: number) => void;
     deleteCandidate: (candidateId: number) => void;
-    error: string | null;
 }
 
 const CandidateContext = createContext<CandidateContextType | null>(null);
@@ -26,10 +26,10 @@ interface CandidateProviderProps {
 }
 
 export const CandidateProvider: React.FC<CandidateProviderProps> = ({children}) => {
+    const {setError} = useError();
     const [roles, setRoles] = useState<string[]>([]);
     const [candidate, setCandidate] = useState<Candidate | null>(null);
     const [candidates, setCandidates] = useState<Candidate[]>([]);
-    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         fetch('/api/user')
@@ -107,10 +107,8 @@ export const CandidateProvider: React.FC<CandidateProviderProps> = ({children}) 
                 candidates,
                 switchCandidate,
                 deleteCandidate,
-                error,
             }}
         >
-            {error && <div className="error">Error: {error}</div>}
             {children}
         </CandidateContext.Provider>
     );

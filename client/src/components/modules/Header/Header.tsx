@@ -5,30 +5,25 @@ import {useCandidate} from "../../../shared/providers/candidateProvider.tsx";
 import {NavLink as Link} from "react-router-dom";
 import CandidateDropdown from "../../composite/CandidateDropdown/CandidateDropdown.tsx";
 import {useDeadlineCheck} from "../../../shared/hooks/useDeadlineCheck.ts";
-import ErrorPage from "../../../app/routes/ErrorPage.tsx";
 import LoadingPage from "../../../app/routes/LoadingPage.tsx";
 import {useGradeSubmittedCheck} from "../../../shared/hooks/useGradeSubmittedCheck.ts";
 import {logout} from "../../../features/auth/services/authService.ts";
+import {useError} from "../../../shared/providers/errorProvider.tsx";
 
 const Header: React.FC = () => {
+    const {setError} = useError();
     const {
         roles, candidate, candidates,
         switchCandidate, deleteCandidate,
-        error: userError
     } = useCandidate();
-    if (userError) return <ErrorPage errorMessage={userError}/>;
 
-    const {isPastDeadline, loading, error} = useDeadlineCheck(!!candidate);
-    const {areGradesSubmitted, loading: gradesLoading, error: gradesError} = useGradeSubmittedCheck(!!candidate);
+    const {isPastDeadline, loading} = useDeadlineCheck(!!candidate);
+    const {areGradesSubmitted, loading: gradesLoading} = useGradeSubmittedCheck(!!candidate);
     const [logoutLoading, setLogoutLoading] = useState(false);
-    const [logoutError, setError] = useState("");
 
     const candidateExist = candidate?.id != null;
 
     if (loading || gradesLoading) return <LoadingPage/>
-    if (error) return <ErrorPage errorMessage={error}/>;
-    if (logoutError) return <ErrorPage errorMessage={logoutError}/>;
-    if (gradesError) return <ErrorPage errorMessage={gradesError}/>;
 
     const handleLogout = async (event: React.MouseEvent<HTMLAnchorElement>) => {
         event.preventDefault();

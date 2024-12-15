@@ -26,6 +26,7 @@ export class ApplicationService {
     }
 
     async getAllApplications(candidateId: number): Promise<ApplicationWithProfiles[]> {
+        throw new Error();
         const applications = await this.applicationRepository.getAllByCandidate(candidateId);
 
         return Promise.all(

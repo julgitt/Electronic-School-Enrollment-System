@@ -4,12 +4,10 @@ import {useFetch} from "../../../../shared/hooks/useFetch.ts";
 import {Application} from "../../../../shared/types/application.ts";
 
 import LoadingPage from "../../../../app/routes/LoadingPage.tsx";
-import ErrorPage from "../../../../app/routes/ErrorPage.tsx";
 
 const ApplicationStatus: React.FC = () => {
-    const {data: applications, loading, authorized, error} = useFetch<Application[]>('/api/allApplications');
+    const {data: applications, loading, authorized} = useFetch<Application[]>('/api/allApplications');
 
-    if (error) return <ErrorPage errorMessage={error}/>;
     if (loading || !authorized) return <LoadingPage/>;
 
     return (

@@ -6,7 +6,6 @@ import {School} from "../../../../shared/types/school.ts";
 
 import SelectionForm from "../../components/SelectionForm.tsx";
 import PersonalForm from "../../components/PersonalForm.tsx";
-import ErrorPage from "../../../../app/routes/ErrorPage.tsx";
 import LoadingPage from "../../../../app/routes/LoadingPage.tsx";
 import SubmitApplicationPastDeadline from "../SubmitApplicationPastDeadline/SubmitApplicationPastDeadline.tsx";
 import {useDeadlineCheck} from "../../../../shared/hooks/useDeadlineCheck.ts";
@@ -15,11 +14,10 @@ import {SchoolSelection} from "../../types/schoolSelection.ts";
 const SubmitApplication: React.FC = () => {
     const {
         data: submission, loading: applicationLoading, authorized,
-        error: submissionFetchError
     } = useFetch<SchoolSelection[]>('/api/allSubmissions');
-    const {data: suggestions, loading: schoolLoading, error: schoolFetchError} = useFetch<School[]>('/api/schools');
+    const {data: suggestions, loading: schoolLoading} = useFetch<School[]>('/api/schools');
 
-    const {isPastDeadline, loading: deadlineLoading, error: deadlineFetchError} = useDeadlineCheck();
+    const {isPastDeadline, loading: deadlineLoading} = useDeadlineCheck();
 
     const {
         firstName, lastName, pesel, selections, error, step, loading,
@@ -31,9 +29,6 @@ const SubmitApplication: React.FC = () => {
 
     if (isPastDeadline) return <SubmitApplicationPastDeadline/>;
     if (applicationLoading || schoolLoading || deadlineLoading || !authorized) return <LoadingPage/>
-    if (submissionFetchError) return <ErrorPage errorMessage={submissionFetchError}/>;
-    if (deadlineFetchError) return <ErrorPage errorMessage={deadlineFetchError}/>;
-    if (schoolFetchError) return <ErrorPage errorMessage={schoolFetchError}/>;
 
     return (
         <div>

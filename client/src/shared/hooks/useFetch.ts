@@ -1,19 +1,19 @@
 import {useEffect, useState} from 'react';
 
 import {status} from "../constants/responseStatuses.ts";
+import {useError} from "../providers/errorProvider.tsx";
 
 interface FetchResult<T> {
     authorized: boolean;
     data: T | null;
     loading: boolean;
-    error: string | null;
 }
 
 export const useFetch = <T>(endpoint: string, shouldFetch: boolean = true): FetchResult<T> => {
+    const {setError} = useError();
     const [data, setData] = useState<T | null>(null);
     const [authorized, setAuthorized] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
 
     const fetchData = async (shouldFetch: boolean) => {
         try {
@@ -44,5 +44,5 @@ export const useFetch = <T>(endpoint: string, shouldFetch: boolean = true): Fetc
         fetchData(shouldFetch);
     }, [endpoint, shouldFetch]);
 
-    return {data, authorized, loading, error};
+    return {data, authorized, loading};
 };
