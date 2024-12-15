@@ -13,7 +13,7 @@ import {useError} from "../../../shared/providers/errorProvider.tsx";
 const Header: React.FC = () => {
     const {setError} = useError();
     const {
-        roles, candidate, candidates,
+        roles, candidate, candidates, loading: userLoading,
         switchCandidate, deleteCandidate,
     } = useCandidate();
 
@@ -21,9 +21,9 @@ const Header: React.FC = () => {
     const {areGradesSubmitted, loading: gradesLoading} = useGradeSubmittedCheck(!!candidate);
     const [logoutLoading, setLogoutLoading] = useState(false);
 
-    const candidateExist = candidate?.id != null;
+    if (loading || gradesLoading || userLoading) return <LoadingPage/>
 
-    if (loading || gradesLoading) return <LoadingPage/>
+    const candidateExist = candidate?.id != null;
 
     const handleLogout = async (event: React.MouseEvent<HTMLAnchorElement>) => {
         event.preventDefault();

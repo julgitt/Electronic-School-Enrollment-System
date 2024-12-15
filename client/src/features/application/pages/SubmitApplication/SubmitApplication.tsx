@@ -16,7 +16,6 @@ const SubmitApplication: React.FC = () => {
         data: submission, loading: applicationLoading, authorized,
     } = useFetch<SchoolSelection[]>('/api/allSubmissions');
     const {data: suggestions, loading: schoolLoading} = useFetch<School[]>('/api/schools');
-
     const {isPastDeadline, loading: deadlineLoading} = useDeadlineCheck();
 
     const {
