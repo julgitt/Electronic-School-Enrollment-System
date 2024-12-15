@@ -39,6 +39,7 @@ export class ApplicationRepository {
                      JOIN profiles p ON a.profile_id = p.id
                      JOIN schools s ON p.school_id = s.id
             WHERE candidate_id = $1
+            ORDER BY date_part('year', a.updated_at) DESC, a.priority
         `;
 
         return await db.query(query, [candidateId]);
