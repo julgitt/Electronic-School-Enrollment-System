@@ -34,17 +34,19 @@ const SignupForm: React.FC<SignupFormProps> = ({
                 placeholder="Nazwa użytkownika"
                 value={formData.username}
                 onChange={onInputChange('username')}
-                required
                 pattern="[a-zA-Z0-9]+"
                 minLength={5}
-                title="Nazwa użytkownika może zawierać tylko litery oraz cyfry"
+                title="Nazwa użytkownika może zawierać tylko litery oraz cyfry."
+                required
             />
             <InputField
                 type="email"
                 name="txtEmail"
                 placeholder="Email"
+                pattern="[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}"
                 value={formData.email}
                 onChange={onInputChange("email")}
+                title="Podaj adres email"
                 required
             />
             <InputField
@@ -53,10 +55,10 @@ const SignupForm: React.FC<SignupFormProps> = ({
                 placeholder="Hasło"
                 value={formData.password}
                 onChange={onInputChange("password")}
-                required
                 pattern="[a-zA-Z0-9.*[@$!%*?&]]+"
                 minLength={8}
                 title="Hasło może zawierać jedynie litery, cyfry oraz znaki: .*[@$!%*?&]"
+                required
             />
             <InputField
                 type="password"
@@ -64,11 +66,12 @@ const SignupForm: React.FC<SignupFormProps> = ({
                 placeholder="Potwierdź hasło"
                 value={formData.passwordConfirm}
                 onChange={onInputChange("passwordConfirm")}
+                title="Powtórz hasło"
                 required
             />
         </div>
         <Button type="submit" disabled={loading}>Zarejestruj się</Button>
-        <TextLink to="/signin">Zaloguj się</TextLink>
+        <TextLink to="/login">Zaloguj się</TextLink>
     </form>
 );
 

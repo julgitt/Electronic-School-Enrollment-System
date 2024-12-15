@@ -144,13 +144,13 @@ describe('ApplicationService', () => {
             enrollmentServiceStub.getCurrentEnrollment.resolves(mockEnrollment);
             applicationRepoStub.getAllByCandidateAndEnrollmentId.resolves([]);
 
-            profileServiceStub.getProfile.rejects(new ResourceNotFoundError('Profile not found'));
+            profileServiceStub.getProfile.rejects(new ResourceNotFoundError('Nie znaleziono profilu.'));
 
             try {
                 await applicationService.addApplication([{ profileId: 1, priority: 1 }], 1);
             } catch (err) {
                 assert(err instanceof ResourceNotFoundError);
-                assert.equal(err.message, 'Profile not found');
+                assert.equal(err.message, 'Nie znaleziono profilu.');
             }
         });
 

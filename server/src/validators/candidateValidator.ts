@@ -18,15 +18,15 @@ function validatePesel(pesel: string): boolean {
 
 export const candidateRegisterValidator = [
     body('firstName')
-        .notEmpty().withMessage("Name is required.")
-        .matches(/^[\p{L}]+$/u).withMessage("Name can only contain letters."),
+        .notEmpty().withMessage("Podaj imię.")
+        .matches(/^\p{L}+$/u).withMessage("Imię może zawierać jedynie litery."),
     body('lastName')
-        .notEmpty().withMessage("Last name is required.")
-        .matches(/^[\p{L}]+$/u).withMessage("Last name can only contain letters."),
+        .notEmpty().withMessage("Podaj nazwisko.")
+        .matches(/^\p{L}+$/u).withMessage("Nazwisko może zawierać jedynie litery."),
 
     body('pesel')
-        .notEmpty().withMessage("Pesel is required.")
+        .notEmpty().withMessage("Podaj pesel.")
         .custom((value) => {
             return validatePesel(value);
-        }).withMessage("Invalid Pesel number"),
+        }).withMessage("Błędny numer pesel."),
 ];

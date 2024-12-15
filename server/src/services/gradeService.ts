@@ -7,6 +7,7 @@ import {ValidationError} from "../errors/validationError";
 import {GradeEntity} from "../models/gradeEntity";
 import {Grade} from "../dto/grade/grade";
 import {Subject} from "../dto/subject";
+import {GradeType} from "../dto/grade/gradeType";
 
 export class GradeService {
     constructor(
@@ -41,7 +42,7 @@ export class GradeService {
     private validateGradeCount(submissionCount: number, subjectCount: number, examSubjectCount: number) {
         const requiredCount = subjectCount + examSubjectCount;
         if (submissionCount !== requiredCount) {
-            throw new ValidationError("Wrong number of grades.");
+            throw new ValidationError("Błędna ilość ocen.");
         }
     }
 
@@ -49,16 +50,16 @@ export class GradeService {
         for (const subject of subjects) {
             const hasCertificateGrade = submissions.some(s => {
                 const sameId = s.subjectId === subject.id;
-                return sameId && s.type === "certificate";
+                return sameId && s.type === GradeType.Certificate;
             });
 
             const hasExamGrade = submissions.some(s => {
                 const sameId = s.subjectId === subject.id;
-                return sameId && s.type === "exam";
+                return sameId && s.type === GradeType.Exam;
             });
 
             if (!hasCertificateGrade || (subject.isExamSubject && !hasExamGrade)) {
-                throw new ValidationError(`Grade for subject ${subject.id}: ${subject.name} not found.`);
+                throw new ValidationError(`Brak oceny dla przedmiotu: ${subject.id}: ${subject.name}.`);
             }
         }
     }
@@ -69,7 +70,7 @@ export class GradeService {
             submission.subjectId,
             submission.type
         );
-        if (existingGrade) throw new DataConflictError('Grade already exists');
+        if (existingGrade) throw new DataConflictError('Ocena już istnieje');
     }
 
     private async insertGrade(submission: GradeRequest, candidateId: number, t: ITask<any>) {

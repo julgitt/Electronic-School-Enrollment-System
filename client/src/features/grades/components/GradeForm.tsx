@@ -6,6 +6,7 @@ import {Button} from "../../../components/atomic/Button";
 import {Subject} from "../types/subject.ts";
 import {Grade} from "../types/grade.ts";
 import GradeInputGroup from "./GradeInputGroup.tsx";
+import {GradeType} from "../types/gradeType.ts";
 
 interface GradeFormProps {
     subjects: Subject[];
@@ -31,14 +32,14 @@ const GradeForm: React.FC<GradeFormProps> = ({
             <GradeInputGroup
                 subjects={subjects.filter((s) => s.isExamSubject)}
                 grades={grades}
-                type="exam"
+                type={GradeType.Exam}
                 onGradesChange={onGradesChange}
                 title="Z egzaminu"
             />
             <GradeInputGroup
                 subjects={subjects}
                 grades={grades}
-                type="certificate"
+                type={GradeType.Certificate}
                 onGradesChange={onGradesChange}
                 title="Ze świadectwa"
             />

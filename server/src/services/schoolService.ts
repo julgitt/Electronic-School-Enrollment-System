@@ -25,7 +25,7 @@ export class SchoolService {
     async getSchoolWithProfiles(id: number): Promise<SchoolWithProfiles> {
         const school: SchoolEntity | null = await this.schoolRepository.getById(id);
 
-        if (!school) throw new ResourceNotFoundError('School not found.');
+        if (!school) throw new ResourceNotFoundError('Szkoła nie znaleziona');
 
         return {
             id: school.id,

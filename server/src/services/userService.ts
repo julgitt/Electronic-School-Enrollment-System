@@ -19,7 +19,7 @@ export class UserService {
     async login(login: string, password: string): Promise<UserWithRoles> {
         const existingUser: UserWithRoles | null = await this.userRepository.getWithRolesByLoginOrEmail(login, login);
         if (!existingUser || !(await compare(password, existingUser.password))) {
-            throw new AuthenticationError('Invalid credentials.');
+            throw new AuthenticationError('Nieprawidłowe email/nazwa użytkownika lub hasło');
         }
 
         return existingUser;
@@ -29,10 +29,10 @@ export class UserService {
         const existingUser: User | null = await this.userRepository.getWithoutRolesByLoginOrEmail(user.username, user.email);
         if (existingUser) {
             if (existingUser.username === user.username) {
-                throw new DataConflictError('Username is already taken.');
+                throw new DataConflictError('Już istnieje konto powiązane z tą nazwą użytkownika.');
             }
             if (existingUser.email === user.email) {
-                throw new DataConflictError('There is already an account with that email.');
+                throw new DataConflictError('Już istnieje konto powiązane z tym adresem email.');
             }
         }
 

@@ -7,7 +7,7 @@ export class EnrollmentService {
 
     async getEnrollment(id: number): Promise<Enrollment> {
         const enrollment = await this.enrollmentRepository.getById(id);
-        if (!enrollment) throw new ResourceNotFoundError('Enrollment not found.');
+        if (!enrollment) throw new ResourceNotFoundError('Nabór nie znaleziony.');
         return enrollment;
     }
 

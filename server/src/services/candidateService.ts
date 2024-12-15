@@ -30,7 +30,7 @@ export class CandidateService {
     async getCandidate(id: number, userId: number) {
         const candidate: Candidate | null = await this.candidateRepository.getById(id);
         if (candidate == null || candidate.userId != userId) {
-            throw new ResourceNotFoundError('Candidate not found.');
+            throw new ResourceNotFoundError('Nie znaleziono kandydata.');
         }
         return candidate;
     }
@@ -47,7 +47,7 @@ export class CandidateService {
     async register(userId: number, candidate: CandidateRequest): Promise<Candidate> {
         const existingCandidate: Candidate | null = await this.candidateRepository.getByPesel(candidate.pesel);
         if (existingCandidate) {
-            throw new DataConflictError('There is already candidate with that pesel.');
+            throw new DataConflictError('Już istnieje kandydat z tym numerem pesel.');
         }
 
         const newCandidate: CandidateEntity = {

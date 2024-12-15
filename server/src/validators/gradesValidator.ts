@@ -1,19 +1,17 @@
 import {body} from 'express-validator';
+import {GradeType} from "../dto/grade/gradeType";
 
 export const gradesValidator = [
     body()
         .isArray()
         .bail()
-        .custom((grades: { subject: string, grade: number, type: string }[]) => {
+        .custom((grades: { subject: string, grade: number, type: GradeType }[]) => {
             for (const grade of grades) {
-                if (grade.type != "exam" && grade.type != "certificate") {
-                    throw Error("Wrong type of grade. It should be the type of exam or school certificate.")
+                if (grade.type == GradeType.Certificate && grade.grade > 6 || grade.grade <= 0) {
+                    throw Error("Oceny ze świadectwa muszą być numerem z przedziału [1, 6].")
                 }
-                if (grade.type == "certificate" && grade.grade > 6 || grade.grade <= 0) {
-                    throw Error("Grades from the school certificate should be the number between 1 and 6.")
-                }
-                if (grade.type == "exam" && grade.grade < 0 || grade.grade > 100) {
-                    throw Error("Grades from the exam should be the number between 0 and 100.")
+                if (grade.type == GradeType.Exam && grade.grade < 0 || grade.grade > 100) {
+                    throw Error("Oceny z egzaminu muszą być numerem z przedziału [0, 100].")
                 }
             }
             return true;

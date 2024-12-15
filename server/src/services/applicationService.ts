@@ -26,7 +26,6 @@ export class ApplicationService {
     }
 
     async getAllApplications(candidateId: number): Promise<ApplicationWithProfiles[]> {
-        throw new Error();
         const applications = await this.applicationRepository.getAllByCandidate(candidateId);
 
         return Promise.all(
@@ -70,10 +69,10 @@ export class ApplicationService {
 
     async addApplication(submissions: ApplicationRequest[], candidateId: number): Promise<void> {
         const enrollment: Enrollment | null = await this.enrollmentService.getCurrentEnrollment();
-        if (!enrollment) throw new ValidationError('Outside the enrollment period.');
+        if (!enrollment) throw new ValidationError('Nie można złożyć aplikacji poza okresem naboru.');
 
         const existingApplications: Application[] = await this.applicationRepository.getAllByCandidateAndEnrollmentId(candidateId, enrollment.id);
-        if (existingApplications.length > 0) throw new DataConflictError('Application already exists');
+        if (existingApplications.length > 0) throw new DataConflictError('Aplikacja już istnieje.');
 
         await this.validateProfilesExist(submissions);
         this.assignPriorities(submissions);
@@ -88,10 +87,10 @@ export class ApplicationService {
 
     async updateApplication(submissions: ApplicationRequest[], candidateId: number): Promise<void> {
         const enrollment: Enrollment | null = await this.enrollmentService.getCurrentEnrollment();
-        if (!enrollment) throw new ValidationError('Outside the enrollment period.');
+        if (!enrollment) throw new ValidationError('Nie można złożyć aplikacji poza okresem naboru.');
 
         const applications: Application[] = await this.applicationRepository.getAllByCandidateAndEnrollmentId(candidateId, enrollment.id);
-        if (applications.length === 0) throw new ResourceNotFoundError('Applications not found.');
+        if (applications.length === 0) throw new ResourceNotFoundError('Nie odnaleziono aplikacji.');
 
         await this.validateProfilesExist(submissions);
         this.assignPriorities(submissions);

@@ -23,7 +23,7 @@ const Enroll: React.FC = () => {
             const data = await response.json();
 
             if (!response.ok)
-                throw new Error(data.message || 'Błąd podczas wykonywania naboru.');
+                setError;
 
             console.log("Nabór zakończony pomyślnie", data);
         } catch (err: any) {

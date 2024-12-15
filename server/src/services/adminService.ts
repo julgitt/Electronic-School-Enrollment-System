@@ -44,7 +44,7 @@ export class AdminService {
 
         for (const profile of profiles) {
             const profileCriteria = profilesCriteria.get(profile.id);
-            if (!profileCriteria) throw new ResourceNotFoundError('Criteria not found');
+            if (!profileCriteria) throw new ResourceNotFoundError('Nie znaleziono kryteriów dla profilu.');
 
             const acceptedCount: number = await this.applicationService.getAcceptedCountByProfile(profile.id);
             const capacity: number = profile.capacity - acceptedCount;

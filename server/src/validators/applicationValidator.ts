@@ -8,11 +8,11 @@ export const applicationValidator = [
             const priorities = new Set<number>();
             for (const selection of selections) {
                 if (selection.priority <= 0 || !Number.isInteger(selection.priority)) {
-                    throw new Error('Each priority must be a positive integer greater than 0.');
+                    throw new Error('Priorytet musi być numerem większym od 0.');
                 }
 
                 if (priorities.has(selection.priority)) {
-                    throw new Error(`Each priority must be unique.`);
+                    throw new Error(`Priorytety muszą być unikalne.`);
                 }
 
                 priorities.add(selection.priority);

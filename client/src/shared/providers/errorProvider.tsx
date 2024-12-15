@@ -26,7 +26,7 @@ export const ErrorProvider: React.FC<ErrorProviderProps> = ({ children }) => {
 export const useError = () => {
     const context = useContext(ErrorContext);
     if (!context) {
-        throw new Error("Context in useError cannot be null");
+        throw new Error("Kontekst w useError nie może być null'em");
     }
     return context;
 };

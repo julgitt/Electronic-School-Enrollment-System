@@ -32,6 +32,8 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
                 placeholder="Imię"
                 value={formData.firstName}
                 onChange={onInputChange("firstName")}
+                pattern="[a-zA-Z]+"
+                title="Podaj imię."
                 required
             />
             <InputField
@@ -39,11 +41,14 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
                 placeholder="Nazwisko"
                 value={formData.lastName}
                 onChange={onInputChange("lastName")}
+                pattern="[a-zA-Z]+"
+                title="Podaj nazwisko."
                 required
             />
             <InputField
                 type="text"
                 placeholder="Pesel"
+                pattern="[0-9]{11}"
                 value={formData.pesel}
                 onChange={onInputChange("pesel")}
                 required

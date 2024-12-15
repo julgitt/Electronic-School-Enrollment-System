@@ -9,7 +9,7 @@ export class ProfileService {
 
     async getProfile(profileId: number): Promise<Profile> {
         const profile = await this.profileRepository.getById(profileId);
-        if (!profile) throw new ResourceNotFoundError('Profile not found.');
+        if (!profile) throw new ResourceNotFoundError('Profil nie znaleziony.');
         return profile;
     }
 
