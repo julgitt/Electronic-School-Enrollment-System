@@ -1,4 +1,4 @@
-import {ApplicationStatus} from "../dto/applicationStatus";
+import {ApplicationStatus} from "../dto/application/applicationStatus";
 
 export interface ApplicationEntity {
     id: number;

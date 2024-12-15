@@ -6,9 +6,10 @@ import {ITask} from "pg-promise";
 import {ProfileService} from "../../../src/services/profileService";
 import {CandidateService} from "../../../src/services/candidateService";
 import {ApplicationService} from "../../../src/services/applicationService";
-import {ApplicationStatus} from "../../../src/dto/applicationStatus";
+import {ApplicationStatus} from "../../../src/dto/application/applicationStatus";
 import assert from "assert";
 import {ProfileCriteriaType} from "../../../src/models/profileCriteriaEntity";
+import {GradeType} from "../../../src/dto/grade/gradeType";
 
 describe('AdminService', () => {
     let adminService: AdminService;
@@ -93,9 +94,9 @@ describe('AdminService', () => {
                 {id: 3, subjectId: 3, profileId: 1, type: ProfileCriteriaType.Alternative}
             ];
             const mockGrades = [
-                {grade: 60, subjectId: 1, type: 'exam'},
-                {grade: 5, subjectId: 2, type: 'certificate'},
-                {grade: 4, subjectId: 2, type: 'certificate'}
+                {grade: 60, subjectId: 1, type: GradeType.Exam},
+                {grade: 5, subjectId: 2, type: GradeType.Certificate},
+                {grade: 4, subjectId: 2, type: GradeType.Certificate}
             ];
 
             const result = adminService.calculatePoints(mockProfileCriteria, mockGrades);
@@ -134,27 +135,27 @@ describe('AdminService', () => {
     function createMockGradesByCandidate() {
         return new Map([
             [1, [
-                {subjectId: 1, type: 'exam', grade: 50}, {subjectId: 1, type: 'certificate', grade: 3},
-                {subjectId: 2, type: 'exam', grade: 50}, {subjectId: 2, type: 'certificate', grade: 3},
-                {subjectId: 3, type: 'exam', grade: 100}, {subjectId: 3, type: 'certificate', grade: 5},
+                {subjectId: 1, type: GradeType.Exam, grade: 50}, {subjectId: 1, type: GradeType.Certificate, grade: 3},
+                {subjectId: 2, type: GradeType.Exam, grade: 50}, {subjectId: 2, type: GradeType.Certificate, grade: 3},
+                {subjectId: 3, type: GradeType.Exam, grade: 100}, {subjectId: 3, type: GradeType.Certificate, grade: 5},
             ]
             ],
             [2, [
-                {subjectId: 1, type: 'exam', grade: 75}, {subjectId: 1, type: 'certificate', grade: 4},
-                {subjectId: 2, type: 'exam', grade: 75}, {subjectId: 2, type: 'certificate', grade: 4},
-                {subjectId: 3, type: 'exam', grade: 75}, {subjectId: 3, type: 'certificate', grade: 4},
+                {subjectId: 1, type: GradeType.Exam, grade: 75}, {subjectId: 1, type: GradeType.Certificate, grade: 4},
+                {subjectId: 2, type: GradeType.Exam, grade: 75}, {subjectId: 2, type: GradeType.Certificate, grade: 4},
+                {subjectId: 3, type: GradeType.Exam, grade: 75}, {subjectId: 3, type: GradeType.Certificate, grade: 4},
             ]
             ],
             [3, [
-                {subjectId: 1, type: 'exam', grade: 100}, {subjectId: 1, type: 'certificate', grade: 5},
-                {subjectId: 2, type: 'exam', grade: 100}, {subjectId: 2, type: 'certificate', grade: 5},
-                {subjectId: 3, type: 'exam', grade: 100}, {subjectId: 3, type: 'certificate', grade: 5}
+                {subjectId: 1, type: GradeType.Exam, grade: 100}, {subjectId: 1, type: GradeType.Certificate, grade: 5},
+                {subjectId: 2, type: GradeType.Exam, grade: 100}, {subjectId: 2, type: GradeType.Certificate, grade: 5},
+                {subjectId: 3, type: GradeType.Exam, grade: 100}, {subjectId: 3, type: GradeType.Certificate, grade: 5}
             ]
             ],
             [4, [
-                {subjectId: 1, type: 'exam', grade: 80}, {subjectId: 1, type: 'certificate', grade: 5},
-                {subjectId: 2, type: 'exam', grade: 60}, {subjectId: 2, type: 'certificate', grade: 4},
-                {subjectId: 3, type: 'exam', grade: 60}, {subjectId: 3, type: 'certificate', grade: 4}
+                {subjectId: 1, type: GradeType.Exam, grade: 80}, {subjectId: 1, type: GradeType.Certificate, grade: 5},
+                {subjectId: 2, type: GradeType.Exam, grade: 60}, {subjectId: 2, type: GradeType.Certificate, grade: 4},
+                {subjectId: 3, type: GradeType.Exam, grade: 60}, {subjectId: 3, type: GradeType.Certificate, grade: 4}
             ]
             ],
         ])

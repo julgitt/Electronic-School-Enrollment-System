@@ -1,11 +1,11 @@
 import {GradeRepository} from "../repositories/gradeRepository";
 import {DataConflictError} from "../errors/dataConflictError";
 import {ITask} from "pg-promise";
-import {GradeRequest} from "../dto/gradeRequest";
+import {GradeRequest} from "../dto/grade/gradeRequest";
 import {SubjectService} from "./subjectService";
 import {ValidationError} from "../errors/validationError";
 import {GradeEntity} from "../models/gradeEntity";
-import {Grade} from "../dto/grade";
+import {Grade} from "../dto/grade/grade";
 import {Subject} from "../dto/subject";
 
 export class GradeService {

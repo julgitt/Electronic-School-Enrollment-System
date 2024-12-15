@@ -1,8 +1,8 @@
 import {NextFunction, Request, Response} from 'express';
 
 import {UserService} from "../services/userService";
-import {userRequest} from "../dto/userRequest";
-import {UserWithRoles} from "../dto/userWithRoles";
+import {userRequest} from "../dto/user/userRequest";
+import {UserWithRoles} from "../dto/user/userWithRoles";
 
 
 export class UserController {

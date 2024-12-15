@@ -2,15 +2,15 @@ import {ApplicationService} from "./applicationService";
 import {ProfileService} from "./profileService";
 import {CandidateService} from "./candidateService";
 import {Profile} from "../dto/profile";
-import {Application} from "../dto/application";
-import {Grade} from "../dto/grade";
+import {Application} from "../dto/application/application";
+import {Grade} from "../dto/grade/grade";
 import {ITask} from "pg-promise";
 import {ProfileCriteriaEntity, ProfileCriteriaType} from "../models/profileCriteriaEntity";
-import {ApplicationStatus} from "../dto/applicationStatus";
+import {ApplicationStatus} from "../dto/application/applicationStatus";
 import {ResourceNotFoundError} from "../errors/resourceNotFoundError";
 import {CriteriaByProfiles, ProfileCriteria} from "../dto/criteriaByProfile";
-import {GradeByCandidate} from "../dto/gradesByCandidate";
-import {ApplicationRequest} from "../dto/applicationRequest";
+import {GradeByCandidate} from "../dto/grade/gradesByCandidate";
+import {ApplicationRequest} from "../dto/application/applicationRequest";
 
 
 type EnrollmentSlots = { accepted: Application[], reserve: Application[] };

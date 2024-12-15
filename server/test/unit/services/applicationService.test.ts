@@ -13,10 +13,10 @@ import {ApplicationEntity} from "../../../src/models/applicationEntity";
 import {ValidationError} from "../../../src/errors/validationError";
 import {Enrollment} from "../../../src/dto/enrollment";
 import {DataConflictError} from "../../../src/errors/dataConflictError";
-import {ApplicationRequest} from "../../../src/dto/applicationRequest";
-import {ApplicationStatus} from "../../../src/dto/applicationStatus";
+import {ApplicationRequest} from "../../../src/dto/application/applicationRequest";
+import {ApplicationStatus} from "../../../src/dto/application/applicationStatus";
 import {ResourceNotFoundError} from "../../../src/errors/resourceNotFoundError";
-import {ApplicationWithProfiles} from "../../../src/dto/applicationWithProfiles";
+import {ApplicationWithProfiles} from "../../../src/dto/application/applicationWithProfiles";
 
 describe('ApplicationService', () => {
     let applicationService: ApplicationService;

@@ -1,8 +1,8 @@
 import {NextFunction, Request, Response} from 'express';
 
 import {CandidateService} from "../services/candidateService";
-import {Candidate} from "../dto/candidate";
-import {CandidateRequest} from "../dto/candidateRequest";
+import {Candidate} from "../dto/candidate/candidate";
+import {CandidateRequest} from "../dto/candidate/candidateRequest";
 
 
 export class CandidateController {

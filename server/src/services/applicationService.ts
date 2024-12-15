@@ -5,15 +5,15 @@ import {ResourceNotFoundError} from "../errors/resourceNotFoundError";
 import {DataConflictError} from "../errors/dataConflictError";
 import {SchoolService} from "./schoolService";
 import {ProfileService} from "./profileService";
-import {ApplicationWithProfiles} from "../dto/applicationWithProfiles";
-import {ApplicationBySchool} from "../dto/applicationBySchool";
-import {ApplicationRequest} from "../dto/applicationRequest";
+import {ApplicationWithProfiles} from "../dto/application/applicationWithProfiles";
+import {ApplicationBySchool} from "../dto/application/applicationBySchool";
+import {ApplicationRequest} from "../dto/application/applicationRequest";
 import {ApplicationEntity} from "../models/applicationEntity";
-import {Application} from "../dto/application";
+import {Application} from "../dto/application/application";
 import {EnrollmentService} from "./enrollmentService";
 import {ValidationError} from "../errors/validationError";
 import {Enrollment} from "../dto/enrollment";
-import {ApplicationStatus} from "../dto/applicationStatus";
+import {ApplicationStatus} from "../dto/application/applicationStatus";
 
 export class ApplicationService {
     constructor(

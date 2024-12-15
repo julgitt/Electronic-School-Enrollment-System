@@ -5,9 +5,9 @@ import {transactionFunction} from "../db";
 import {UserRepository} from '../repositories/userRepository';
 import {AuthenticationError} from "../errors/authenticationError";
 import {DataConflictError} from "../errors/dataConflictError";
-import {userRequest} from "../dto/userRequest";
-import {UserWithRoles} from "../dto/userWithRoles";
-import {User} from "../dto/user";
+import {userRequest} from "../dto/user/userRequest";
+import {UserWithRoles} from "../dto/user/userWithRoles";
+import {User} from "../dto/user/user";
 import {UserEntity} from "../models/userEntity";
 
 export class UserService {

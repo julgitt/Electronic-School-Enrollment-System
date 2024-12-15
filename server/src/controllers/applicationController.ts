@@ -1,9 +1,9 @@
 import {NextFunction, Request, Response} from 'express';
 
 import {ApplicationService} from "../services/applicationService";
-import {ApplicationRequest} from "../dto/applicationRequest";
-import {ApplicationBySchool} from "../dto/applicationBySchool";
-import {ApplicationWithProfiles} from "../dto/applicationWithProfiles";
+import {ApplicationRequest} from "../dto/application/applicationRequest";
+import {ApplicationBySchool} from "../dto/application/applicationBySchool";
+import {ApplicationWithProfiles} from "../dto/application/applicationWithProfiles";
 
 
 export class ApplicationController {

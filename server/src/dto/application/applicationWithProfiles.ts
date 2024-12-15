@@ -1,5 +1,5 @@
-import {Profile} from "./profile";
-import {SchoolWithProfiles} from "./schoolWithProfiles";
+import {Profile} from "../profile";
+import {SchoolWithProfiles} from "../schoolWithProfiles";
 
 export interface ApplicationWithProfiles {
     id: number

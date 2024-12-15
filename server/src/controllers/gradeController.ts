@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from 'express';
 
 import {GradeService} from "../services/gradeService";
-import {GradeRequest} from "../dto/gradeRequest";
+import {GradeRequest} from "../dto/grade/gradeRequest";
 
 
 export class GradeController {

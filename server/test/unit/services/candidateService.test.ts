@@ -9,7 +9,8 @@ import {DataConflictError} from "../../../src/errors/dataConflictError";
 import {GradeService} from "../../../src/services/gradeService";
 import {GradeEntity} from "../../../src/models/gradeEntity";
 import {CandidateEntity} from "../../../src/models/candidateEntity";
-import {CandidateRequest} from "../../../src/dto/candidateRequest";
+import {CandidateRequest} from "../../../src/dto/candidate/candidateRequest";
+import {GradeType} from "../../../src/dto/grade/gradeType";
 
 
 describe('CandidateService', () => {
@@ -34,8 +35,8 @@ describe('CandidateService', () => {
                 {id: 2, userId: 1, firstName: 'Agata', lastName: 'Nowak', pesel: '12345678902'},
             ];
             const mockGrades: GradeEntity[] = [
-                {candidateId: 1, subjectId: 2, grade: 5, type: 'certificate'},
-                {candidateId: 2, subjectId: 4, grade: 6, type: 'certificate'}
+                {candidateId: 1, subjectId: 2, grade: 5, type: GradeType.Certificate},
+                {candidateId: 2, subjectId: 4, grade: 6, type: GradeType.Certificate}
             ];
 
             candidateRepoStub.getAll.resolves(mockCandidates);

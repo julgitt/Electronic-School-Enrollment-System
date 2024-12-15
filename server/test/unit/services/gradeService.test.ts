@@ -8,9 +8,10 @@ import {ITask} from "pg-promise";
 import {SubjectService} from "../../../src/services/subjectService";
 import {GradeEntity} from "../../../src/models/gradeEntity";
 import {Subject} from "../../../src/dto/subject";
-import {GradeRequest} from "../../../src/dto/gradeRequest";
+import {GradeRequest} from "../../../src/dto/grade/gradeRequest";
 import {ValidationError} from "../../../src/errors/validationError";
 import {DataConflictError} from "../../../src/errors/dataConflictError";
+import {GradeType} from "../../../src/dto/grade/gradeType";
 
 describe('GradeService', () => {
     let gradeService: GradeService;
@@ -35,8 +36,8 @@ describe('GradeService', () => {
     describe('getAllByCandidate', () => {
         it('should return grades for the candidate', async () => {
             const mockGrades: GradeEntity[] = [
-                {candidateId: 1, subjectId: 1, grade: 5, type: 'certificate'},
-                {candidateId: 1, subjectId: 2, grade: 4, type: 'certificate'}
+                {candidateId: 1, subjectId: 1, grade: 5, type: GradeType.Certificate},
+                {candidateId: 1, subjectId: 2, grade: 4, type: GradeType.Certificate}
             ];
             gradeRepoStub.getAllByCandidate.resolves(mockGrades)
 
@@ -50,7 +51,7 @@ describe('GradeService', () => {
     describe('checkIfGradesSubmitted', () => {
         it('should return true if grades are already submitted', async () => {
             gradeRepoStub.getByCandidate.resolves(
-                {candidateId: 1, subjectId: 1, grade: 5, type: 'certificate'}
+                {candidateId: 1, subjectId: 1, grade: 5, type: GradeType.Certificate}
             );
 
             const result = await gradeService.checkIfGradesSubmitted(1);
@@ -77,9 +78,9 @@ describe('GradeService', () => {
                 {id: 2, name: "historia", isExamSubject: false},
             ];
             const mockSubmissions: GradeRequest[] = [
-                {subjectId: 1, grade: 5, type: 'certificate'},
-                {subjectId: 1, grade: 50, type: 'exam'},
-                {subjectId: 2, grade: 4, type: 'certificate'}
+                {subjectId: 1, grade: 5, type: GradeType.Certificate},
+                {subjectId: 1, grade: 50, type: GradeType.Exam},
+                {subjectId: 2, grade: 4, type: GradeType.Certificate}
             ];
 
             subjectServiceStub.getAllSubjects.resolves(mockSubjects);
@@ -98,8 +99,8 @@ describe('GradeService', () => {
                 {id: 2, name: "historia", isExamSubject: false},
             ];
             const mockSubmissions: GradeRequest[] = [
-                {subjectId: 1, grade: 50, type: 'exam'},
-                {subjectId: 2, grade: 4, type: 'certificate'}
+                {subjectId: 1, grade: 50, type: GradeType.Exam},
+                {subjectId: 2, grade: 4, type: GradeType.Certificate}
             ];
 
             subjectServiceStub.getAllSubjects.resolves(mockSubjects);
@@ -119,9 +120,9 @@ describe('GradeService', () => {
                 {id: 2, name: "historia", isExamSubject: false},
             ];
             const mockSubmissions: GradeRequest[] = [
-                {subjectId: 1, grade: 50, type: 'exam'},
-                {subjectId: 1, grade: 5, type: 'certificate'},
-                {subjectId: 2, grade: 4, type: 'exam'}
+                {subjectId: 1, grade: 50, type: GradeType.Exam},
+                {subjectId: 1, grade: 5, type: GradeType.Certificate},
+                {subjectId: 2, grade: 4, type: GradeType.Exam}
             ];
 
             subjectServiceStub.getAllSubjects.resolves(mockSubjects);
@@ -141,9 +142,9 @@ describe('GradeService', () => {
                 {id: 2, name: "historia", isExamSubject: false},
             ];
             const mockSubmissions: GradeRequest[] = [
-                {subjectId: 1, grade: 50, type: 'certificate'},
-                {subjectId: 4, grade: 4, type: 'certificate'},
-                {subjectId: 2, grade: 4, type: 'certificate'}
+                {subjectId: 1, grade: 50, type: GradeType.Certificate},
+                {subjectId: 4, grade: 4, type: GradeType.Certificate},
+                {subjectId: 2, grade: 4, type: GradeType.Certificate}
             ];
 
             subjectServiceStub.getAllSubjects.resolves(mockSubjects);
@@ -163,9 +164,9 @@ describe('GradeService', () => {
                 {id: 2, name: "historia", isExamSubject: false},
             ];
             const mockSubmissions: GradeRequest[] = [
-                {subjectId: 1, grade: 3, type: 'certificate'},
-                {subjectId: 1, grade: 4, type: 'exam'},
-                {subjectId: 1, grade: 4, type: 'exam'}
+                {subjectId: 1, grade: 3, type: GradeType.Certificate},
+                {subjectId: 1, grade: 4, type: GradeType.Exam},
+                {subjectId: 1, grade: 4, type: GradeType.Exam}
             ];
 
             subjectServiceStub.getAllSubjects.resolves(mockSubjects);
@@ -185,12 +186,12 @@ describe('GradeService', () => {
                 {id: 2, name: "historia", isExamSubject: false},
             ];
             const mockSubmissions: GradeRequest[] = [
-                {subjectId: 1, grade: 5, type: 'certificate'},
-                {subjectId: 2, grade: 4, type: 'certificate'}
+                {subjectId: 1, grade: 5, type: GradeType.Certificate},
+                {subjectId: 2, grade: 4, type: GradeType.Certificate}
             ];
 
             const existingGrade: GradeEntity = {
-                candidateId: 1, subjectId: 1, grade: 3, type: 'certificate'
+                candidateId: 1, subjectId: 1, grade: 3, type: GradeType.Certificate
             };
 
             subjectServiceStub.getAllSubjects.resolves(mockSubjects);
