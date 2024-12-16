@@ -33,7 +33,8 @@ const EditSchools: React.FC = () => {
     };
 
     const handleDeleteSchool = (id: number) => {
-        setUpdatedSchools(updatedSchools && updatedSchools.filter(school => school.id !== id));
+        const updated = updatedSchools.filter(school => school.id !== id);
+        setUpdatedSchools(updated);
     }
 
     const handleSave = async () => {

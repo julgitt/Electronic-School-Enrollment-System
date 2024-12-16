@@ -50,7 +50,7 @@ const schoolService = new SchoolService(schoolRepository, profileService, tx);
 export const schoolController = new SchoolController(schoolService);
 
 const enrollmentRepository = new EnrollmentRepository();
-const enrollmentService = new EnrollmentService(enrollmentRepository);
+const enrollmentService = new EnrollmentService(enrollmentRepository, tx);
 export const enrollmentController = new EnrollmentController(enrollmentService);
 
 const applicationRepository = new ApplicationRepository();

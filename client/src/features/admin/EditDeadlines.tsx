@@ -1,135 +1,76 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {Enrollment} from "../../shared/types/enrollment.ts";
 import LoadingPage from "../../app/routes/LoadingPage.tsx";
 import {useFetch} from "../../shared/hooks/useFetch.ts";
-import {Button} from "../../components/atomic/Button";
-import {InputField} from "../../components/atomic/InputField";
+import {updateEnrollments} from "./services/deadlineService.ts";
+import EditEnrollmentForm from "./forms/EditEnrollmentForm.tsx";
 
 const EditDeadlines: React.FC = () => {
-    const {data: enrollments, loading} = useFetch<Enrollment[]>('api/deadlines');
-    const [editedEnrollments, setEditedEnrollments] = useState<Enrollment[] | null>(null);
+    const {data: enrollments, loading: enrollmentLoading} = useFetch<Enrollment[]>('api/enrollments');
+    const [updatedEnrollments, setUpdatedEnrollments] = useState<Enrollment[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
 
-    if (loading) return <LoadingPage/>;
+    useEffect(() => {
+        if (enrollments && enrollments.length > 0) {
+            setUpdatedEnrollments(enrollments);
+        }
+    }, [enrollments]);
 
-    if (!editedEnrollments && enrollments) {
-        setEditedEnrollments(enrollments);
+    if (enrollmentLoading) return <LoadingPage/>;
+
+
+    const handleEnrollmentChange = (id: number, field: string, value: string) => {
+        const updated = updatedEnrollments.map(enrollment =>
+            enrollment.id === id ? {...enrollment, [field]: value} : enrollment
+        );
+        setUpdatedEnrollments(updated);
+    };
+
+    const handleAddEnrollment = () => {
+        const newEnrollment: Enrollment = {
+            id: Date.now(),
+            round: 0,
+            startDate: new Date(),
+            endDate: new Date()
+        };
+        setUpdatedEnrollments([...updatedEnrollments, newEnrollment]);
+    };
+
+    const handleDeleteEnrollment = (id: number) => {
+            const updated = updatedEnrollments.filter(enrollment => enrollment.id !== id);
+        setUpdatedEnrollments(updated);
+    };
+
+    const handleSave = async () => {
+        setLoading(true);
+        try {
+            await updateEnrollments(updatedEnrollments);
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleUndo = async () => {
+        if (enrollments && enrollments.length > 0) {
+            setUpdatedEnrollments(enrollments);
+        }
     }
 
-    const handleInputChange = (id: number, field: string, value: string) => {
-        if (editedEnrollments) {
-            const updatedEnrollments = editedEnrollments.map(enrollment =>
-                enrollment.id === id ? {...enrollment, [field]: value} : enrollment
-            );
-            setEditedEnrollments(updatedEnrollments);
-        }
-    };
-
-    const addEnrollment = () => {
-        if (editedEnrollments) {
-            const newEnrollment: Enrollment = {
-                id: -1,
-                round: 0,
-                startDate: new Date(),
-                endDate: new Date()
-            };
-            setEditedEnrollments([...editedEnrollments, newEnrollment]);
-        }
-    };
-
-    const removeEnrollment = (id: number) => {
-        if (editedEnrollments) {
-            const updatedEnrollments = editedEnrollments.filter(enrollment => enrollment.id !== id);
-            setEditedEnrollments(updatedEnrollments);
-        }
-    };
-
-    const saveChanges = async () => {
-        if (!editedEnrollments) return;
-
-        const newEnrollments = editedEnrollments.filter(enrollment => enrollment.id === -1);
-        const updatedEnrollments = editedEnrollments.filter(enrollment => enrollment.id !== 0);
-
-        for (const enrollment of newEnrollments) {
-            const response = await fetch('api/deadlines', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    round: enrollment.round,
-                    startDate: enrollment.startDate,
-                    endDate: enrollment.endDate,
-                }),
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to save new enrollment');
-            }
-        }
-
-        for (const enrollment of updatedEnrollments) {
-            const response = await fetch(`api/deadlines/${enrollment.id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(enrollment),
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to update enrollment');
-            }
-        }
-    };
-
     return (
-        <div>
-            <h1>Edytuj terminy</h1>
-            <Button onClick={addEnrollment}>Dodaj turę</Button>
-            <table>
-                <thead>
-                <tr>
-                    <th>Tura</th>
-                    <th>Data rozpoczęcia</th>
-                    <th>Data zakończenia</th>
-                    <th>Akcja</th>
-                </tr>
-                </thead>
-                <tbody>
-                {editedEnrollments && editedEnrollments.map(enrollment => (
-                    <tr key={enrollment.id}>
-                        <td>
-                            <InputField
-                                type="number"
-                                placeholder="1"
-                                value={enrollment.round}
-                                onChange={(e) => handleInputChange(enrollment.id, 'round', e.target.value)}
-                            />
-                        </td>
-                        <td>
-                            <InputField
-                                type="date"
-                                value={new Date(enrollment.startDate).toISOString().split('T')[0]}
-                                onChange={(e) => handleInputChange(enrollment.id, 'startDate', e.target.value)}
-                            />
-                        </td>
-                        <td>
-                            <input
-                                type="date"
-                                value={new Date(enrollment.endDate).toISOString().split('T')[0]}
-                                onChange={(e) => handleInputChange(enrollment.id, 'endDate', e.target.value)}
-                            />
-                        </td>
-                        <td>
-                            <Button onClick={() => removeEnrollment(enrollment.id)}>Usuń</Button>
-                        </td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
-            <Button onClick={saveChanges}>Zapisz zmiany</Button>
-        </div>
+        <EditEnrollmentForm
+            updatedEnrollments={updatedEnrollments}
+            error={error}
+            loading={loading}
+            onEnrollmentChange={handleEnrollmentChange}
+            onAddEnrollment={handleAddEnrollment}
+            onDeleteEnrollment={handleDeleteEnrollment}
+            onSave={handleSave}
+            onUndo={handleUndo}
+        />
     );
 };
 
