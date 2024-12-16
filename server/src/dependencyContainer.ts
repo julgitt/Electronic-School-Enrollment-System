@@ -46,7 +46,7 @@ const profileRepository = new ProfileRepository()
 export const profileService = new ProfileService(profileRepository);
 
 const schoolRepository = new SchoolRepository();
-const schoolService = new SchoolService(schoolRepository, profileService);
+const schoolService = new SchoolService(schoolRepository, profileService, tx);
 export const schoolController = new SchoolController(schoolService);
 
 const enrollmentRepository = new EnrollmentRepository();

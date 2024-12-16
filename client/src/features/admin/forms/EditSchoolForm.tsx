@@ -1,6 +1,6 @@
-import React, {useState} from "react";
+import React from "react";
 
-import {MinusButton} from '../../../components/atomic/QuantityButton'
+import {MinusButton, PlusButton} from '../../../components/atomic/QuantityButton'
 import {ErrorMessage} from "../../../components/atomic/ErrorMessage";
 
 
@@ -14,9 +14,10 @@ interface EditSchoolFormProps {
     error: string | null;
     loading: boolean;
     onSchoolChange: (school: School) => void;
-    onUpdateSchool: (school: School) => void;
-    onAddSchool: (name: string) => void;
+    onAddSchool: () => void;
     onDeleteSchool: (id: number) => void;
+    onSave: () => void;
+    onUndo: () => void;
 }
 
 const EditSchoolForm: React.FC<EditSchoolFormProps> = ({
@@ -24,20 +25,18 @@ const EditSchoolForm: React.FC<EditSchoolFormProps> = ({
                                                            error,
                                                            loading,
                                                            onSchoolChange,
-                                                           onUpdateSchool,
                                                            onAddSchool,
                                                            onDeleteSchool,
-                                                       }) => {
-    const [newSchoolName, setNewSchoolName] = useState<string>("");
-
-    return (
+    onSave,
+    onUndo
+                                                       }) => (
         <form method="POST" className={styles.form}>
             <h2>Edytuj szkoły</h2>
             {error && <ErrorMessage message={error}/>}
             <table>
                 <thead>
                 <tr>
-                    <th>Nazwa</th>
+                    <th></th>
                     <th></th>
                 </tr>
                 </thead>
@@ -55,11 +54,6 @@ const EditSchoolForm: React.FC<EditSchoolFormProps> = ({
                                         id: school.id,
                                         name: e.target.value
                                     })}
-                                onBlur={(e) =>
-                                    onUpdateSchool({
-                                        id: school.id,
-                                        name: e.target.value
-                                    })}
                             />
                         </td>
                         <td>
@@ -73,23 +67,17 @@ const EditSchoolForm: React.FC<EditSchoolFormProps> = ({
                 </tbody>
             </table>
             <div>
-                <h3> Nowa szkoła </h3>
-                <InputField
-                    type="text"
-                    placeholder="Nazwa szkoły"
-                    value={newSchoolName}
-                    onChange={(e) => setNewSchoolName(e.target.value)}
-                />
-                <Button
-                    onClick={() => {
-                        onAddSchool(newSchoolName)
-                        setNewSchoolName("");
-                    }}
+                <PlusButton
+                    onClick={onAddSchool}
                     disabled={loading}
-                >Dodaj</Button>
+                />
+            </div>
+
+            <div>
+                <Button onClick={onUndo} disabled={loading}> Cofnij </Button>
+                <Button onClick={onSave}> Zapisz </Button>
             </div>
         </form>
     )
-}
 
 export default EditSchoolForm;

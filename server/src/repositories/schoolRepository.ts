@@ -1,4 +1,4 @@
-import {db} from '../db';
+import {db, ITask} from '../db';
 import {SchoolEntity} from "../models/schoolEntity";
 
 export class SchoolRepository {
@@ -22,35 +22,34 @@ export class SchoolRepository {
         return await db.query<SchoolEntity[]>(query);
     }
 
-    async insert(newSchool: SchoolEntity): Promise<void> {
+    async insert(newSchool: SchoolEntity, t: ITask<any>): Promise<void> {
         const query = `
             INSERT INTO schools (name)
             VALUES ($1)
         `;
         const values = [newSchool.name];
 
-        await db.query(query, values);
+        await t.none(query, values);
     }
 
-
-    async update(id: number, name: string): Promise<void> {
+    async update(school: SchoolEntity, t: ITask<any>): Promise<void> {
         const query = `
             UPDATE schools
             SET name = $2
             WHERE id = $1
         `;
-        const values = [id, name];
+        const values = [school.id, school.name];
 
-        await db.query(query, values);
+        await t.none(query, values);
     }
 
-    async delete(id: number): Promise<void> {
+    async delete(id: number, t: ITask<any>): Promise<void> {
         const query = `
             DELETE FROM schools
             WHERE id = $1
         `;
         const values = [id];
 
-        await db.query(query, values);
+        await t.none(query, values);
     }
 }

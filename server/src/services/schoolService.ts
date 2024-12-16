@@ -1,17 +1,23 @@
 import {SchoolRepository} from "../repositories/schoolRepository";
 import {ProfileService} from "./profileService";
-import {SchoolWithProfiles} from "../dto/schoolWithProfiles";
-import {SchoolEntity} from "../models/schoolEntity";
+import {SchoolWithProfiles} from "../dto/school/schoolWithProfiles";
 import {ResourceNotFoundError} from "../errors/resourceNotFoundError";
+import {School} from "../dto/school/school";
+import {ITask} from "pg-promise";
 
 export class SchoolService {
     constructor(
         private schoolRepository: SchoolRepository,
-        private profileService: ProfileService) {
+        private profileService: ProfileService,
+        private readonly tx: (callback: (t: ITask<any>) => Promise<void>) => Promise<void>) {
+    }
+
+    async getAllSchools(): Promise<School[]> {
+        return await this.schoolRepository.getAll();
     }
 
     async getAllSchoolsWithProfiles(): Promise<SchoolWithProfiles[]> {
-        let schools: SchoolEntity[] = await this.schoolRepository.getAll();
+        let schools: School[] = await this.schoolRepository.getAll();
         let schoolsWithProfiles: SchoolWithProfiles[] = [];
         for (let school of schools) {
             schoolsWithProfiles.push({
@@ -24,7 +30,7 @@ export class SchoolService {
     }
 
     async getSchoolWithProfiles(id: number): Promise<SchoolWithProfiles> {
-        const school: SchoolEntity | null = await this.schoolRepository.getById(id);
+        const school: School | null = await this.schoolRepository.getById(id);
 
         if (!school) throw new ResourceNotFoundError('Szkoła nie znaleziona');
 
@@ -35,20 +41,31 @@ export class SchoolService {
         }
     }
 
-    async addSchool(name: string): Promise<void> {
-        const newSchool: SchoolEntity = {
-            id: 0,
-            name: name,
-        }
+    async updateSchools(schools: School[]): Promise<void> {
+        const currentSchools = await this.getAllSchools();
+        const currentSchoolIds = currentSchools.map(s => s.id);
+        const newSchoolIds = schools.map(s => s.id);
 
-        await this.schoolRepository.insert(newSchool);
-    }
+        const schoolsToUpdate = schools.filter(s =>
+            currentSchoolIds.includes(s.id)
+        );
+        const schoolsToDelete = currentSchools.filter(s =>
+            !newSchoolIds.includes(s.id)
+        );
+        const schoolsToAdd = schools.filter(s =>
+            !currentSchoolIds.includes(s.id)
+        );
 
-    async updateSchool(id: number, name: string): Promise<void> {
-        await this.schoolRepository.update(id, name);
-    }
-
-    async deleteSchool(id: number): Promise<void> {
-        await this.schoolRepository.delete(id);
+        await this.tx(async t => {
+            for (const school of schoolsToDelete) {
+                await this.schoolRepository.delete(school.id, t);
+            }
+            for (const school of schoolsToUpdate) {
+                await this.schoolRepository.update(school, t);
+            }
+            for (const school of schoolsToAdd) {
+                await this.schoolRepository.insert(school, t);
+            }
+        });
     }
 }

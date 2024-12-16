@@ -3,8 +3,8 @@ import React, {useEffect, useState} from 'react';
 import LoadingPage from "../../app/routes/LoadingPage.tsx";
 import {useFetch} from "../../shared/hooks/useFetch.ts";
 import {School} from "./types/schoolRequest.ts";
-import {addSchool, deleteSchool, updateSchool} from "./services/schoolService.ts";
 import EditSchoolForm from "./forms/EditSchoolForm.tsx";
+import {updateSchools} from "./services/schoolService.ts";
 
 const EditSchools: React.FC = () => {
     const {data: schools, loading: schoolsLoading} = useFetch<School[]>('api/schools');
@@ -20,46 +20,39 @@ const EditSchools: React.FC = () => {
 
     if (schoolsLoading) return <LoadingPage/>;
 
-    const handleAddSchool = async (name: string) => {
-        setLoading(true);
-        try {
-            const newSchool = {id: Date.now(), name: name};
-            await addSchool(newSchool)
-            setUpdatedSchools([...updatedSchools, newSchool]);
-        } catch (error: any) {
-            setError(error.message);
-        } finally {
-            setLoading(false);
-        }
+    const handleAddSchool = () => {
+        const newSchool = {id: Date.now(), name: ""};
+        setUpdatedSchools([...updatedSchools, newSchool]);
     }
-    const handleUpdateSchool = async (updatedSchool: School) => {
-        setLoading(true);
-        try {
-            if (updatedSchool.name === "") throw new Error("Nazwa szkoły nie mże być pusta");
 
-            await updateSchool(updatedSchool);
-        } catch (error: any) {
-            setError(error.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleSchoolChange = async (updatedSchool: School) => {
+    const handleSchoolChange = (updatedSchool: School) => {
         const updated = updatedSchools.map(school =>
             school.id === updatedSchool.id ? updatedSchool : school
         );
         setUpdatedSchools(updated);
     };
 
+    const handleDeleteSchool = (id: number) => {
+        setUpdatedSchools(updatedSchools && updatedSchools.filter(school => school.id !== id));
+    }
 
-    const handleDeleteSchool = async (id: number) => {
+    const handleSave = async () => {
         setLoading(true);
         try {
-            await deleteSchool(id);
-            setUpdatedSchools(updatedSchools && updatedSchools.filter(school => school.id !== id));
-        } catch (error: any) {
-            setError(error.message);
+            await updateSchools(updatedSchools);
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const handleUndo = async () => {
+        setLoading(true);
+        try {
+            await updateSchools(updatedSchools);
+        } catch (err: any) {
+            setError(err.message);
         } finally {
             setLoading(false);
         }
@@ -73,7 +66,8 @@ const EditSchools: React.FC = () => {
             onSchoolChange={handleSchoolChange}
             onAddSchool={handleAddSchool}
             onDeleteSchool={handleDeleteSchool}
-            onUpdateSchool={handleUpdateSchool}
+            onSave={handleSave}
+            onUndo={handleUndo}
         />
     );
 };

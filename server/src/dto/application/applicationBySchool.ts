@@ -1,5 +1,5 @@
 import {ApplicationRequest} from "./applicationRequest";
-import {SchoolWithProfiles} from "../schoolWithProfiles";
+import {SchoolWithProfiles} from "../school/schoolWithProfiles";
 
 export interface ApplicationBySchool {
     school: SchoolWithProfiles;

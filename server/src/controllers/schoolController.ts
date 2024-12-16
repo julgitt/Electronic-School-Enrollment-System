@@ -1,7 +1,8 @@
 import {NextFunction, Request, Response} from 'express';
 
 import {SchoolService} from "../services/schoolService";
-import {SchoolWithProfiles} from "../dto/schoolWithProfiles";
+import {SchoolWithProfiles} from "../dto/school/schoolWithProfiles";
+import {School} from "../dto/school/school";
 
 
 export class SchoolController {
@@ -16,30 +17,11 @@ export class SchoolController {
         }
     }
 
-    async addSchool(req: Request, res: Response, next: NextFunction) {
+    async updateSchools(req: Request, res: Response, next: NextFunction) {
         try {
-            const {name} = req.body;
-            await this.schoolService.addSchool(name);
-            return res.status(201).json("School add successfully");
-        } catch (error) {
-            return next(error);
-        }
-    }
-
-    async updateSchool(req: Request, res: Response, next: NextFunction) {
-        try {
-            const {name} = req.body;
-            await this.schoolService.updateSchool(Number(req.params.id), name);
-            return res.status(200).json("School updated successfully");
-        } catch (error) {
-            return next(error);
-        }
-    }
-
-    async deleteSchool(req: Request, res: Response, next: NextFunction) {
-        try {
-            await this.schoolService.deleteSchool(Number(req.params.id));
-            return res.status(200).json("School deleted successfully");
+            const schools: School[] = req.body;
+            await this.schoolService.updateSchools(schools);
+            return res.status(200).json("Schools updated successfully");
         } catch (error) {
             return next(error);
         }

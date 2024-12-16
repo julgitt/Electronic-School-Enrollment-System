@@ -7,7 +7,7 @@ import {ApplicationRepository} from "../../../src/repositories/applicationReposi
 import {ITask} from "pg-promise";
 import {SchoolService} from "../../../src/services/schoolService";
 import {ProfileService} from "../../../src/services/profileService";
-import {SchoolWithProfiles} from "../../../src/dto/schoolWithProfiles";
+import {SchoolWithProfiles} from "../../../src/dto/school/schoolWithProfiles";
 import {EnrollmentService} from "../../../src/services/enrollmentService";
 import {ApplicationEntity} from "../../../src/models/applicationEntity";
 import {ValidationError} from "../../../src/errors/validationError";
