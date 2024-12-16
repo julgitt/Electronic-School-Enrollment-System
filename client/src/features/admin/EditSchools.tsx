@@ -48,13 +48,8 @@ const EditSchools: React.FC = () => {
     }
 
     const handleUndo = async () => {
-        setLoading(true);
-        try {
-            await updateSchools(updatedSchools);
-        } catch (err: any) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
+        if (schools && schools.length > 0) {
+            setUpdatedSchools(schools);
         }
     }
 
