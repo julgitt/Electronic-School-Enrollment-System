@@ -14,7 +14,7 @@ import {SchoolSelection} from "../../types/schoolSelection.ts";
 const SubmitApplication: React.FC = () => {
     const {
         data: submission, loading: applicationLoading, authorized,
-    } = useFetch<SchoolSelection[]>('/api/allSubmissions');
+    } = useFetch<SchoolSelection[]>('/api/submissions');
     const {data: suggestions, loading: schoolLoading} = useFetch<School[]>('/api/schools');
     const {isPastDeadline, loading: deadlineLoading} = useDeadlineCheck();
 

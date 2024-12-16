@@ -8,7 +8,7 @@ import {authorize} from "../middlewares/authorize";
 
 const router = Router();
 
-router.post('/submitGrades', authorize("user"), gradesValidator, handleValidationErrors, async (req: Request, res: Response, next: NextFunction) => {
+router.post('/grades', authorize("user"), gradesValidator, handleValidationErrors, async (req: Request, res: Response, next: NextFunction) => {
     return await gradeController.submitGrades(req, res, next);
 });
 

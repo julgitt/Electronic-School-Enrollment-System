@@ -8,7 +8,7 @@ import {authorize} from "../middlewares/authorize";
 
 const router = Router();
 
-router.post('/registerCandidate', authorize('user'), candidateRegisterValidator, handleValidationErrors, async (req: Request, res: Response, next: NextFunction) => {
+router.post('/candidate', authorize('user'), candidateRegisterValidator, handleValidationErrors, async (req: Request, res: Response, next: NextFunction) => {
     return await candidateController.register(req, res, next);
 });
 
@@ -16,7 +16,7 @@ router.post('/switchCandidate', authorize('user'), async (req: Request, res: Res
     return await candidateController.switchCandidate(req, res, next);
 });
 
-router.delete('/deleteCandidate', authorize('user'), async (req: Request, res: Response, next: NextFunction) => {
+router.delete('/candidate', authorize('user'), async (req: Request, res: Response, next: NextFunction) => {
     return await candidateController.deleteCandidate(req, res, next);
 });
 

@@ -5,7 +5,8 @@ import {ResourceNotFoundError} from "../errors/resourceNotFoundError";
 import {CriteriaByProfiles, ProfileCriteria} from "../dto/criteriaByProfile";
 
 export class ProfileService {
-    constructor(private profileRepository: ProfileRepository) {}
+    constructor(private profileRepository: ProfileRepository) {
+    }
 
     async getProfile(profileId: number): Promise<Profile> {
         const profile = await this.profileRepository.getById(profileId);

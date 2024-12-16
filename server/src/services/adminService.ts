@@ -21,7 +21,8 @@ export class AdminService {
         private profileService: ProfileService,
         private applicationService: ApplicationService,
         private readonly tx: (callback: (t: ITask<any>) => Promise<void>) => Promise<void>
-    ) {}
+    ) {
+    }
 
     async processProfileEnrollments(): Promise<void> {
         const profiles: Profile[] = await this.profileService.getAllProfiles();
@@ -29,12 +30,33 @@ export class AdminService {
         const finalEnrollmentLists = await this.finalizeEnrollmentProcess(sortedCandidateLists);
 
         await this.tx(async t => {
-            for( const profile of profiles) {
+            for (const profile of profiles) {
                 const enrollment = finalEnrollmentLists.get(profile.id);
                 if (enrollment)
                     await this.updateApplicationStatuses(enrollment.accepted, profile.id, t);
             }
         });
+    }
+
+    public calculatePoints(profileCriteria: ProfileCriteriaEntity[], grades: Grade[]) {
+        const mandatorySubjects = profileCriteria.filter(s => s.type === ProfileCriteriaType.Mandatory);
+        const alternativeSubjects = profileCriteria.filter(s => s.type === ProfileCriteriaType.Alternative);
+        let points = 0;
+
+        let alternativeGrades = []
+        for (let grade of grades) {
+            if (grade.type == "exam") {
+                points += grade.grade * 0.2;
+            } else if (mandatorySubjects.some(s => s.id == grade.subjectId)) {
+                points += grade.grade;
+            } else if (alternativeSubjects.some(s => s.id == grade.subjectId)) {
+                alternativeGrades.push(grade.grade);
+            }
+        }
+        if (alternativeGrades.length > 0) {
+            points += Math.max(...alternativeGrades);
+        }
+        return points;
     }
 
     private async createSortedCandidateListsByProfile(profiles: Profile[]) {
@@ -52,7 +74,7 @@ export class AdminService {
 
             const accepted = applications.slice(0, capacity);
             const reserve = applications.slice(capacity);
-            sortedCandidateLists.set(profile.id, { accepted, reserve });
+            sortedCandidateLists.set(profile.id, {accepted, reserve});
         }
 
         return sortedCandidateLists;
@@ -88,7 +110,7 @@ export class AdminService {
                         break;
                     }
                 }
-                if(backtrack) break;
+                if (backtrack) break;
             }
         }
         return sortedCandidates;
@@ -128,27 +150,30 @@ export class AdminService {
         return flag;
     }
 
-    private mapApplicationsByCandidate(sortedCandidateLists: Map<number, {accepted: Application[], reserve: Application[]}>){
+    private mapApplicationsByCandidate(sortedCandidateLists: Map<number, {
+        accepted: Application[],
+        reserve: Application[]
+    }>) {
         const candidateApplications = new Map<number, ApplicationRequest[]>();
 
-        for (const [profileId, { accepted }] of sortedCandidateLists.entries()) {
+        for (const [profileId, {accepted}] of sortedCandidateLists.entries()) {
             for (const application of accepted) {
                 if (!candidateApplications.has(application.candidateId)) {
                     candidateApplications.set(application.candidateId, []);
                 }
-                candidateApplications.get(application.candidateId)!.push({ profileId, priority: application.priority });
+                candidateApplications.get(application.candidateId)!.push({profileId, priority: application.priority});
             }
         }
         return candidateApplications;
     }
 
-    private getHighestPriority(applications: {profileId: number, priority: number}[]) {
+    private getHighestPriority(applications: { profileId: number, priority: number }[]) {
         return applications.reduce((highest, current) =>
             current.priority < highest.priority ? current : highest
         ).priority;
     }
 
-     private async updateApplicationStatuses(accepted: Application[], profileId: number, t: ITask<any>) {
+    private async updateApplicationStatuses(accepted: Application[], profileId: number, t: ITask<any>) {
         const applications = await this.applicationService.getAllPendingApplicationsByProfile(profileId);
         for (let application of applications) {
             await this.applicationService.updateApplicationStatus(
@@ -159,26 +184,5 @@ export class AdminService {
                 t
             );
         }
-    }
-
-    public calculatePoints(profileCriteria: ProfileCriteriaEntity[], grades: Grade[]) {
-        const mandatorySubjects = profileCriteria.filter(s => s.type === ProfileCriteriaType.Mandatory);
-        const alternativeSubjects = profileCriteria.filter(s => s.type === ProfileCriteriaType.Alternative);
-        let points = 0;
-
-        let alternativeGrades = []
-        for (let grade of grades) {
-            if (grade.type == "exam") {
-                points += grade.grade * 0.2;
-            } else if (mandatorySubjects.some(s => s.id == grade.subjectId)) {
-                points += grade.grade;
-            } else if (alternativeSubjects.some(s => s.id == grade.subjectId)){
-                alternativeGrades.push(grade.grade);
-            }
-        }
-        if (alternativeGrades.length > 0) {
-            points += Math.max(...alternativeGrades);
-        }
-        return points;
     }
 }

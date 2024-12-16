@@ -3,7 +3,8 @@ import {ResourceNotFoundError} from "../errors/resourceNotFoundError";
 import {Enrollment} from "../dto/enrollment";
 
 export class EnrollmentService {
-    constructor (private enrollmentRepository: EnrollmentRepository) {}
+    constructor(private enrollmentRepository: EnrollmentRepository) {
+    }
 
     async getEnrollment(id: number): Promise<Enrollment> {
         const enrollment = await this.enrollmentRepository.getById(id);

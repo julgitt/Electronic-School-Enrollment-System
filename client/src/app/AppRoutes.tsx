@@ -1,7 +1,7 @@
 import {Route, Routes, useLocation} from 'react-router-dom';
 
 import Home from './routes/Home.tsx';
-import Dates from './routes/Dates.tsx';
+import Deadlines from './routes/Deadlines.tsx';
 
 import ErrorPage from "./routes/ErrorPage.tsx";
 
@@ -13,12 +13,14 @@ import {ApplicationStatus} from '../features/application/pages/ApplicationStatus
 import {ApplicationSubmitted} from "../features/application/pages/ApplicationSubmitted";
 import {SubmitApplicationPastDeadline} from "../features/application/pages/SubmitApplicationPastDeadline";
 import SubmitGrades from "../features/grades/pages/SubmitGrades.tsx";
-import Enroll from "./routes/Enroll.tsx";
+import Enroll from "../features/admin/Enroll.tsx";
 import {useError} from "../shared/providers/errorProvider.tsx";
 import {useEffect} from "react";
+import EditSchools from "../features/admin/EditSchools.tsx";
+import EditDeadlines from "../features/admin/EditDeadlines.tsx";
 
 const AppRoutes = () => {
-    const { setError, error } = useError();
+    const {setError, error} = useError();
     const location = useLocation();
 
     useEffect(() => {
@@ -27,13 +29,13 @@ const AppRoutes = () => {
 
 
     if (error) {
-        return <ErrorPage errorMessage={error} />;
+        return <ErrorPage errorMessage={error}/>;
     }
 
     return (
         <Routes>
             <Route path="/" element={<Home/>}/>
-            <Route path="/dates" element={<Dates/>}/>
+            <Route path="/dates" element={<Deadlines/>}/>
             <Route path="/submitApplication" element={<SubmitApplication/>}/>
             <Route path="/applicationStatus" element={<ApplicationStatus/>}/>
             <Route path="/login" element={<Login/>}/>
@@ -43,6 +45,8 @@ const AppRoutes = () => {
             <Route path="/submitApplicationPastDeadline" element={<SubmitApplicationPastDeadline/>}/>
             <Route path="/submitGrades" element={<SubmitGrades/>}/>
             <Route path="/enroll" element={<Enroll/>}/>
+            <Route path="/editSchools" element={<EditSchools/>}/>
+            <Route path="/editDeadlines" element={<EditDeadlines/>}/>
             <Route path="*" element={<ErrorPage errorMessage={"404: Page Not Found"}/>}/>
         </Routes>
     );

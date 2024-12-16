@@ -8,19 +8,19 @@ import {handleValidationErrors} from "../middlewares/validationErrorHandler";
 
 const router = Router();
 
-router.get('/allApplications', authorize('user'), async (req: Request, res: Response, next: NextFunction) => {
+router.get('/applications', authorize('user'), async (req: Request, res: Response, next: NextFunction) => {
     return await applicationController.getApplications(req, res, next)
 });
 
-router.get('/allSubmissions', authorize('user'), async (req: Request, res: Response, next: NextFunction) => {
+router.get('/submissions', authorize('user'), async (req: Request, res: Response, next: NextFunction) => {
     return await applicationController.getApplicationSubmissions(req, res, next)
 });
 
-router.put('/updateApplication', authorize('user'), applicationValidator, handleValidationErrors, async (req: Request, res: Response, next: NextFunction) => {
+router.put('/application', authorize('user'), applicationValidator, handleValidationErrors, async (req: Request, res: Response, next: NextFunction) => {
     return await applicationController.updateApplication(req, res, next)
 });
 
-router.post('/submitApplication', authorize('user'), applicationValidator, handleValidationErrors, async (req: Request, res: Response, next: NextFunction) => {
+router.post('/application', authorize('user'), applicationValidator, handleValidationErrors, async (req: Request, res: Response, next: NextFunction) => {
     return await applicationController.addApplication(req, res, next)
 });
 

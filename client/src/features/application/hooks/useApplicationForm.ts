@@ -14,6 +14,7 @@ export const useApplicationForm = (submission: SchoolSelection[]) => {
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
 
+    //TODO: Check if you can do it without useEffect
     useEffect(() => {
         if (submission && submission.length > 0) {
             setSelections(submission);

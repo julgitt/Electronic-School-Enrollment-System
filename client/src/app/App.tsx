@@ -5,7 +5,7 @@ import {Header} from '../components/modules/Header';
 
 import AppRoutes from './AppRoutes.tsx';
 import {CandidateProvider} from "../shared/providers/candidateProvider.tsx";
-import { ErrorProvider } from '../shared/providers/errorProvider.tsx';
+import {ErrorProvider} from '../shared/providers/errorProvider.tsx';
 
 function App() {
     return (

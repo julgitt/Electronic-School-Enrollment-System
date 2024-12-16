@@ -1,7 +1,7 @@
 import {Candidate} from "../../../shared/types/candidate.ts";
 
 export const register = async (formData: Candidate) => {
-    const response = await fetch('/api/registerCandidate', {
+    const response = await fetch('/api/candidate', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

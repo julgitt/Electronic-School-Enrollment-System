@@ -4,7 +4,7 @@ import styles from './InputField.module.scss';
 interface InputFieldProps {
     type: string;
     name?: string;
-    placeholder: string;
+    placeholder?: string;
     value: string | number;
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     autoFocus?: boolean;
@@ -15,6 +15,7 @@ interface InputFieldProps {
     title?: string;
     width?: string
     height?: string
+    onBlur?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -31,6 +32,8 @@ const InputField: React.FC<InputFieldProps> = ({
                                                    title,
                                                    height,
                                                    width = "100%",
+                                                   onBlur = () => {
+                                                   }
                                                }) => {
     return (
         <input
@@ -47,6 +50,7 @@ const InputField: React.FC<InputFieldProps> = ({
             min={min}
             title={title}
             style={{width, height}}
+            onBlur={onBlur}
         />
     );
 };

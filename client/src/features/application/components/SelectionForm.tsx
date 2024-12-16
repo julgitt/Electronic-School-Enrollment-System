@@ -1,7 +1,7 @@
 import React from "react";
 
 import {Button} from '../../../components/atomic/Button'
-import {PlusButton} from '../../../components/atomic/PlusButton'
+import {PlusButton} from '../../../components/atomic/QuantityButton'
 import {ErrorMessage} from "../../../components/atomic/ErrorMessage";
 import {School} from "../../../shared/types/school.ts"
 import {SchoolSelection} from "../types/schoolSelection.ts"

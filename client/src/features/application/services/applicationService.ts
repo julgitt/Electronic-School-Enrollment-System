@@ -3,23 +3,17 @@ import {UserSelectedProfile} from "../types/userSelectedProfile.ts";
 export const submitApplication = async (
     selections: UserSelectedProfile[],
 ) => {
-    if (selections.length === 0) {
-        throw new Error('Proszę wybrać przynajmniej jeden profil.');
-    }
+    if (selections.length === 0) throw new Error('Proszę wybrać przynajmniej jeden profil.');
 
-    const response = await fetch('/api/submitApplication', {
+    const response = await fetch('/api/application', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(selections),
     });
 
     const data = await response.json();
 
-    if (!response.ok) {
-        throw new Error(data.message || 'Błąd podczas składania aplikacji.');
-    }
+    if (!response.ok) throw new Error(data.message || 'Błąd podczas składania aplikacji.');
 
     return data;
 }
@@ -27,23 +21,17 @@ export const submitApplication = async (
 export const updateApplication = async (
     selections: UserSelectedProfile[]
 ) => {
-    if (selections.length === 0) {
-        throw new Error('Proszę wybrać przynajmniej jeden profil.');
-    }
+    if (selections.length === 0) throw new Error('Proszę wybrać przynajmniej jeden profil.');
 
-    const response = await fetch('/api/updateApplication', {
+    const response = await fetch('/api/application', {
         method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(selections),
     });
 
     const data = await response.json();
 
-    if (!response.ok) {
-        throw new Error(data.message || 'Błąd podczas składania aplikacji.');
-    }
+    if (!response.ok) throw new Error(data.message || 'Błąd podczas składania aplikacji.');
 
     return data;
 }

@@ -7,7 +7,7 @@ export const submitGrades = async (
     if (grades.find(g => g.grade === 0))
         throw Error("Uzpełnij wszystkie pola");
 
-    const response = await fetch('/api/submitGrades', {
+    const response = await fetch('/api/grades', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

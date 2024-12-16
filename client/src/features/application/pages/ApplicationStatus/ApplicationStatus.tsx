@@ -6,7 +6,7 @@ import {Application} from "../../../../shared/types/application.ts";
 import LoadingPage from "../../../../app/routes/LoadingPage.tsx";
 
 const ApplicationStatus: React.FC = () => {
-    const {data: applications, loading, authorized} = useFetch<Application[]>('/api/allApplications');
+    const {data: applications, loading, authorized} = useFetch<Application[]>('/api/applications');
 
     if (loading || !authorized) return <LoadingPage/>;
 

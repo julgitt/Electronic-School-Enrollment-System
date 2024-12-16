@@ -24,10 +24,32 @@ export class SchoolRepository {
 
     async insert(newSchool: SchoolEntity): Promise<void> {
         const query = `
-            INSERT INTO schools (name, type)
-            VALUES ($1, $2)
+            INSERT INTO schools (name)
+            VALUES ($1)
         `;
         const values = [newSchool.name];
+
+        await db.query(query, values);
+    }
+
+
+    async update(id: number, name: string): Promise<void> {
+        const query = `
+            UPDATE schools
+            SET name = $2
+            WHERE id = $1
+        `;
+        const values = [id, name];
+
+        await db.query(query, values);
+    }
+
+    async delete(id: number): Promise<void> {
+        const query = `
+            DELETE FROM schools
+            WHERE id = $1
+        `;
+        const values = [id];
 
         await db.query(query, values);
     }

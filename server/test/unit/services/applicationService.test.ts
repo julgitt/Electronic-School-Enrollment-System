@@ -140,14 +140,14 @@ describe('ApplicationService', () => {
         });
 
         it('should throw ValidationError if profile does not exist', async () => {
-            const mockEnrollment: Enrollment = { id: 1, round: 1, startDate: new Date(), endDate: new Date() };
+            const mockEnrollment: Enrollment = {id: 1, round: 1, startDate: new Date(), endDate: new Date()};
             enrollmentServiceStub.getCurrentEnrollment.resolves(mockEnrollment);
             applicationRepoStub.getAllByCandidateAndEnrollmentId.resolves([]);
 
             profileServiceStub.getProfile.rejects(new ResourceNotFoundError('Nie znaleziono profilu.'));
 
             try {
-                await applicationService.addApplication([{ profileId: 1, priority: 1 }], 1);
+                await applicationService.addApplication([{profileId: 1, priority: 1}], 1);
             } catch (err) {
                 assert(err instanceof ResourceNotFoundError);
                 assert.equal(err.message, 'Nie znaleziono profilu.');
@@ -191,7 +191,7 @@ describe('ApplicationService', () => {
             applicationRepoStub.getAllByCandidateAndEnrollmentId.resolves([]);
 
             try {
-                await applicationService.updateApplication([{ profileId: 1, priority: 1 }], 1);
+                await applicationService.updateApplication([{profileId: 1, priority: 1}], 1);
             } catch (err) {
                 assert(err instanceof ResourceNotFoundError);
                 assert.equal(err.message, 'Applications not found.');
@@ -206,7 +206,7 @@ describe('ApplicationService', () => {
                 endDate: new Date()
             };
 
-            const mockApplication: ApplicationEntity =  {
+            const mockApplication: ApplicationEntity = {
                 id: 1,
                 candidateId: 1,
                 profileId: 1,
@@ -219,9 +219,9 @@ describe('ApplicationService', () => {
             enrollmentServiceStub.getCurrentEnrollment.resolves(mockEnrollment);
             applicationRepoStub.getAllByCandidateAndEnrollmentId.resolves([mockApplication]);
 
-            profileServiceStub.getProfile.resolves({ id: 1, name: 'Profile 1', schoolId: 1, capacity: 20 });
+            profileServiceStub.getProfile.resolves({id: 1, name: 'Profile 1', schoolId: 1, capacity: 20});
 
-            const submissions: ApplicationRequest[] = [{ profileId: 1, priority: 2 }];
+            const submissions: ApplicationRequest[] = [{profileId: 1, priority: 2}];
             await applicationService.updateApplication(submissions, 1);
 
             assert(applicationRepoStub.insert.calledOnce);
@@ -229,16 +229,16 @@ describe('ApplicationService', () => {
         });
 
         it('should sort priorities correctly before adding them', async () => {
-            const mockEnrollment: Enrollment = { id: 1, round: 1, startDate: new Date(), endDate: new Date() };
+            const mockEnrollment: Enrollment = {id: 1, round: 1, startDate: new Date(), endDate: new Date()};
             enrollmentServiceStub.getCurrentEnrollment.resolves(mockEnrollment);
             applicationRepoStub.getAllByCandidateAndEnrollmentId.resolves([]);
 
-            profileServiceStub.getProfile.resolves({ id: 1, name: 'Profile 1', schoolId: 1, capacity: 20 });
+            profileServiceStub.getProfile.resolves({id: 1, name: 'Profile 1', schoolId: 1, capacity: 20});
 
             const submissions: ApplicationRequest[] = [
-                { profileId: 1, priority: 8 },
-                { profileId: 2, priority: 2 },
-                { profileId: 3, priority: 4 },
+                {profileId: 1, priority: 8},
+                {profileId: 2, priority: 2},
+                {profileId: 3, priority: 4},
             ];
 
             await applicationService.addApplication(submissions, 1);
@@ -251,11 +251,11 @@ describe('ApplicationService', () => {
 
     describe('getAllApplicationSubmissions', async () => {
         it('should group applications by school', async () => {
-            const mockSchool1 = { id: 1, name: 'School1', profiles: [] };
-            const mockSchool2 = { id: 2, name: 'School2', profiles: [] };
-            const mockProfile1 = { id: 1, name: 'Profile1', schoolId: 1, capacity: 20 };
-            const mockProfile2 = { id: 2, name: 'Profile2', schoolId: 1, capacity: 20 };
-            const mockProfile3 = { id: 3, name: 'Profile3', schoolId: 2, capacity: 20 };
+            const mockSchool1 = {id: 1, name: 'School1', profiles: []};
+            const mockSchool2 = {id: 2, name: 'School2', profiles: []};
+            const mockProfile1 = {id: 1, name: 'Profile1', schoolId: 1, capacity: 20};
+            const mockProfile2 = {id: 2, name: 'Profile2', schoolId: 1, capacity: 20};
+            const mockProfile3 = {id: 3, name: 'Profile3', schoolId: 2, capacity: 20};
 
             const mockApplicationsWithProfiles: ApplicationWithProfiles[] = [
                 {
@@ -280,8 +280,8 @@ describe('ApplicationService', () => {
             const result = await applicationService.getAllApplicationSubmissions(1);
 
             const expected = [
-                {school: mockSchool1, profiles: [{ profileId: 1, priority: 1 }, { profileId: 2, priority: 2 }]},
-                {school: mockSchool2, profiles: [{ profileId: 3, priority: 3 }]}
+                {school: mockSchool1, profiles: [{profileId: 1, priority: 1}, {profileId: 2, priority: 2}]},
+                {school: mockSchool2, profiles: [{profileId: 3, priority: 3}]}
             ];
 
             assert.deepEqual(result, expected);
@@ -289,8 +289,7 @@ describe('ApplicationService', () => {
     });
 
 
-
-    describe('getAllPendingApplicationsByProfile', async() => {
+    describe('getAllPendingApplicationsByProfile', async () => {
         it('should return all pending applications for the given profile and priority', async () => {
             const mockApplications: ApplicationEntity[] = [{
                 id: 1, candidateId: 1, profileId: 1, enrollmentId: 1, priority: 1, status: ApplicationStatus.Pending,

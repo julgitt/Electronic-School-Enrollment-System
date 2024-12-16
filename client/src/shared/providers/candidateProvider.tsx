@@ -86,24 +86,24 @@ export const CandidateProvider: React.FC<CandidateProviderProps> = ({children}) 
             body: JSON.stringify({candidateId}),
             headers: {'Content-Type': 'application/json'},
         })
-        .then(async response => {
-            if (!response.ok) throw new Error((await response.json()).message);
-            return response.json();
-        })
-        .then(data => {
-            setCandidate(data.candidate);
-            window.location.reload();
-        })
-        .catch(err => setError(err.message))
-        .finally(() => {
-            setLoading(false);
-        })
+            .then(async response => {
+                if (!response.ok) throw new Error((await response.json()).message);
+                return response.json();
+            })
+            .then(data => {
+                setCandidate(data.candidate);
+                window.location.reload();
+            })
+            .catch(err => setError(err.message))
+            .finally(() => {
+                setLoading(false);
+            })
 
     };
 
     const deleteCandidate = (candidateId: number) => {
         setLoading(true);
-        fetch('/api/deleteCandidate', {
+        fetch('/api/candidate', {
             method: 'DELETE',
             body: JSON.stringify({candidateId}),
             headers: {'Content-Type': 'application/json'},

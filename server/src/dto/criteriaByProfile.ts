@@ -8,5 +8,6 @@ export interface ProfileCriteria {
 }
 
 
-export interface CriteriaByProfiles extends Map<number, ProfileCriteria[]> {}
+export interface CriteriaByProfiles extends Map<number, ProfileCriteria[]> {
+}
 

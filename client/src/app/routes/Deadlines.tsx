@@ -3,7 +3,7 @@ import {useFetch} from "../../shared/hooks/useFetch.ts";
 import {Enrollment} from "../../shared/types/enrollment.ts";
 import LoadingPage from "./LoadingPage.tsx";
 
-const Dates: React.FC = () => {
+const Deadlines: React.FC = () => {
     const {data: enrollments, loading} = useFetch<Enrollment[]>('api/deadlines')
 
     if (loading) return <LoadingPage/>;
@@ -39,4 +39,4 @@ const Dates: React.FC = () => {
     );
 }
 
-export default Dates;
+export default Deadlines;

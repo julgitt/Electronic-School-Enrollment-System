@@ -7,7 +7,8 @@ import {ResourceNotFoundError} from "../errors/resourceNotFoundError";
 export class SchoolService {
     constructor(
         private schoolRepository: SchoolRepository,
-        private profileService: ProfileService) {}
+        private profileService: ProfileService) {
+    }
 
     async getAllSchoolsWithProfiles(): Promise<SchoolWithProfiles[]> {
         let schools: SchoolEntity[] = await this.schoolRepository.getAll();
@@ -34,12 +35,20 @@ export class SchoolService {
         }
     }
 
-    async addSchool(name: string,): Promise<void> {
+    async addSchool(name: string): Promise<void> {
         const newSchool: SchoolEntity = {
             id: 0,
             name: name,
         }
 
         await this.schoolRepository.insert(newSchool);
+    }
+
+    async updateSchool(id: number, name: string): Promise<void> {
+        await this.schoolRepository.update(id, name);
+    }
+
+    async deleteSchool(id: number): Promise<void> {
+        await this.schoolRepository.delete(id);
     }
 }

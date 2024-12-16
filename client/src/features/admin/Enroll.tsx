@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 
 import {Button} from "../../components/atomic/Button";
-import LoadingPage from "./LoadingPage.tsx";
+import LoadingPage from "../../app/routes/LoadingPage.tsx";
 import {useError} from "../../shared/providers/errorProvider.tsx";
 
 const Enroll: React.FC = () => {

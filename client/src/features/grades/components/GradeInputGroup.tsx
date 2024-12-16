@@ -6,7 +6,6 @@ import {Grade} from "../types/grade.ts";
 import {GradeType} from "../types/gradeType.ts";
 
 
-
 const GradeInputGroup: React.FC<{
     subjects: Subject[];
     grades: Grade[];

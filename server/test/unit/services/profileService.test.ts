@@ -105,7 +105,7 @@ describe('ProfileService', () => {
 
             const expected = new Map<number, ProfileCriteriaEntity[]>();
             expected.set(1, [
-                { id: 1, profileId: 1, subjectId: 1, type: ProfileCriteriaType.Mandatory },
+                {id: 1, profileId: 1, subjectId: 1, type: ProfileCriteriaType.Mandatory},
                 {id: 2, subjectId: 3, profileId: 1, type: ProfileCriteriaType.Alternative},
             ]);
             expected.set(2, [
