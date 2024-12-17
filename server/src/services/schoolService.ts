@@ -41,6 +41,24 @@ export class SchoolService {
         }
     }
 
+    async getSchool(id: number, adminId: number): Promise<School> {
+        const school: School | null = await this.schoolRepository.get(id, adminId);
+        if (school == null) throw new ResourceNotFoundError('Szkoła nie znaleziona');
+
+        return school;
+    }
+
+    async getSchoolByAdmin(adminId: number): Promise<School> {
+        const school: School | null = await this.schoolRepository.getFirstByAdminId(adminId);
+        if (school == null) throw new ResourceNotFoundError('Szkoła nie znaleziona');
+
+        return school
+    }
+
+    async getSchoolsByAdmin(adminId: number): Promise<School[]> {
+        return await this.schoolRepository.getAllByAdminId(adminId);
+    }
+
     async updateSchools(schools: School[]): Promise<void> {
         const currentSchools = await this.getAllSchools();
         const currentSchoolIds = currentSchools.map(s => s.id);
@@ -68,4 +86,6 @@ export class SchoolService {
             }
         });
     }
+
+
 }

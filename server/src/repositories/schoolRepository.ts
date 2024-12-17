@@ -53,4 +53,45 @@ export class SchoolRepository {
 
         await t.none(query, values);
     }
+
+    async get(id: number, adminId: number) {
+        const query = `
+            SELECT
+                s.id,
+                s.name
+            FROM schools s
+            JOIN school_admins a ON s.id = a.school_id
+            WHERE a.user_id = $2 AND a.school_id = $1
+            LIMIT 1;
+        `;
+
+        return await db.query<SchoolEntity>(query, [id, adminId]);
+    }
+
+    async getFirstByAdminId(id: number) {
+        const query = `
+            SELECT
+                s.id,
+                s.name
+            FROM schools s
+                     JOIN school_admins a ON s.id = a.school_id
+            WHERE a.user_id = $1
+            LIMIT 1;
+        `;
+
+        return await db.query<SchoolEntity>(query, id);
+    }
+
+    async getAllByAdminId(id: number) {
+        const query = `
+            SELECT
+                s.id,
+                s.name
+            FROM schools s
+            JOIN school_admins a ON s.id = a.school_id
+            WHERE a.user_id = $1
+        `;
+
+        return await db.query<SchoolEntity[]>(query, [id]);
+    }
 }

@@ -15,7 +15,7 @@ const SchoolAdminNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({ren
     const school = (!!data && 'id' in data) ? data : null;
     const redirect = (!!data && 'redirect' in data) ? data.redirect : null;
 
-    const {data: schools, loading: schoolsLoading} = useFetch<School[]>('api/schools', !!school);
+    const {data: schools, loading: schoolsLoading} = useFetch<School[]>('api/schoolsByAdmin', !!school);
     const [fetchingLoading, setFetchingLoading] = useState(false)
     const loading = schoolLoading || schoolsLoading || fetchingLoading;
 
