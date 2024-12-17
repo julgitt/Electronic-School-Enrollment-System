@@ -17,9 +17,12 @@ const UserNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({ renderLog
     const [candidate, setCandidate] = useState<Candidate | null>(null);
     const [redirect, setRedirect] = useState<string | null>(null);
     useEffect(() => {
-
+        console.log(data)
         if (data != null) {
-            if('id' in data) setCandidate(data);
+            if('id' in data) {
+                setCandidate(data);
+                console.log(candidate)
+            }
             if('redirect' in data) setRedirect(data.redirect);
         }
     }, [data]);
