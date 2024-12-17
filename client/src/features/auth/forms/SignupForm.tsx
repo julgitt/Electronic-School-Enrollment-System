@@ -43,7 +43,6 @@ const SignupForm: React.FC<SignupFormProps> = ({
                 type="email"
                 name="txtEmail"
                 placeholder="Email"
-                pattern="[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}"
                 value={formData.email}
                 onChange={onInputChange("email")}
                 title="Podaj adres email"

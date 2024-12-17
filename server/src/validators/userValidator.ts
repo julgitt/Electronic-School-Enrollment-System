@@ -9,7 +9,7 @@ export const userSignupValidator = [
     body('password')
         .notEmpty().withMessage("Podaj hasło")
         .isLength({min: 8}).withMessage("Hasło musi mieć minimum 8 znaków.")
-        .matches(/[a-zA-Z0-9.*[@$!%*?&]]+/)
+        .matches(/^[a-zA-Z0-9@$!%*?&]+$/)
         .withMessage("Hasło może zawierać jedynie litery, cyfry oraz znaki: .*[@$!%*?&]"),
     body('passwordConfirm').custom((value, {req}) => {
         return value === req.body.password;

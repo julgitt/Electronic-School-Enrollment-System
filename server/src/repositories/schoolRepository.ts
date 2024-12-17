@@ -61,11 +61,11 @@ export class SchoolRepository {
                 s.name
             FROM schools s
             JOIN school_admins a ON s.id = a.school_id
-            WHERE a.user_id = $2 AND a.school_id = $1
+            WHERE a.school_id = $1 AND a.user_id = $2 
             LIMIT 1;
         `;
 
-        return await db.query<SchoolEntity>(query, [id, adminId]);
+        return await db.oneOrNone<SchoolEntity>(query, [id, adminId]);
     }
 
     async getFirstByAdminId(id: number) {
@@ -79,7 +79,7 @@ export class SchoolRepository {
             LIMIT 1;
         `;
 
-        return await db.query<SchoolEntity>(query, id);
+        return await db.oneOrNone<SchoolEntity>(query, id);
     }
 
     async getAllByAdminId(id: number) {

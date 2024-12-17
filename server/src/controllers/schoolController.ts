@@ -30,13 +30,14 @@ export class SchoolController {
 
     async getSchool(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId: number = req.signedCookies.userId
+            const userId = req.signedCookies.userId
             if (userId == null) return res.status(200).json();
 
-            const schoolId: number = req.signedCookies.schoolId;
+            const schoolId = req.signedCookies.schoolId;
             const school: School | null = (schoolId == null)
                 ? await this.schoolService.getSchoolByAdmin(userId)
                 : await this.schoolService.getSchool(schoolId, userId);
+
 
             if (school == null)
                 return res.status(200).json({message: 'No school assign to that school admin'});

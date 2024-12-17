@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {NavLink as Link} from "react-router-dom";
 
 import styles from '../Header.module.scss';
@@ -12,8 +12,16 @@ import {RedirectResponse} from "../../../../shared/types/redirectResponse.ts";
 const SchoolAdminNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({renderLogoutLink}) => {
     const {setError} = useError();
     const {data, loading: schoolLoading} = useFetch<School | RedirectResponse>('api/school');
-    const school = (!!data && 'id' in data) ? data : null;
-    const redirect = (!!data && 'redirect' in data) ? data.redirect : null;
+    const [school, setSchool] = useState<School | null>(null);
+    const [redirect, setRedirect] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (data != null) {
+            console.log(data);
+            if ('id' in data) setSchool(data);
+            if ('redirect' in data) setRedirect(data.redirect);
+        }
+    }, [data]);
 
     const {data: schools, loading: schoolsLoading} = useFetch<School[]>('api/schoolsByAdmin', !!school);
     const [fetchingLoading, setFetchingLoading] = useState(false)
@@ -33,17 +41,16 @@ const SchoolAdminNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({ren
         }
     };
 
+    if (loading) return <div></div>
+
     if (redirect && !window.location.href.includes(redirect)) {
         window.location.href = redirect;
         return null;
     }
 
-    if (loading) return <div></div>
-
     return (
         <nav className={styles.nav}>
             <div className={styles.navMenu}>
-                <Link className={styles.navLink} to="/">System naboru do szkół</Link>
                 <Link className={styles.navLink} to="/editProfiles">Profile</Link>
             </div>
             <div className={styles.navMenu}>
