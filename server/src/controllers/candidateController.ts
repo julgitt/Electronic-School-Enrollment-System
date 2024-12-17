@@ -90,7 +90,7 @@ export class CandidateController {
                 maxAge: 86400000
             });
 
-            return res.status(200).json({candidate: candidate});
+            return res.status(200).json({candidate});
         } catch (error) {
             return next(error);
         }
