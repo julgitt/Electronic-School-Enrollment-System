@@ -11,22 +11,18 @@ import {useError} from "../../../../shared/providers/errorProvider.tsx";
 import {deleteCandidate, switchCandidate} from "./Services/candidateService.ts";
 import {RedirectResponse} from "../../../../shared/types/redirectResponse.ts";
 
-const UserNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({ renderLogoutLink}) => {
+const UserNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({renderLogoutLink}) => {
     const {setError} = useError();
     const {data, loading: candidateLoading} = useFetch<Candidate | RedirectResponse>('api/candidate');
     const [candidate, setCandidate] = useState<Candidate | null>(null);
     const [redirect, setRedirect] = useState<string | null>(null);
+
     useEffect(() => {
-        console.log(data)
         if (data != null) {
-            if('id' in data) {
-                setCandidate(data);
-                console.log(candidate)
-            }
-            if('redirect' in data) setRedirect(data.redirect);
+            if ('id' in data) setCandidate(data);
+            if ('redirect' in data) setRedirect(data.redirect);
         }
     }, [data]);
-
 
     const {data: candidates, loading: candidatesLoading} = useFetch<Candidate[]>('api/candidates', !!candidate);
     const {isPastDeadline, loading: deadlineLoading} = useDeadlineCheck(!!candidate);

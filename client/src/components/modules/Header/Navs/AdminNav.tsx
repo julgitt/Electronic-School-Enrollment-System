@@ -3,7 +3,7 @@ import {NavLink as Link} from "react-router-dom";
 
 import styles from '../Header.module.scss';
 
-const AdminMenu: React.FC<{ renderLogoutLink: () => JSX.Element }> = ({ renderLogoutLink }) => (
+const AdminMenu: React.FC<{ renderLogoutLink: () => JSX.Element }> = ({renderLogoutLink}) => (
     <nav className={styles.nav}>
         <div className={styles.navMenu}>
             <Link className={styles.navLink} to="/enroll">Włącz nabór</Link>

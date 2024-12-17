@@ -39,7 +39,7 @@ const EditDeadlines: React.FC = () => {
     };
 
     const handleDeleteEnrollment = (id: number) => {
-            const updated = updatedEnrollments.filter(enrollment => enrollment.id !== id);
+        const updated = updatedEnrollments.filter(enrollment => enrollment.id !== id);
         setUpdatedEnrollments(updated);
     };
 

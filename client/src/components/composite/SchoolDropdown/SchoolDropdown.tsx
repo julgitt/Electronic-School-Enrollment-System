@@ -9,10 +9,10 @@ interface SchoolDropdownProps {
 }
 
 const SchoolDropdown: React.FC<SchoolDropdownProps> = ({
-                                                                 currentSchool,
-                                                                 schools,
-                                                                 onSelectSchool,
-                                                             }) => {
+                                                           currentSchool,
+                                                           schools,
+                                                           onSelectSchool,
+                                                       }) => {
     const [isDropdownOpen, setDropdownOpen] = useState(false);
 
     return (

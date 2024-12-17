@@ -9,11 +9,11 @@ import {useError} from "../../../../shared/providers/errorProvider.tsx";
 import {switchSchool} from "./Services/schoolService.ts";
 import {RedirectResponse} from "../../../../shared/types/redirectResponse.ts";
 
-const SchoolAdminNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({ renderLogoutLink}) => {
+const SchoolAdminNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({renderLogoutLink}) => {
     const {setError} = useError();
     const {data, loading: schoolLoading} = useFetch<School | RedirectResponse>('api/school');
-    const school  = (!!data && 'id' in data)? data : null;
-    const redirect = (!!data && 'redirect' in data)? data.redirect : null;
+    const school = (!!data && 'id' in data) ? data : null;
+    const redirect = (!!data && 'redirect' in data) ? data.redirect : null;
 
     const {data: schools, loading: schoolsLoading} = useFetch<School[]>('api/schools', !!school);
     const [fetchingLoading, setFetchingLoading] = useState(false)

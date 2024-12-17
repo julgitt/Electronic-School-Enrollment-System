@@ -5,7 +5,7 @@ export class SchoolRepository {
     async getById(id: number): Promise<SchoolEntity | null> {
         const query = `
             SELECT *
-            FROM schools 
+            FROM schools
             WHERE id = $1
             LIMIT 1
         `;
@@ -15,7 +15,7 @@ export class SchoolRepository {
 
     async getAll(): Promise<SchoolEntity[]> {
         const query = `
-            SELECT id, name 
+            SELECT id, name
             FROM schools;
         `;
 
@@ -45,7 +45,8 @@ export class SchoolRepository {
 
     async delete(id: number, t: ITask<any>): Promise<void> {
         const query = `
-            DELETE FROM schools
+            DELETE
+            FROM schools
             WHERE id = $1
         `;
         const values = [id];

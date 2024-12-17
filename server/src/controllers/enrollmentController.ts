@@ -2,7 +2,6 @@ import {NextFunction, Request, Response} from 'express';
 
 import {EnrollmentService} from "../services/enrollmentService";
 import {Enrollment} from "../dto/enrollment";
-import {School} from "../dto/school/school";
 
 
 export class EnrollmentController {

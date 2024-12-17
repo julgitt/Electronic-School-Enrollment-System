@@ -6,7 +6,8 @@ import {School} from "../dto/school/school";
 
 
 export class SchoolController {
-    constructor(private schoolService: SchoolService) {}
+    constructor(private schoolService: SchoolService) {
+    }
 
     async getAllSchoolsWithProfiles(_req: Request, res: Response, next: NextFunction) {
         try {

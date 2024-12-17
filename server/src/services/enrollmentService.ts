@@ -5,7 +5,7 @@ import {ITask} from "pg-promise";
 
 export class EnrollmentService {
     constructor(private enrollmentRepository: EnrollmentRepository,
-    private readonly tx: (callback: (t: ITask<any>) => Promise<void>) => Promise<void>) {
+                private readonly tx: (callback: (t: ITask<any>) => Promise<void>) => Promise<void>) {
     }
 
     async getEnrollment(id: number): Promise<Enrollment> {

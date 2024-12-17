@@ -27,57 +27,57 @@ const EditSchoolForm: React.FC<EditSchoolFormProps> = ({
                                                            onSchoolChange,
                                                            onAddSchool,
                                                            onDeleteSchool,
-    onSave,
-    onUndo
+                                                           onSave,
+                                                           onUndo
                                                        }) => (
-        <form method="POST" className={styles.form}>
-            <h2>Edytuj szkoły</h2>
-            {error && <ErrorMessage message={error}/>}
-            <table>
-                <thead>
-                <tr>
-                    <th></th>
-                    <th></th>
+    <form method="POST" className={styles.form}>
+        <h2>Edytuj szkoły</h2>
+        {error && <ErrorMessage message={error}/>}
+        <table>
+            <thead>
+            <tr>
+                <th></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {updatedSchools && updatedSchools.map(school => (
+                <tr key={school.id}>
+                    <td>
+                        <InputField
+                            type="text"
+                            placeholder="Nazwa szkoły"
+                            value={school.name}
+                            required
+                            onChange={(e) =>
+                                onSchoolChange({
+                                    id: school.id,
+                                    name: e.target.value
+                                })}
+                        />
+                    </td>
+                    <td>
+                        <MinusButton
+                            onClick={() => onDeleteSchool(school.id)}
+                            disabled={loading}
+                        />
+                    </td>
                 </tr>
-                </thead>
-                <tbody>
-                {updatedSchools && updatedSchools.map(school => (
-                    <tr key={school.id}>
-                        <td>
-                            <InputField
-                                type="text"
-                                placeholder="Nazwa szkoły"
-                                value={school.name}
-                                required
-                                onChange={(e) =>
-                                    onSchoolChange({
-                                        id: school.id,
-                                        name: e.target.value
-                                    })}
-                            />
-                        </td>
-                        <td>
-                            <MinusButton
-                                onClick={() => onDeleteSchool(school.id)}
-                                disabled={loading}
-                            />
-                        </td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
-            <div>
-                <PlusButton
-                    onClick={onAddSchool}
-                    disabled={loading}
-                />
-            </div>
+            ))}
+            </tbody>
+        </table>
+        <div>
+            <PlusButton
+                onClick={onAddSchool}
+                disabled={loading}
+            />
+        </div>
 
-            <div>
-                <Button onClick={onUndo} disabled={loading}> Cofnij </Button>
-                <Button onClick={onSave}> Zapisz </Button>
-            </div>
-        </form>
-    )
+        <div>
+            <Button onClick={onUndo} disabled={loading}> Cofnij </Button>
+            <Button onClick={onSave}> Zapisz </Button>
+        </div>
+    </form>
+)
 
 export default EditSchoolForm;
