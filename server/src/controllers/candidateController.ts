@@ -108,7 +108,7 @@ export class CandidateController {
                 candidates = candidates.filter(candidate => candidate.id != candidateId);
             }
 
-            res.status(200).json({candidates: candidates});
+            res.status(200).json(candidates);
         } catch (error) {
             return next(error);
         }
