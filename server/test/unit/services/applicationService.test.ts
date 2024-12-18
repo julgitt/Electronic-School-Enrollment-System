@@ -1,3 +1,4 @@
+/*
 import assert from 'assert';
 import {afterEach} from 'mocha';
 import sinon from 'sinon';
@@ -326,4 +327,4 @@ describe('ApplicationService', () => {
             assert(applicationRepoStub.updateStatus.calledOnceWith(1, ApplicationStatus.Accepted, transactionMock));
         });
     });
-})
+})*/

@@ -36,7 +36,7 @@ const gradeService = new GradeService(gradeRepository, subjectService, tx);
 export const gradeController = new GradeController(gradeService);
 
 const candidateRepository = new CandidateRepository();
-const candidateService = new CandidateService(gradeService, candidateRepository);
+const candidateService = new CandidateService(candidateRepository);
 export const candidateController = new CandidateController(candidateService);
 
 const userRepository = new UserRepository();
@@ -44,7 +44,7 @@ const userService = new UserService(userRepository, tx);
 export const userController = new UserController(userService);
 
 const profileRepository = new ProfileRepository()
-export const profileService = new ProfileService(profileRepository);
+const profileService = new ProfileService(profileRepository, gradeService);
 
 const schoolRepository = new SchoolRepository();
 const schoolService = new SchoolService(schoolRepository, profileService, tx);
@@ -55,10 +55,12 @@ const enrollmentService = new EnrollmentService(enrollmentRepository, tx);
 export const enrollmentController = new EnrollmentController(enrollmentService);
 
 const applicationRepository = new ApplicationRepository();
-const applicationService = new ApplicationService(applicationRepository, profileService, enrollmentService, schoolService, tx);
+const applicationService = new ApplicationService(applicationRepository, enrollmentService, schoolService, tx);
+profileService.setApplicationService(applicationService);
+applicationService.setProfileService(profileService);
 export const applicationController = new ApplicationController(applicationService);
 
-const adminService = new AdminService(candidateService, profileService, applicationService, tx);
+const adminService = new AdminService(profileService, applicationService, tx);
 export const adminController = new AdminController(adminService);
 
 export const schoolAdminController = new SchoolAdminController(schoolService, profileService);

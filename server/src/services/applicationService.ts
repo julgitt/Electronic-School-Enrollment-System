@@ -16,13 +16,18 @@ import {Enrollment} from "../dto/enrollment";
 import {ApplicationStatus} from "../dto/application/applicationStatus";
 
 export class ApplicationService {
+    private profileService!: ProfileService;
+
     constructor(
         private applicationRepository: ApplicationRepository,
-        private profileService: ProfileService,
         private enrollmentService: EnrollmentService,
         private schoolService: SchoolService,
         private readonly tx: (callback: (t: ITask<any>) => Promise<void>) => Promise<void>
     ) {
+    }
+
+    setProfileService(profileService: ProfileService) {
+        this.profileService = profileService;
     }
 
     async getAllApplications(candidateId: number): Promise<ApplicationWithProfiles[]> {
@@ -54,13 +59,13 @@ export class ApplicationService {
         return this.applicationRepository.getAllPendingByProfile(profileId);
     }
 
+    async getAllAcceptedByProfile(profileId: number): Promise<Application[]> {
+        return this.applicationRepository.getAllAcceptedByProfile(profileId)
+    }
+
     async getAllApplicationSubmissions(candidateId: number): Promise<ApplicationBySchool[]> {
         const applications: ApplicationWithProfiles[] = await this.getAllApplications(candidateId);
         return this.groupApplicationsBySchool(applications);
-    }
-
-    async getAcceptedCountByProfile(profileId: number): Promise<number> {
-        return this.applicationRepository.getEnrolledByProfile(profileId)
     }
 
     async updateApplicationStatus(id: number, status: string, t: ITask<any>) {

@@ -1,4 +1,4 @@
-import {Profile} from "../profile";
+import {Profile} from "../profile/profile";
 
 export interface SchoolWithProfiles {
     id: number;

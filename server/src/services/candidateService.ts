@@ -10,17 +10,7 @@ import {GradeByCandidate} from "../dto/grade/gradesByCandidate";
 
 export class CandidateService {
     constructor(
-        private readonly gradeService: GradeService,
         private readonly candidateRepository: CandidateRepository) {
-    }
-
-    async getGradesByCandidates(): Promise<GradeByCandidate> {
-        const gradesByCandidateId = new Map<number, Grade[]>;
-        const candidates: Candidate[] = await this.candidateRepository.getAll();
-        for (const candidate of candidates) {
-            gradesByCandidateId.set(candidate.id, await this.gradeService.getAllByCandidate(candidate.id));
-        }
-        return gradesByCandidateId;
     }
 
     async getLastCreatedCandidateByUser(userId: number) {

@@ -67,16 +67,16 @@ export class ApplicationRepository {
         return db.query(query, [profileId, status]);
     }
 
-    async getEnrolledByProfile(profileId: number): Promise<number> {
+    async getAllAcceptedByProfile(profileId: number): Promise<ApplicationEntity[]> {
         const status = ApplicationStatus.Accepted
         const query = `
-            SELECT COUNT(*)
+            SELECT *
             FROM applications
             WHERE profile_id = $1
               and status = $2
         `;
 
-        return Number((await db.query(query, [profileId, status]))[0].count);
+        return db.query(query, [profileId, status]);
     }
 
     async insert(newApp: ApplicationEntity, t: ITask<any>): Promise<void> {

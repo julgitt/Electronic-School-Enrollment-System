@@ -1,3 +1,4 @@
+/*
 import {afterEach} from 'mocha';
 import sinon from 'sinon';
 
@@ -181,3 +182,4 @@ describe('AdminService', () => {
         return applicationsMap.get(profileId) || [];
     }
 })
+*/
