@@ -56,6 +56,8 @@ export class UserController {
             res.clearCookie('candidateName');
             res.clearCookie('userId');
             res.clearCookie('roles');
+            res.clearCookie('schoolId');
+            res.clearCookie('profileId');
             return res.status(200).json({message: 'Logout successful'});
         } catch (error) {
             return next(error);

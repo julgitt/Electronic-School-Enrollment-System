@@ -16,8 +16,9 @@ const SchoolAdminNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({ren
     const {data: school, loading: schoolLoading} = useFetch<School>('api/admin/school');
     const {data: schools, loading: schoolsLoading} = useFetch<School[]>('api/admin/schools', !!school);
     const {data: profile, loading: profileLoading} = useFetch<Profile>('api/admin/profile', !!school);
+    const {data: profiles, loading: profilesLoading} = useFetch<Profile[]>('api/admin/profiles', !!school);
     const [fetchingLoading, setFetchingLoading] = useState(false)
-    const loading = profileLoading || schoolLoading || schoolsLoading || fetchingLoading;
+    const loading = profileLoading || schoolLoading || schoolsLoading || fetchingLoading || profilesLoading;
 
     const handleSwitch = async (id: number) => {
         setFetchingLoading(true);
@@ -80,7 +81,7 @@ const SchoolAdminNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({ren
                             <>
                                 <ProfileDropdown
                                     currentProfile={profile}
-                                    profiles={schools || []}
+                                    profiles={profiles || []}
                                     onSelectProfile={handleSwitchProfile}
                                     onDeleteProfile={handleDeleteProfile}
                                 />

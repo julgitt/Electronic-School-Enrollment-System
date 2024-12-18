@@ -24,7 +24,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
                 onClick={() => setDropdownOpen(!isDropdownOpen)}
                 className={styles.dropdownButton}
             >
-                {currentProfile.name}
+                {currentProfile.name || "Profile"}
             </button>
             {isDropdownOpen && (
                 <div className={styles.dropdownContent}>
@@ -47,15 +47,17 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
                     >
                         Nowy Profil
                     </Link>
-                    <button
-                        onClick={() => {
-                            setDropdownOpen(false);
-                            onDeleteProfile(currentProfile.id);
-                        }}
-                        className={styles.dropdownItem}
-                    >
-                        Usuń Obecnegy Profil
-                    </button>
+                    {currentProfile.name && (
+                        <button
+                            onClick={() => {
+                                setDropdownOpen(false);
+                                onDeleteProfile(currentProfile.id);
+                            }}
+                            className={styles.dropdownItem}
+                        >
+                            Usuń Obecny Profil
+                        </button>
+                    )}
                 </div>
             )}
         </div>

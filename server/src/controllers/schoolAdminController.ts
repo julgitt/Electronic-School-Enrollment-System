@@ -55,7 +55,7 @@ export class SchoolAdminController {
 
     async switchSchool(req: Request, res: Response, next: NextFunction) {
         try {
-            const schoolId: number = req.body.schoolId;
+            const schoolId: number = Number(req.params.id);
             const userId: number = req.signedCookies.userId;
 
             const newSchool: School = await this.schoolService.getSchoolByAdminAndId(schoolId, userId);
@@ -99,6 +99,18 @@ export class SchoolAdminController {
             });
 
             return res.status(200).json(profile);
+        } catch (error) {
+            return next(error);
+        }
+    }
+
+
+    async getProfiles(req: Request, res: Response, next: NextFunction) {
+        try {
+            const schoolId = req.signedCookies.schoolId
+            if (schoolId == null) return res.status(200).json();
+            const profiles = await this.profileService.getProfilesBySchool(schoolId)
+            return res.status(200).json(profiles);
         } catch (error) {
             return next(error);
         }
