@@ -47,7 +47,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
                     >
                         Nowy Profil
                     </Link>
-                    {currentProfile.name && (
+                    {currentProfile && (
                         <>
                             <button
                                 onClick={() => {

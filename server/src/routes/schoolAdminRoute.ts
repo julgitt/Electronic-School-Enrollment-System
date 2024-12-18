@@ -39,10 +39,9 @@ router.post('/admin/profile', authorize('schoolAdmin'), async (req: Request, res
 router.get('/admin/applications', authorize('schoolAdmin'), async (req: Request, res: Response, next: NextFunction) => {
     return await schoolAdminController.getAllApplicationsByProfile(req, res, next);
 });
-/*
 
 router.put('/admin/profile/:id', authorize('schoolAdmin'), async (req: Request, res: Response, next: NextFunction) => {
     return await schoolAdminController.updateProfile(req, res, next);
-});*/
+});
 
 export default router;

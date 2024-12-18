@@ -1,6 +1,6 @@
 import {ProfileCriteria} from "../criteriaByProfile";
 
-export interface ProfileRequest {
+export interface ProfileWithCriteria {
     id: number;
     name: string;
     capacity: number;

@@ -14,6 +14,7 @@ import {EnrollmentService} from "./enrollmentService";
 import {ValidationError} from "../errors/validationError";
 import {Enrollment} from "../dto/enrollment";
 import {ApplicationStatus} from "../dto/application/applicationStatus";
+import {transactionFunction} from "../db";
 
 export class ApplicationService {
     private profileService!: ProfileService;
@@ -22,7 +23,7 @@ export class ApplicationService {
         private applicationRepository: ApplicationRepository,
         private enrollmentService: EnrollmentService,
         private schoolService: SchoolService,
-        private readonly tx: (callback: (t: ITask<any>) => Promise<void>) => Promise<void>
+        private readonly tx: transactionFunction
     ) {
     }
 

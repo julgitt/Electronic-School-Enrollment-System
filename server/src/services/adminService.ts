@@ -1,16 +1,10 @@
 import {ApplicationService} from "./applicationService";
 import {ProfileService} from "./profileService";
-import {CandidateService} from "./candidateService";
-import {Profile} from "../dto/profile/profile";
 import {Application} from "../dto/application/application";
-import {Grade} from "../dto/grade/grade";
 import {ITask} from "pg-promise";
-import {ProfileCriteriaEntity, ProfileCriteriaType} from "../models/profileCriteriaEntity";
 import {ApplicationStatus} from "../dto/application/applicationStatus";
-import {ResourceNotFoundError} from "../errors/resourceNotFoundError";
-import {CriteriaByProfiles, ProfileCriteria} from "../dto/criteriaByProfile";
-import {GradeByCandidate} from "../dto/grade/gradesByCandidate";
 import {ApplicationRequest} from "../dto/application/applicationRequest";
+import {transactionFunction} from "../db";
 
 
 type EnrollmentSlots = { accepted: Application[], reserve: Application[] };
@@ -19,7 +13,7 @@ export class AdminService {
     constructor(
         private profileService: ProfileService,
         private applicationService: ApplicationService,
-        private readonly tx: (callback: (t: ITask<any>) => Promise<void>) => Promise<void>
+        private readonly tx: transactionFunction
     ) {
     }
 

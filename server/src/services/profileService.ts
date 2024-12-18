@@ -8,13 +8,16 @@ import {ApplicationService} from "./applicationService";
 import {GradeService} from "./gradeService";
 import {Application} from "../dto/application/application";
 import {ProfileRequest} from "../dto/profile/profileRequest";
+import {transactionFunction} from "../db";
+import {ProfileWithCriteria} from "../dto/profile/profileWithCriteria";
 
 export class ProfileService {
     private applicationService!: ApplicationService;
 
     constructor(
         private profileRepository: ProfileRepository,
-        private gradeService: GradeService
+        private gradeService: GradeService,
+        private readonly tx: transactionFunction
     ) {
     }
     setApplicationService(applicationService: ApplicationService) {
@@ -27,14 +30,25 @@ export class ProfileService {
         return profile;
     }
 
-    async getProfileByIdAndSchoolId(profileId: number, schoolId: number): Promise<Profile> {
+    async getProfileByIdAndSchoolId(profileId: number, schoolId: number): Promise<ProfileWithCriteria> {
         const profile = await this.profileRepository.getById(profileId);
         if (!profile || profile.schoolId != schoolId) throw new ResourceNotFoundError('Profil nie znaleziony.');
-        return profile;
+
+        return {
+            ...profile,
+            criteria: await this.getProfileCriteria(profileId)
+        };
     }
 
-    async getProfileBySchool(schoolId: number): Promise<Profile | null> {
-        return this.profileRepository.getBySchool(schoolId);
+    async getProfileBySchool(schoolId: number): Promise<ProfileWithCriteria | null> {
+        const profile  = await this.profileRepository.getBySchool(schoolId);
+        if (!profile) return null;
+
+        return {
+            ...profile,
+            criteria: await this.getProfileCriteria(profile.id)
+        };
+
     }
 
     async getProfilesBySchool(schoolId: number): Promise<Profile[]> {
@@ -52,10 +66,50 @@ export class ProfileService {
     async addProfile(profile: ProfileRequest, schoolId: number){
         const newProfile: Profile = {
             id: 0,
-            ...profile,
+            name: profile.name,
+            capacity: profile.capacity,
             schoolId: schoolId,
         }
-        return this.profileRepository.insert(newProfile);
+
+        await this.tx(async t => {
+            const insertedProfile = await this.profileRepository.insert(newProfile, t);
+
+            for (const criteria of profile.criteria) {
+                const newProfileCriteria: ProfileCriteriaEntity = {
+                    id: 0,
+                    profileId: insertedProfile.id,
+                    subjectId: criteria.subjectId,
+                    type: criteria.type,
+                }
+                await this.profileRepository.insertCriteria(newProfileCriteria, t);
+            }
+        });
+    }
+
+    async updateProfile(profile: ProfileRequest, schoolId: number){
+        await this.getProfileByIdAndSchoolId(profile.id, schoolId);
+
+        const updatedProfile: Profile = {
+            id: profile.id,
+            name: profile.name,
+            capacity: profile.capacity,
+            schoolId: schoolId,
+        }
+
+        await this.tx(async t => {
+            await this.profileRepository.update(updatedProfile, t);
+            await this.profileRepository.deleteCriteriaByProfile(updatedProfile.id, t);
+
+            for (const criteria of profile.criteria) {
+                const newProfileCriteria: ProfileCriteriaEntity = {
+                    id: 0,
+                    profileId: updatedProfile.id,
+                    subjectId: criteria.subjectId,
+                    type: criteria.type,
+                }
+                await this.profileRepository.insertCriteria(newProfileCriteria, t);
+            }
+        });
     }
 
     async createSortedCandidateListsByProfile() {

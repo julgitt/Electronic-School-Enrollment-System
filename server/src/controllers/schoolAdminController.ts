@@ -3,8 +3,8 @@ import {NextFunction, Request, Response} from 'express';
 import {School} from "../dto/school/school";
 import {SchoolService} from "../services/schoolService";
 import {ProfileService} from "../services/profileService";
-import {Profile} from "../dto/profile/profile";
 import {ProfileRequest} from "../dto/profile/profileRequest";
+import {ProfileWithCriteria} from "../dto/profile/profileWithCriteria";
 
 
 export class SchoolAdminController {
@@ -84,7 +84,7 @@ export class SchoolAdminController {
 
             const profileId = req.signedCookies.profileId;
             const schoolId = req.signedCookies.schoolId;
-            const profile: Profile | null = (profileId == null)
+            const profile: ProfileWithCriteria | null = (profileId == null)
                 ? await this.profileService.getProfileBySchool(schoolId)
                 : await this.profileService.getProfileByIdAndSchoolId(profileId, schoolId);
 
@@ -121,7 +121,7 @@ export class SchoolAdminController {
             const profileId: number = Number(req.params.id);
             const schoolId: number = req.signedCookies.schoolId;
 
-            const newProfile: Profile = await this.profileService.getProfileByIdAndSchoolId(profileId, schoolId);
+            const newProfile: ProfileWithCriteria = await this.profileService.getProfileByIdAndSchoolId(profileId, schoolId);
 
             res.cookie('profileId', newProfile.id, {
                 signed: true,
@@ -173,14 +173,11 @@ export class SchoolAdminController {
         }
     }
 
-/*    async updateProfile(req: Request, res: Response, next: NextFunction) {
+    async updateProfile(req: Request, res: Response, next: NextFunction) {
         try {
-            const profile: ProfileRequest = req.body.profile;
-            const criteria: CriteriaRequest[] = req.body.criteria;
-
+            const profile: ProfileRequest = req.body;
             const schoolId: number = req.signedCookies.schoolId;
-
-            await this.profileService.updateProfileAndCriteria(profile, criteria, schoolId);
+            await this.profileService.updateProfile(profile, schoolId);
 
             return res.status(201).json({
                 message: 'Profile added successfully',
@@ -189,11 +186,12 @@ export class SchoolAdminController {
         } catch (error) {
             return next(error);
         }
-    }*/
+    }
 
     async getAllApplicationsByProfile(req: Request, res: Response, next: NextFunction) {
         try {
             const profileId = req.signedCookies.profileId;
+            if (!profileId) return res.status(200).json()
             const list = await this.profileService.getSortedCandidateList(profileId);
             return res.status(200).json(list)
         } catch (error) {

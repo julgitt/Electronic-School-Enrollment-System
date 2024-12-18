@@ -1,12 +1,13 @@
 import {EnrollmentRepository} from "../repositories/enrollmentRepository";
 import {ResourceNotFoundError} from "../errors/resourceNotFoundError";
 import {Enrollment} from "../dto/enrollment";
-import {ITask} from "pg-promise";
+import {transactionFunction} from "../db";
 
 export class EnrollmentService {
-    constructor(private enrollmentRepository: EnrollmentRepository,
-                private readonly tx: (callback: (t: ITask<any>) => Promise<void>) => Promise<void>) {
-    }
+    constructor (
+        private enrollmentRepository: EnrollmentRepository,
+        private readonly tx: transactionFunction
+    ) {}
 
     async getEnrollment(id: number): Promise<Enrollment> {
         const enrollment = await this.enrollmentRepository.getById(id);

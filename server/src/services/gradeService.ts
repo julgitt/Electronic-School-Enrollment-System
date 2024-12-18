@@ -8,12 +8,14 @@ import {GradeEntity} from "../models/gradeEntity";
 import {Grade} from "../dto/grade/grade";
 import {Subject} from "../dto/subject";
 import {GradeType} from "../dto/grade/gradeType";
+import {transactionFunction} from "../db";
 
 export class GradeService {
     constructor(
         private gradeRepository: GradeRepository,
         private subjectService: SubjectService,
-        private readonly tx: (callback: (t: ITask<any>) => Promise<void>) => Promise<void>) {
+        private readonly tx: transactionFunction
+    ) {
     }
 
     async getAllByCandidate(candidateId: number) {

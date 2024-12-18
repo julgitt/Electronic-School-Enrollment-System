@@ -21,5 +21,6 @@ export function useFormData<T>(initialData: T) {
         formData,
         handleChange,
         updateListField,
+        setFormData,
     };
 }

@@ -3,13 +3,14 @@ import {ProfileService} from "./profileService";
 import {SchoolWithProfiles} from "../dto/school/schoolWithProfiles";
 import {ResourceNotFoundError} from "../errors/resourceNotFoundError";
 import {School} from "../dto/school/school";
-import {ITask} from "pg-promise";
+import {transactionFunction} from "../db";
 
 export class SchoolService {
     constructor(
         private schoolRepository: SchoolRepository,
         private profileService: ProfileService,
-        private readonly tx: (callback: (t: ITask<any>) => Promise<void>) => Promise<void>) {
+        private readonly tx: transactionFunction
+    ) {
     }
 
     async getAllSchools(): Promise<School[]> {
