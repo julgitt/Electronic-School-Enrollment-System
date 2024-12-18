@@ -24,6 +24,7 @@ import {EnrollmentRepository} from "./repositories/enrollmentRepository";
 import {EnrollmentController} from "./controllers/enrollmentController";
 import {AdminService} from "./services/adminService";
 import {AdminController} from "./controllers/adminController";
+import {SchoolAdminController} from "./controllers/schoolAdminController";
 
 
 const subjectRepository: SubjectRepository = new SubjectRepository();
@@ -59,3 +60,5 @@ export const applicationController = new ApplicationController(applicationServic
 
 const adminService = new AdminService(candidateService, profileService, applicationService, tx);
 export const adminController = new AdminController(adminService);
+
+export const schoolAdminController = new SchoolAdminController(schoolService, profileService);

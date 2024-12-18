@@ -8,15 +8,7 @@ router.get('/isPastDeadline', async (req: Request, res: Response, next: NextFunc
 });
 
 router.get('/deadlines', async (req: Request, res: Response, next: NextFunction) => {
-    return enrollmentController.getAllDeadlines(req, res, next);
-});
-
-router.get('/enrollments', async (req: Request, res: Response, next: NextFunction) => {
-    return enrollmentController.getAllEnrollments(req, res, next);
-});
-
-router.put('/enrollments', async (req: Request, res: Response, next: NextFunction) => {
-    return enrollmentController.updateEnrollments(req, res, next);
+    return enrollmentController.getAllCurrentYearEnrollments(req, res, next);
 });
 
 export default router;

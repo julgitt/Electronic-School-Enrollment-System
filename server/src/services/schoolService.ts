@@ -41,11 +41,15 @@ export class SchoolService {
         }
     }
 
-    async getSchool(id: number, adminId: number): Promise<School> {
+    async getSchoolByAdminAndId(id: number, adminId: number): Promise<SchoolWithProfiles> {
         const school: School | null = await this.schoolRepository.get(id, adminId);
         if (school == null) throw new ResourceNotFoundError('Szkoła nie znaleziona');
 
-        return school;
+        return {
+            id: school.id,
+            name: school.name,
+            profiles: await this.profileService.getProfilesBySchool(school.id),
+        }
     }
 
     async getSchoolByAdmin(adminId: number): Promise<School> {

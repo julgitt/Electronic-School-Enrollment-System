@@ -8,7 +8,7 @@ import applicationRoutes from './routes/applicationRoute';
 import schoolRoutes from './routes/schoolRoute';
 import gradeRoutes from './routes/gradeRoute';
 import subjectRoutes from './routes/subjectRoute';
-import enrollmentRoutes from './routes/enrollmentRoute';
+import enrollmentRoutes from './routes/deadlineRoute';
 import adminRoutes from './routes/adminRoute';
 import errorHandler from './middlewares/errorHandler';
 

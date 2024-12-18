@@ -8,16 +8,8 @@ import {authorize} from "../middlewares/authorize";
 
 const router = Router();
 
-router.post('/candidate', authorize('user'), candidateRegisterValidator, handleValidationErrors, async (req: Request, res: Response, next: NextFunction) => {
-    return await candidateController.register(req, res, next);
-});
-
-router.post('/switchCandidate', authorize('user'), async (req: Request, res: Response, next: NextFunction) => {
+router.get('/candidate/:id', authorize('user'), async (req: Request, res: Response, next: NextFunction) => {
     return await candidateController.switchCandidate(req, res, next);
-});
-
-router.delete('/candidate', authorize('user'), async (req: Request, res: Response, next: NextFunction) => {
-    return await candidateController.deleteCandidate(req, res, next);
 });
 
 router.get('/candidate', authorize('user'), async (req: Request, res: Response, next: NextFunction) => {
@@ -26,6 +18,14 @@ router.get('/candidate', authorize('user'), async (req: Request, res: Response, 
 
 router.get('/candidates', authorize('user'), async (req: Request, res: Response, next: NextFunction) => {
     return await candidateController.getAllCandidates(req, res, next);
+});
+
+router.post('/candidate', authorize('user'), candidateRegisterValidator, handleValidationErrors, async (req: Request, res: Response, next: NextFunction) => {
+    return await candidateController.register(req, res, next);
+});
+
+router.delete('/candidate/:id', authorize('user'), async (req: Request, res: Response, next: NextFunction) => {
+    return await candidateController.deleteCandidate(req, res, next);
 });
 
 export default router;

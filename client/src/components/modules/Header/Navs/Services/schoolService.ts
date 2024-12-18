@@ -1,8 +1,6 @@
 export const switchSchool = async (schoolId: number) => {
-    const response = await fetch('/api/switchSchool', {
-        method: 'POST',
-        body: JSON.stringify({schoolId}),
-        headers: {'Content-Type': 'application/json'},
+    const response = await fetch(`/api/school/${schoolId}`, {
+        method: 'GET',
     })
     const data = await response.json();
 

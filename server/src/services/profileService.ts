@@ -14,6 +14,10 @@ export class ProfileService {
         return profile;
     }
 
+    async getProfileBySchool(schoolId: number): Promise<Profile | null> {
+        return this.profileRepository.getBySchool(schoolId);
+    }
+
     getProfilesBySchool(schoolId: number): Promise<Profile[]> {
         return this.profileRepository.getAllBySchool(schoolId);
     }

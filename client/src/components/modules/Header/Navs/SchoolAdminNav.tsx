@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {NavLink as Link} from "react-router-dom";
 
 import styles from '../Header.module.scss';
@@ -7,25 +7,17 @@ import {useFetch} from "../../../../shared/hooks/useFetch.ts";
 import {School} from "../../../../shared/types/school.ts";
 import {useError} from "../../../../shared/providers/errorProvider.tsx";
 import {switchSchool} from "./Services/schoolService.ts";
-import {RedirectResponse} from "../../../../shared/types/redirectResponse.ts";
+import {Profile} from "../../../../shared/types/profile.ts";
+import {ProfileDropdown} from "../../../composite/ProfileDropdown";
+import {deleteProfile, switchProfile} from "./Services/profileService.ts";
 
 const SchoolAdminNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({renderLogoutLink}) => {
     const {setError} = useError();
-    const {data, loading: schoolLoading} = useFetch<School | RedirectResponse>('api/school');
-    const [school, setSchool] = useState<School | null>(null);
-    const [redirect, setRedirect] = useState<string | null>(null);
-
-    useEffect(() => {
-        if (data != null) {
-            console.log(data);
-            if ('id' in data) setSchool(data);
-            if ('redirect' in data) setRedirect(data.redirect);
-        }
-    }, [data]);
-
-    const {data: schools, loading: schoolsLoading} = useFetch<School[]>('api/schoolsByAdmin', !!school);
+    const {data: school, loading: schoolLoading} = useFetch<School>('api/admin/school');
+    const {data: schools, loading: schoolsLoading} = useFetch<School[]>('api/admin/schools', !!school);
+    const {data: profile, loading: profileLoading} = useFetch<Profile>('api/admin/profile', !!school);
     const [fetchingLoading, setFetchingLoading] = useState(false)
-    const loading = schoolLoading || schoolsLoading || fetchingLoading;
+    const loading = profileLoading || schoolLoading || schoolsLoading || fetchingLoading;
 
     const handleSwitch = async (id: number) => {
         setFetchingLoading(true);
@@ -41,17 +33,40 @@ const SchoolAdminNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({ren
         }
     };
 
-    if (loading) return <div></div>
+    const handleSwitchProfile = async (id: number) => {
+        setFetchingLoading(true);
+        setError(null);
 
-    if (redirect && !window.location.href.includes(redirect)) {
-        window.location.href = redirect;
-        return null;
-    }
+        try {
+            await switchProfile(id);
+            window.location.reload();
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setFetchingLoading(false);
+        }
+    };
+
+    const handleDeleteProfile = async (id: number) => {
+        setFetchingLoading(true);
+        setError(null);
+
+        try {
+            await deleteProfile(id);
+            window.location.reload();
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setFetchingLoading(false);
+        }
+    };
+
+    if (loading) return <div></div>
 
     return (
         <nav className={styles.nav}>
             <div className={styles.navMenu}>
-                <Link className={styles.navLink} to="/editProfiles">Profile</Link>
+                <Link className={styles.navLink} to="/editProfile">Profile</Link>
             </div>
             <div className={styles.navMenu}>
                 {school && (
@@ -61,7 +76,17 @@ const SchoolAdminNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({ren
                             schools={schools || []}
                             onSelectSchool={handleSwitch}
                         />
-                        <Link className={styles.navLink} to="/schoolApplicationStatus">Status Aplikacji</Link>
+                        {profile && (
+                            <>
+                                <ProfileDropdown
+                                    currentProfile={profile}
+                                    profiles={schools || []}
+                                    onSelectProfile={handleSwitchProfile}
+                                    onDeleteProfile={handleDeleteProfile}
+                                />
+                                <Link className={styles.navLink} to="/profileApplicationStatus">Kandydaci</Link>
+                            </>
+                        )}
                     </>
                 )}
                 {renderLogoutLink()}

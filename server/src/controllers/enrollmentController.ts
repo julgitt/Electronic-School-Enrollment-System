@@ -20,7 +20,7 @@ export class EnrollmentController {
         }
     }
 
-    async getAllDeadlines(_req: Request, res: Response, next: NextFunction) {
+    async getAllCurrentYearEnrollments(_req: Request, res: Response, next: NextFunction) {
         try {
             const deadlines: Enrollment[] = await this.enrollmentService.getCurrentYearEnrollments();
 

@@ -1,8 +1,6 @@
 export const switchCandidate = async (candidateId: number) => {
-    const response = await fetch('/api/switchCandidate', {
-        method: 'POST',
-        body: JSON.stringify({candidateId}),
-        headers: {'Content-Type': 'application/json'},
+    const response = await fetch(`/api/candidate/${candidateId}`, {
+        method: 'GET',
     })
     const data = await response.json();
 
@@ -12,10 +10,8 @@ export const switchCandidate = async (candidateId: number) => {
 };
 
 export const deleteCandidate = async (candidateId: number) => {
-    const response = await fetch('/api/candidate', {
+    const response = await fetch(`/api/candidate/${candidateId}`, {
         method: 'DELETE',
-        body: JSON.stringify({candidateId}),
-        headers: {'Content-Type': 'application/json'},
     })
     const data = await response.json();
     if (!response.ok) {

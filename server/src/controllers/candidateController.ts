@@ -11,7 +11,7 @@ export class CandidateController {
 
     async switchCandidate(req: Request, res: Response, next: NextFunction) {
         try {
-            const candidateId: number = req.body.candidateId;
+            const candidateId: number = Number(req.params.id);
             const userId: number = req.signedCookies.userId;
 
             const newCandidate: Candidate = await this.candidateService.getCandidate(candidateId, userId);
@@ -34,7 +34,7 @@ export class CandidateController {
 
     async deleteCandidate(req: Request, res: Response, next: NextFunction) {
         try {
-            const candidateId: number = req.body.candidateId;
+            const candidateId: number = Number(req.params.id);
             const userId: number = req.signedCookies.userId;
 
             await this.candidateService.deleteCandidate(candidateId, userId);

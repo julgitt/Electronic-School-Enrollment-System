@@ -14,6 +14,17 @@ export class ProfileRepository {
         return await db.oneOrNone(query, [id]);
     }
 
+    async getBySchool(schoolId: number): Promise<ProfileEntity | null> {
+        const query = `
+            SELECT *
+            FROM profiles
+            WHERE school_Id = $1
+            LIMIT 1;
+        `;
+
+        return db.oneOrNone(query, [schoolId]);
+    }
+
     async getAllBySchool(schoolId: number): Promise<ProfileEntity[]> {
         const query = `
             SELECT *
