@@ -1,14 +1,14 @@
 import React, {useState} from 'react';
 import {NavLink as Link} from "react-router-dom";
 
-import styles from '../Header.module.scss';
-import {SchoolDropdown} from "../../../composite/SchoolDropdown";
-import {useFetch} from "../../../../shared/hooks/useFetch.ts";
-import {School} from "../../../../shared/types/school.ts";
-import {useError} from "../../../../shared/providers/errorProvider.tsx";
+import styles from '../../modules/Header/Header.module.scss';
+import {SchoolDropdown} from "../Dropdown/SchoolDropdown";
+import {useFetch} from "../../../shared/hooks/useFetch.ts";
+import {School} from "../../../shared/types/school.ts";
+import {useError} from "../../../shared/providers/errorProvider.tsx";
 import {switchSchool} from "./Services/schoolService.ts";
-import {Profile} from "../../../../shared/types/profile.ts";
-import {ProfileDropdown} from "../../../composite/ProfileDropdown";
+import {Profile} from "../../../shared/types/profile.ts";
+import {ProfileDropdown} from "../Dropdown/ProfileDropdown";
 import {deleteProfile, switchProfile} from "./Services/profileService.ts";
 
 const SchoolAdminNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({renderLogoutLink}) => {
@@ -67,9 +67,6 @@ const SchoolAdminNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({ren
     return (
         <nav className={styles.nav}>
             <div className={styles.navMenu}>
-                <Link className={styles.navLink} to="/editProfile">Profile</Link>
-            </div>
-            <div className={styles.navMenu}>
                 {school && (
                     <>
                         <SchoolDropdown
@@ -85,11 +82,13 @@ const SchoolAdminNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({ren
                                     onSelectProfile={handleSwitchProfile}
                                     onDeleteProfile={handleDeleteProfile}
                                 />
-                                <Link className={styles.navLink} to="/profileApplicationStatus">Kandydaci</Link>
+                                <Link className={styles.navLink} to="/profileCandidates">Kandydaci</Link>
                             </>
                         )}
                     </>
                 )}
+            </div>
+            <div className={styles.navMenu}>
                 {renderLogoutLink()}
             </div>
         </nav>

@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-import styles from '../SchoolDropdown/SchoolDropdown.module.scss';
-import {School} from "../../../shared/types/school.ts";
+import styles from './SchoolDropdown.module.scss';
+import {School} from "../../../../shared/types/school.ts";
 
 interface SchoolDropdownProps {
     currentSchool: School;

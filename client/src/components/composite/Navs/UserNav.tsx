@@ -1,15 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import {NavLink as Link} from "react-router-dom";
 
-import styles from '../Header.module.scss';
-import {useDeadlineCheck} from "../../../../shared/hooks/useDeadlineCheck.ts";
-import {useGradeSubmittedCheck} from "../../../../shared/hooks/useGradeSubmittedCheck.ts";
-import {CandidateDropdown} from "../../../composite/CandidateDropdown";
-import {useFetch} from "../../../../shared/hooks/useFetch.ts";
-import {Candidate} from "../../../../shared/types/candidate.ts";
-import {useError} from "../../../../shared/providers/errorProvider.tsx";
+import styles from '../../modules/Header/Header.module.scss';
+import {useDeadlineCheck} from "../../../shared/hooks/useDeadlineCheck.ts";
+import {useGradeSubmittedCheck} from "../../../shared/hooks/useGradeSubmittedCheck.ts";
+import {CandidateDropdown} from "../Dropdown/CandidateDropdown";
+import {useFetch} from "../../../shared/hooks/useFetch.ts";
+import {Candidate} from "../../../shared/types/candidate.ts";
+import {useError} from "../../../shared/providers/errorProvider.tsx";
 import {deleteCandidate, switchCandidate} from "./Services/candidateService.ts";
-import {RedirectResponse} from "../../../../shared/types/redirectResponse.ts";
+import {RedirectResponse} from "../../../shared/types/redirectResponse.ts";
 
 const UserNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({renderLogoutLink}) => {
     const {setError} = useError();

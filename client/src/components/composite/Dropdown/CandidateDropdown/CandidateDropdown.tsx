@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {NavLink as Link} from 'react-router-dom';
 import styles from './CandidateDropdown.module.scss';
-import {Candidate} from "../../../shared/types/candidate.ts";
+import {Candidate} from "../../../../shared/types/candidate.ts";
 
 interface CandidateDropdownProps {
     currentCandidate: Candidate;

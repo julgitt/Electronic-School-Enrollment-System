@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-import styles from '../ProfileDropdown/ProfileDropdown.module.scss';
-import {Profile} from "../../../shared/types/profile.ts";
+import styles from './ProfileDropdown.module.scss';
+import {Profile} from "../../../../shared/types/profile.ts";
 import {NavLink as Link} from "react-router-dom";
 
 interface ProfileDropdownProps {
@@ -24,7 +24,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
                 onClick={() => setDropdownOpen(!isDropdownOpen)}
                 className={styles.dropdownButton}
             >
-                {currentProfile.name || "Profile"}
+                {("Profil:" && currentProfile.name) || "Profile"}
             </button>
             {isDropdownOpen && (
                 <div className={styles.dropdownContent}>
@@ -48,15 +48,24 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
                         Nowy Profil
                     </Link>
                     {currentProfile.name && (
-                        <button
-                            onClick={() => {
-                                setDropdownOpen(false);
-                                onDeleteProfile(currentProfile.id);
-                            }}
-                            className={styles.dropdownItem}
-                        >
-                            Usuń Obecny Profil
-                        </button>
+                        <>
+                            <button
+                                onClick={() => {
+                                    setDropdownOpen(false);
+                                    onDeleteProfile(currentProfile.id);
+                                }}
+                                className={styles.dropdownItem}
+                            >
+                                Usuń Obecny Profil
+                            </button>
+                            <Link
+                                to="/editProfile"
+                                className={styles.dropdownItem}
+                                onClick={() => setDropdownOpen(false)}
+                            >
+                                Edytuj Profil
+                            </Link>
+                        </>
                     )}
                 </div>
             )}

@@ -6,9 +6,9 @@ import {logout} from "../../../features/auth/services/authService.ts";
 import {useError} from "../../../shared/providers/errorProvider.tsx";
 import {useFetch} from "../../../shared/hooks/useFetch.ts";
 import {User} from "../../../shared/types/user.ts";
-import AdminNav from "./Navs/AdminNav.tsx";
-import UserNav from "./Navs/UserNav.tsx";
-import SchoolAdminNav from "./Navs/SchoolAdminNav.tsx";
+import AdminNav from "../../composite/Navs/AdminNav.tsx";
+import UserNav from "../../composite/Navs/UserNav.tsx";
+import SchoolAdminNav from "../../composite/Navs/SchoolAdminNav.tsx";
 
 const Header: React.FC = () => {
     const {setError} = useError();

@@ -4,7 +4,7 @@ import styles from "./Checkbox.module.scss";
 
 interface CheckboxProps {
     checked: boolean;
-    onChange: () => void;
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     itemName?: string;
 }
 

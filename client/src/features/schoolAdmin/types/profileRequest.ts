@@ -4,14 +4,13 @@ export enum ProfileCriteriaType {
 }
 
 export interface ProfileCriteria {
-    id: number;
-    profileId: number;
     subjectId: number;
     type: ProfileCriteriaType;
 }
 
 export interface Profile {
-    id: number;
+    id: number
     name: string;
+    capacity: number;
     criteria: ProfileCriteria[]
 }

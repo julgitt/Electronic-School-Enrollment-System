@@ -1,7 +1,7 @@
 import React from 'react';
 import {NavLink as Link} from "react-router-dom";
 
-import styles from '../Header.module.scss';
+import styles from '../../modules/Header/Header.module.scss';
 
 const AdminMenu: React.FC<{ renderLogoutLink: () => JSX.Element }> = ({renderLogoutLink}) => (
     <nav className={styles.nav}>

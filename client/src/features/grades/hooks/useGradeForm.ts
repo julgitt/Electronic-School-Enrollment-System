@@ -3,6 +3,7 @@ import {Grade} from "../types/grade.ts";
 import {Subject} from "../types/subject.ts";
 import {GradeToSubmit} from "../types/gradeToSubmit.ts";
 import {submitGrades} from "../services/gradeService.ts";
+import {GradeType} from "../types/gradeType.ts";
 
 export const useGradeForm = (subjects: Subject[]) => {
     const [grades, setGrades] = useState<Grade[]>([]);
@@ -15,11 +16,11 @@ export const useGradeForm = (subjects: Subject[]) => {
                 const certificateGrade = {
                     subject: subject,
                     grade: 0,
-                    type: "certificate",
+                    type: GradeType.Certificate,
                 };
 
                 return subject.isExamSubject
-                    ? [certificateGrade, {subject: subject, grade: 0, type: "exam"}]
+                    ? [certificateGrade, {subject: subject, grade: 0, type: GradeType.Exam}]
                     : [certificateGrade];
             });
 

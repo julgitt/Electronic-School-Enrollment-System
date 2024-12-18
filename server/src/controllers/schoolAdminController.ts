@@ -118,7 +118,7 @@ export class SchoolAdminController {
 
     async switchProfile(req: Request, res: Response, next: NextFunction) {
         try {
-            const profileId: number = req.body.profileId;
+            const profileId: number = Number(req.params.id);
             const schoolId: number = req.signedCookies.schoolId;
 
             const newProfile: Profile = await this.profileService.getProfileByIdAndSchoolId(profileId, schoolId);
@@ -194,7 +194,7 @@ export class SchoolAdminController {
     async getAllApplicationsByProfile(req: Request, res: Response, next: NextFunction) {
         try {
             const profileId = req.signedCookies.profileId;
-            const list = this.profileService.getSortedCandidateList(profileId);
+            const list = await this.profileService.getSortedCandidateList(profileId);
             return res.status(200).json(list)
         } catch (error) {
             return next(error);

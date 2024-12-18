@@ -1,5 +1,5 @@
 export const switchProfile = async (profileId: number) => {
-    const response = await fetch(`/api/profile/${profileId}`, {
+    const response = await fetch(`/api/admin/profile/${profileId}`, {
         method: 'GET',
     })
     const data = await response.json();
@@ -10,7 +10,7 @@ export const switchProfile = async (profileId: number) => {
 };
 
 export const deleteProfile = async (profileId: number) => {
-    const response = await fetch(`/api/profile/${profileId}`, {
+    const response = await fetch(`/api/admin/profile/${profileId}`, {
         method: 'DELETE',
     })
     const data = await response.json();

@@ -18,8 +18,9 @@ import {useError} from "../shared/providers/errorProvider.tsx";
 import {useEffect} from "react";
 import EditSchools from "../features/admin/EditSchools.tsx";
 import EditDeadlines from "../features/admin/EditDeadlines.tsx";
-import EditProfiles from "../features/schoolAdmin/EditProfiles.tsx";
-import SchoolApplications from "../features/schoolAdmin/SchoolApplications.tsx";
+import EditProfile from "../features/schoolAdmin/pages/EditProfile.tsx";
+import SchoolApplications from "../features/schoolAdmin/pages/SchoolApplications.tsx";
+import AddProfile from "../features/schoolAdmin/pages/AddProfile.tsx";
 
 const AppRoutes = () => {
     const {setError, error} = useError();
@@ -53,8 +54,9 @@ const AppRoutes = () => {
             <Route path="/editSchools" element={<EditSchools/>}/>
             <Route path="/editDeadlines" element={<EditDeadlines/>}/>
             {/* school admin */}
-            <Route path="/editProfiles" element={<EditProfiles/>}/>
-            <Route path="/schoolApplications" element={<SchoolApplications/>}/>
+            <Route path="/addProfile" element={<AddProfile/>}/>
+            <Route path="/editProfile" element={<EditProfile/>}/>
+            <Route path="/profileCandidates" element={<SchoolApplications/>}/>
 
             <Route path="*" element={<ErrorPage errorMessage={"404: Page Not Found"}/>}/>
         </Routes>

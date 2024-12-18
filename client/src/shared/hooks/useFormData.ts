@@ -10,8 +10,16 @@ export function useFormData<T>(initialData: T) {
         }));
     };
 
+    const updateListField = <K extends keyof T>(field: K, updateFn: (current: T[K]) => T[K]) => {
+        setFormData((prevData) => ({
+            ...prevData,
+            [field]: updateFn(prevData[field]),
+        }));
+    };
+
     return {
         formData,
         handleChange,
+        updateListField,
     };
 }

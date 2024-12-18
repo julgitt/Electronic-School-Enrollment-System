@@ -28,7 +28,6 @@ router.get('/admin/profiles', authorize('schoolAdmin'), async (req: Request, res
     return await schoolAdminController.getProfiles(req, res, next);
 });
 
-
 router.delete('/admin/profile/:id', authorize('schoolAdmin'), async (req: Request, res: Response, next: NextFunction) => {
     return await schoolAdminController.deleteProfile(req, res, next);
 });
@@ -37,7 +36,7 @@ router.post('/admin/profile', authorize('schoolAdmin'), async (req: Request, res
     return await schoolAdminController.addProfile(req, res, next);
 });
 
-router.get('/admin/profile/candidates', authorize('schoolAdmin'), async (req: Request, res: Response, next: NextFunction) => {
+router.get('/admin/applications', authorize('schoolAdmin'), async (req: Request, res: Response, next: NextFunction) => {
     return await schoolAdminController.getAllApplicationsByProfile(req, res, next);
 });
 /*
