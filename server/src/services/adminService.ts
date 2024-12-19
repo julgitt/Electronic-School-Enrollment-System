@@ -1,13 +1,10 @@
 import {ApplicationService} from "./applicationService";
 import {ProfileService} from "./profileService";
-import {Application} from "../dto/application/application";
-import {ITask} from "pg-promise";
 import {ApplicationStatus} from "../dto/application/applicationStatus";
 import {ApplicationRequest} from "../dto/application/applicationRequest";
 import {transactionFunction} from "../db";
+import {RankedApplication, RankList} from "../dto/application/applicationWithCandidate";
 
-
-type EnrollmentSlots = { accepted: Application[], reserve: Application[] };
 
 export class AdminService {
     constructor(
@@ -18,113 +15,131 @@ export class AdminService {
     }
 
     async processProfileEnrollments(): Promise<void> {
-        const sortedCandidateLists = await this.profileService.createSortedCandidateListsByProfile();
-        const finalEnrollmentLists = await this.finalizeEnrollmentProcess(sortedCandidateLists);
-
-        await this.tx(async t => {
-            for (const [profileId, enrollment] of finalEnrollmentLists.entries()) {
-                if (enrollment) {
-                    await this.updateApplicationStatuses(enrollment.accepted, profileId, t);
-                }
-            }
-        });
+        const rankListsByProfile = await this.profileService.getAllRankLists();
+        const finalEnrollmentLists = await this.finalizeEnrollmentProcess(rankListsByProfile);
+        await this.updateApplicationStatuses(finalEnrollmentLists);
     }
 
-    private async finalizeEnrollmentProcess(sortedCandidates: Map<number, EnrollmentSlots>) {
-        const candidateApplications = this.mapApplicationsByCandidate(sortedCandidates)
+    private async finalizeEnrollmentProcess(rankListsByProfile: Map<number, RankList>) {
+        const applicationsByCandidate = this.toApplicationsByCandidate(rankListsByProfile)
         let backtrack = true;
 
         while (backtrack) {
             backtrack = false;
-            for (const [, {accepted}] of sortedCandidates) {
-                for (const application of accepted) {
-                    const candidateId = application.candidateId;
-                    const applications = candidateApplications.get(candidateId);
-
-                    if (!applications || (applications && applications.length <= 1)) continue
-
-                    const highestPriority = this.getHighestPriority(applications);
-
-                    if (this.removeLowerPriorityApplications(
-                        candidateId, highestPriority, applications, sortedCandidates, candidateApplications
-                    )) {
-                        backtrack = true;
-                        break;
-                    }
-                }
+            for (const [, {accepted}] of rankListsByProfile) {
+                backtrack = await this.processProfileApplications(accepted, applicationsByCandidate, rankListsByProfile);
                 if (backtrack) break;
             }
         }
-        return sortedCandidates;
+        return rankListsByProfile;
     }
 
-    private removeLowerPriorityApplications(
-        candidateId: number,
-        highestPriority: number,
-        applications: { profileId: number, priority: number }[],
-        sortedCandidateLists: Map<number, { accepted: Application[], reserve: Application[] }>,
-        candidateApplications: Map<number, { profileId: number, priority: number }[]>,
-    ) {
-        let flag = false;
-        for (const {profileId, priority} of applications) {
-            if (priority !== highestPriority) {
-                const {accepted, reserve} = sortedCandidateLists.get(profileId)!;
-                const indexInAccepted = accepted.findIndex(app => app.candidateId === candidateId);
-                if (indexInAccepted !== -1) {
-                    const [removed] = accepted.splice(indexInAccepted, 1);
-                    if (reserve.length > 0) {
-                        const movedApp = reserve.shift()!;
-                        accepted.push(movedApp);
-                        const candidateApps = candidateApplications.get(movedApp.candidateId);
-                        if (candidateApps) {
-                            candidateApps.push(movedApp);
-                        } else {
-                            candidateApplications.set(movedApp.candidateId, [movedApp]);
-                        }
-                    }
+    private toApplicationsByCandidate(rankedListsByProfile: Map<number, RankList>) {
+        const applicationsByCandidate = new Map<number, ApplicationRequest[]>();
 
-                    candidateApplications.set(candidateId, applications.filter(app => app !== removed));
-                    flag = true;
-                }
-
-            }
-        }
-        return flag;
-    }
-
-    private mapApplicationsByCandidate(sortedCandidateLists: Map<number, {
-        accepted: Application[],
-        reserve: Application[]
-    }>) {
-        const candidateApplications = new Map<number, ApplicationRequest[]>();
-
-        for (const [profileId, {accepted}] of sortedCandidateLists.entries()) {
+        for (const [profileId, {accepted}] of rankedListsByProfile.entries()) {
             for (const application of accepted) {
-                if (!candidateApplications.has(application.candidateId)) {
-                    candidateApplications.set(application.candidateId, []);
-                }
-                candidateApplications.get(application.candidateId)!.push({profileId, priority: application.priority});
+                const candidateId = application.candidate.id;
+
+                const applications = applicationsByCandidate.get(candidateId) || [];
+                applications.push({profileId, priority:  application.priority});
+
+                applicationsByCandidate.set(candidateId, applications);
             }
         }
-        return candidateApplications;
+        return applicationsByCandidate;
     }
 
-    private getHighestPriority(applications: { profileId: number, priority: number }[]) {
+    private async processProfileApplications(
+        accepted: RankedApplication[],
+        applicationsByCandidate: Map<number, ApplicationRequest[]>,
+        rankListsByProfile: Map<number, RankList>
+    ): Promise<boolean> {
+        for (const application of accepted) {
+            const candidateId = application.candidate.id;
+            const candidateApplications = applicationsByCandidate.get(candidateId);
+            if (!candidateApplications) continue;
+
+            const highestPriority = this.getHighestPriority(candidateApplications);
+
+            const removed = this.removeLowerPriorityApplications(
+                candidateId,
+                highestPriority,
+                candidateApplications,
+                rankListsByProfile,
+                applicationsByCandidate
+            );
+
+            if (removed) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private getHighestPriority(applications: ApplicationRequest[]) {
         return applications.reduce((highest, current) =>
             current.priority < highest.priority ? current : highest
         ).priority;
     }
 
-    private async updateApplicationStatuses(accepted: Application[], profileId: number, t: ITask<any>) {
-        const applications = await this.applicationService.getAllPendingApplicationsByProfile(profileId);
-        for (let application of applications) {
-            await this.applicationService.updateApplicationStatus(
-                application.id,
-                (accepted.some(a => a.candidateId == application.candidateId))
-                    ? ApplicationStatus.Accepted
-                    : ApplicationStatus.Rejected,
-                t
-            );
+    private removeLowerPriorityApplications(
+        candidateId: number,
+        highestPriority: number,
+        candidateApplications: ApplicationRequest[],
+        rankListsByProfile: Map<number,RankList>,
+        applicationsByCandidate: Map<number, ApplicationRequest[]>,
+    ) {
+        let removedFlag = false;
+
+        for (const {profileId, priority} of candidateApplications) {
+            if (priority === highestPriority) continue;
+
+            const rankList = rankListsByProfile.get(profileId);
+            const {accepted, reserve} = rankList ||  {accepted: [], reserve: []};
+
+            const removed = this.removeApp(candidateId, profileId, accepted, applicationsByCandidate);
+            if (!removed) continue;
+
+            removedFlag = true;
+            this.moveAppFromReserveToAccepted(profileId, reserve, accepted, applicationsByCandidate);
         }
+
+        return removedFlag;
+    }
+
+    private removeApp(candidateId :number, profileId: number, accepted: RankedApplication[], applicationsByCandidate: Map<number, ApplicationRequest[]>) {
+        const indexToRemove = accepted.findIndex(app => app.candidate.id === candidateId);
+        if (indexToRemove === -1) return false;
+        accepted.splice(indexToRemove, 1);
+
+        const applications = applicationsByCandidate.get(candidateId) || [];
+        applicationsByCandidate.set(candidateId, applications.filter(app => app.profileId !== profileId));
+        return true;
+    }
+
+    private moveAppFromReserveToAccepted(profileId: number, reserve: RankedApplication[], accepted: RankedApplication[], applicationsByCandidate: Map<number, ApplicationRequest[]>) {
+        const movedApp = reserve.shift();
+        if (!movedApp) return
+
+        accepted.push(movedApp);
+
+        const candidateApps = applicationsByCandidate.get(movedApp.candidate.id) || [];
+        candidateApps.push({profileId, priority: movedApp.priority});
+        applicationsByCandidate.set(movedApp.candidate.id, candidateApps);
+    }
+
+    private async updateApplicationStatuses(finalEnrollmentLists: Map<number, RankList>) {
+        await this.tx(async t => {
+            for (const [_profileId, rankLists] of finalEnrollmentLists.entries()) {
+                const allApplications = [
+                    ...rankLists.accepted.map(app => ({ id: app.id, status: ApplicationStatus.Accepted })),
+                    ...rankLists.reserve.map(app => ({ id: app.id, status: ApplicationStatus.Rejected })),
+                ];
+                for (const { id, status } of allApplications) {
+                    await this.applicationService.updateApplicationStatus(id, status, t);
+                }
+            }
+        });
     }
 }

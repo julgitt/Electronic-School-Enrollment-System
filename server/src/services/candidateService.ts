@@ -25,6 +25,14 @@ export class CandidateService {
         return candidate;
     }
 
+    async getCandidateById(id: number) {
+        const candidate: Candidate | null = await this.candidateRepository.getById(id);
+        if (candidate == null) {
+            throw new ResourceNotFoundError('Nie znaleziono kandydata.');
+        }
+        return candidate;
+    }
+
     async deleteCandidate(id: number, userId: number) {
         await this.getCandidate(id, userId);
         await this.candidateRepository.deleteById(id);

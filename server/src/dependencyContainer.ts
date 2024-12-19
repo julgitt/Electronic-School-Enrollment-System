@@ -44,7 +44,7 @@ const userService = new UserService(userRepository, tx);
 export const userController = new UserController(userService);
 
 const profileRepository = new ProfileRepository()
-const profileService = new ProfileService(profileRepository, gradeService, tx);
+const profileService = new ProfileService(profileRepository, gradeService, candidateService, tx);
 
 const schoolRepository = new SchoolRepository();
 const schoolService = new SchoolService(schoolRepository, profileService, tx);

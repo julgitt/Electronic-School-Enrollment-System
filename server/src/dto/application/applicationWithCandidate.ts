@@ -1,9 +1,10 @@
 import {ApplicationStatus} from "./applicationStatus";
 import {Candidate} from "../candidate/candidate";
 
-export interface ApplicationWithCandidate {
+export type RankList = { accepted: RankedApplication[], reserve: RankedApplication[] };
+
+export interface RankedApplication {
     id: number;
-    profileId: number;
     candidate: Candidate;
     points: number;
     priority: number;

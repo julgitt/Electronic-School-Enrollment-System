@@ -192,7 +192,7 @@ export class SchoolAdminController {
         try {
             const profileId = req.signedCookies.profileId;
             if (!profileId) return res.status(200).json()
-            const list = await this.profileService.getSortedCandidateList(profileId);
+            const list = await this.profileService.getRankList(profileId);
             return res.status(200).json(list)
         } catch (error) {
             return next(error);

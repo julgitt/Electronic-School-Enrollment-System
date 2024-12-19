@@ -10,6 +10,8 @@ import {Application} from "../dto/application/application";
 import {ProfileRequest} from "../dto/profile/profileRequest";
 import {transactionFunction} from "../db";
 import {ProfileWithCriteria} from "../dto/profile/profileWithCriteria";
+import {CandidateService} from "./candidateService";
+import {RankedApplication} from "../dto/application/applicationWithCandidate";
 
 export class ProfileService {
     private applicationService!: ApplicationService;
@@ -17,6 +19,7 @@ export class ProfileService {
     constructor(
         private profileRepository: ProfileRepository,
         private gradeService: GradeService,
+        private candidateService: CandidateService,
         private readonly tx: transactionFunction
     ) {
     }
@@ -112,51 +115,61 @@ export class ProfileService {
         });
     }
 
-    async createSortedCandidateListsByProfile() {
+    async getAllRankLists() {
         const profiles = await this.getAllProfiles();
-        const sortedCandidateLists = new Map<number, { accepted: Application[], reserve: Application[] }>();
+        const rankLists = new Map<number, { accepted: RankedApplication[], reserve: RankedApplication[] }>();
 
         for (const profile of profiles) {
-            const {accepted, reserve} = await this.getSortedCandidateList(profile.id);
-            sortedCandidateLists.set(profile.id, {accepted, reserve});
+            const {accepted, reserve} = await this.getRankList(profile.id);
+            rankLists.set(profile.id, {accepted, reserve});
         }
 
-        return sortedCandidateLists;
+        return rankLists;
     }
 
-    async getSortedCandidateList(profileId:  number) {
+    async getRankList(profileId:  number) {
+        const criteria = await this.getProfileCriteria(profileId);
+        const accepted = await this.applicationService.getAllAcceptedByProfile(profileId);
+        const pending = await this.applicationService.getAllPendingApplicationsByProfile(profileId);
+
+        const rankedAccepted = await this.createRankList(accepted, criteria);
+        const rankedPending = await this.createRankList(pending, criteria);
+
         const profileCapacity = await this.getProfileCapacity(profileId);
-        const acceptedBefore = await this.applicationService.getAllAcceptedByProfile(profileId);
-        const capacity = profileCapacity - acceptedBefore.length;
+        const capacity = profileCapacity - rankedAccepted.length;
+        return {
+            prevAccepted: rankedAccepted,
+            accepted: rankedPending.slice(0, capacity),
+            reserve: rankedPending.slice(capacity)
+        };
+    }
 
-        const applications = await this.createSortedCandidateListForProfile(profileId);
+    private async createRankList(applications: Application[], criteria: ProfileCriteria[]) {
+        const rankedApplications = await Promise.all(
+            applications.map(a => this.toRankedApplication(criteria, a))
+        );
+        return rankedApplications.sort((a, b) => b.points - a.points);
+    }
 
-        const accepted = applications.slice(0, capacity);
-        const reserve = applications.slice(capacity);
-        return {acceptedBefore, accepted, reserve};
+    private async toRankedApplication(criteria: ProfileCriteria[], application: Application): Promise<RankedApplication> {
+        const candidate = await this.candidateService.getCandidateById(application.id);
+        const grades = await this.gradeService.getAllByCandidate(application.id);
+
+        const points =  this.calculatePoints(criteria, grades);
+
+        return {
+            id: application.id,
+            candidate,
+            points,
+            priority: application.priority,
+            status: application.status
+        }
     }
 
     private async getProfileCapacity(profileId: number){
         const capacity = await this.profileRepository.getProfileCapacity(profileId);
         if (!capacity) throw new ResourceNotFoundError('Nie znaleziono liczby miejsc dla profilu.');
         return capacity
-    }
-
-    private async createSortedCandidateListForProfile(profileId: number) {
-        const criteria = await this.getProfileCriteria(profileId);
-
-        const applications = await this.applicationService.getAllPendingApplicationsByProfile(profileId);
-        const gradedCandidates = await Promise.all(
-            applications.map(async (application) => ({
-                application,
-                grades: await this.gradeService.getAllByCandidate(application.candidateId),
-            }))
-        );
-
-        return gradedCandidates.sort((a, b) =>
-            this.calculatePoints(criteria, a.grades) - this.calculatePoints(criteria, b.grades)
-        )
-            .map((a => a.application));
     }
 
     private async getProfileCriteria(profileId: number): Promise<ProfileCriteria[]> {
