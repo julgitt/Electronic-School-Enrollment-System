@@ -19,7 +19,7 @@ import {useEffect} from "react";
 import EditSchools from "../features/admin/EditSchools.tsx";
 import EditDeadlines from "../features/admin/EditDeadlines.tsx";
 import EditProfile from "../features/schoolAdmin/pages/EditProfile.tsx";
-import SchoolApplications from "../features/schoolAdmin/pages/SchoolApplications.tsx";
+import ProfileCandidatesRank from "../features/schoolAdmin/pages/ProfileCandidatesRank.tsx";
 import AddProfile from "../features/schoolAdmin/pages/AddProfile.tsx";
 
 const AppRoutes = () => {
@@ -56,7 +56,7 @@ const AppRoutes = () => {
             {/* school admin */}
             <Route path="/addProfile" element={<AddProfile/>}/>
             <Route path="/editProfile" element={<EditProfile/>}/>
-            <Route path="/profileCandidates" element={<SchoolApplications/>}/>
+            <Route path="/profileCandidates" element={<ProfileCandidatesRank/>}/>
 
             <Route path="*" element={<ErrorPage errorMessage={"404: Page Not Found"}/>}/>
         </Routes>

@@ -3,7 +3,7 @@ import {ProfileService} from "./profileService";
 import {ApplicationStatus} from "../dto/application/applicationStatus";
 import {ApplicationRequest} from "../dto/application/applicationRequest";
 import {transactionFunction} from "../db";
-import {RankedApplication, RankList} from "../dto/application/applicationWithCandidate";
+import {RankedApplication, RankList} from "../dto/application/rankedApplication";
 
 
 export class AdminService {

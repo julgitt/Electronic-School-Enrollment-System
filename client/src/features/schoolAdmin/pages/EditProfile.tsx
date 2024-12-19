@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 
 import LoadingPage from "../../../app/routes/LoadingPage.tsx";
 import {useFetch} from "../../../shared/hooks/useFetch.ts";
-import ProfileForm from "../forms/ProfileForm.tsx";
+import ProfileForm from "../components/ProfileForm.tsx";
 import {Profile, ProfileCriteriaType} from "../types/profileRequest.ts";
 import {useFormData} from "../../../shared/hooks/useFormData.ts";
 import {Subject} from "../../grades/types/subject.ts";

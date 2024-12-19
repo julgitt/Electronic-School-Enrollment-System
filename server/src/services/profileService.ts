@@ -11,7 +11,7 @@ import {ProfileRequest} from "../dto/profile/profileRequest";
 import {transactionFunction} from "../db";
 import {ProfileWithCriteria} from "../dto/profile/profileWithCriteria";
 import {CandidateService} from "./candidateService";
-import {RankedApplication} from "../dto/application/applicationWithCandidate";
+import {RankedApplication} from "../dto/application/rankedApplication";
 
 export class ProfileService {
     private applicationService!: ApplicationService;
@@ -152,8 +152,8 @@ export class ProfileService {
     }
 
     private async toRankedApplication(criteria: ProfileCriteria[], application: Application): Promise<RankedApplication> {
-        const candidate = await this.candidateService.getCandidateById(application.id);
-        const grades = await this.gradeService.getAllByCandidate(application.id);
+        const candidate = await this.candidateService.getCandidateById(application.candidateId);
+        const grades = await this.gradeService.getAllByCandidate(application.candidateId);
 
         const points =  this.calculatePoints(criteria, grades);
 
