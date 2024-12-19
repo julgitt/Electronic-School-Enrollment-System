@@ -28,11 +28,11 @@ const ProfileSelection: React.FC<{
                         <InputField
                             type="number"
                             min={1}
-                            value={selectedProfile.priority}
+                            value={selectedProfile.priority === 0? "" : selectedProfile.priority}
                             onChange={(e) =>
                                 onPriorityChange(profile.id, Number(e.target.value))
                             }
-                            placeholder="0"
+                            placeholder="1"
                             width="75px"
                             height="20px"
                         />
