@@ -6,10 +6,11 @@ import {ErrorMessage} from "../../../components/atomic/ErrorMessage";
 import {School} from "../../../shared/types/school.ts"
 import {SchoolSelection} from "../types/schoolSelection.ts"
 import {Profile} from "../../../shared/types/profile.ts";
-
+import {SCHOOL_MAX} from "../../../../../adminConstants.ts";
 
 import styles from "../../../assets/css/forms.module.scss";
 import SchoolSelectionItem from "./SchoolSelectionItem.tsx";
+import {SuccessMessage} from "../../../components/atomic/SuccessMessage";
 
 interface SchoolSelectionFormProps {
     selections: SchoolSelection[];
@@ -22,6 +23,7 @@ interface SchoolSelectionFormProps {
     onAddSchool: () => void;
     onPrev: (event: React.FormEvent) => void;
     onSubmit: (event: React.FormEvent) => void;
+    successMessage: string | null;
 }
 
 const SelectionForm: React.FC<SchoolSelectionFormProps> = ({
@@ -33,31 +35,34 @@ const SelectionForm: React.FC<SchoolSelectionFormProps> = ({
                                                                onProfileChange,
                                                                onPriorityChange,
                                                                onAddSchool,
-                                                               onPrev,
                                                                onSubmit,
+                                                               successMessage
                                                            }) => (
     <form method="POST" onSubmit={onSubmit} className={styles.form}>
         <h2>Wybór szkół</h2>
         {error && <ErrorMessage message={error}/>}
 
-        {selections.map((selection, index) => (
-            <SchoolSelectionItem
-                key={selection.school?.id || index}
-                selection={selection}
-                suggestions={suggestions}
-                index={index}
-                onSchoolChange={onSchoolChange}
-                onProfileChange={onProfileChange}
-                onPriorityChange={onPriorityChange}
-                selections={selections}
-            />
-        ))}
-        <PlusButton
-            disabled={selections.length >= 5}
-            onClick={onAddSchool}/>
+        <div className={styles.mainFormInputGroup}>
+            {selections.map((selection, index) => (
+                <SchoolSelectionItem
+                    key={selection.school?.id || index}
+                    selection={selection}
+                    suggestions={suggestions}
+                    index={index}
+                    onSchoolChange={onSchoolChange}
+                    onProfileChange={onProfileChange}
+                    onPriorityChange={onPriorityChange}
+                    selections={selections}
+                />
+            ))}
+        </div>
         <div>
-            <Button type="button" onClick={onPrev} disabled={loading}>Cofnij</Button>
+            <PlusButton
+                disabled={selections.length >= SCHOOL_MAX}
+                onClick={onAddSchool}
+            />
             <Button type="submit" disabled={loading}>Zapisz</Button>
+            {successMessage && (<SuccessMessage message={successMessage}/>)}
         </div>
     </form>
 )

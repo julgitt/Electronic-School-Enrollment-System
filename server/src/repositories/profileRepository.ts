@@ -99,7 +99,8 @@ export class ProfileRepository {
 
     async deleteCriteriaByProfile(profileId: number, t: ITask<any>): Promise<void> {
         const query = `
-            DELETE FROM profile_criteria
+            DELETE
+            FROM profile_criteria
             WHERE profile_id = $1
         `;
 
@@ -110,7 +111,8 @@ export class ProfileRepository {
         const query = `
             DELETE
             FROM profiles
-            WHERE id = $1 AND school_Id = $2
+            WHERE id = $1
+              AND school_Id = $2
         `;
 
         await db.none(query, [profileId, schoolId]);

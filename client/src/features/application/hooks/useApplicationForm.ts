@@ -4,14 +4,13 @@ import {School} from "../../../shared/types/school.ts";
 import {SchoolSelection} from "../types/schoolSelection.ts"
 import {Profile} from "../../../shared/types/profile.ts";
 import {UserSelectedProfile} from "../types/userSelectedProfile.ts";
+import {AdditionalCriteria} from "../types/additionalCriteria.ts";
+import {SCHOOL_MAX} from "../../../../../adminConstants.ts";
 
 export const useApplicationForm = (submission: SchoolSelection[]) => {
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [pesel, setPesel] = useState('');
     const [selections, setSelections] = useState<SchoolSelection[]>([]);
     const [error, setError] = useState<string | null>(null);
-    const [step, setStep] = useState(1);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -20,18 +19,6 @@ export const useApplicationForm = (submission: SchoolSelection[]) => {
         }
     }, [submission]);
 
-
-    const handleNext = () => {
-        if (!firstName || !lastName || !pesel) {
-            setError('Proszę wypełnić wszystkie dane osobowe.');
-        } else {
-            setStep(2);
-            setError(null);
-        }
-    };
-
-    const handlePrev = () => setStep(1);
-
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         setError(null);
@@ -39,10 +26,18 @@ export const useApplicationForm = (submission: SchoolSelection[]) => {
         const profiles: UserSelectedProfile[] = selections.flatMap(s =>
             s.profiles);
 
+        const additionalCriteria: AdditionalCriteria = {
+            isDisabled: disabled,
+            isVolunteering: volunteering,
+            isOlympiadLaureate: olympiadLaureate,
+        }
+
         try {
             const data = (submission && submission.length > 0)
-                ? await updateApplication(profiles)
-                : await submitApplication(profiles);
+                ? await updateApplication(profiles, additionalCriteria)
+                : await submitApplication(profiles, additionalCriteria);
+            setSuccessMessage("Zapisano aplikację.");
+            setTimeout(() => setSuccessMessage(null), 3000);
             window.location.href = data.redirect;
         } catch (err: any) {
             setError(err.message);
@@ -90,24 +85,17 @@ export const useApplicationForm = (submission: SchoolSelection[]) => {
     }
 
     const handleAddSchoolSelection = () => {
+        if (selections.length >= SCHOOL_MAX) return;
         setSelections([...selections, {school: null, profiles: []}]);
     };
 
 
     return {
-        firstName,
-        lastName,
-        pesel,
+        successMessage,
         selections,
         error,
-        step,
         loading,
-        setFirstName,
-        setLastName,
-        setPesel,
         setSelections,
-        handleNext,
-        handlePrev,
         handleSubmit,
         handleSchoolChange,
         handleAddSchoolSelection,

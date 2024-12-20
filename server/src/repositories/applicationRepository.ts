@@ -55,6 +55,27 @@ export class ApplicationRepository {
         await t.none(query, [id, status]);
     }
 
+    async getById(id: number): Promise<ApplicationEntity | null> {
+        const query = `
+            SELECT *
+            FROM applications
+            WHERE id = $1
+            LIMIT 1;
+        `;
+
+        return await db.oneOrNone(query, [id]);
+    }
+
+    async deleteById(id: number): Promise<void> {
+        const query = `
+            DELETE
+            FROM applications
+            WHERE id = $1
+        `;
+
+        await db.none(query, [id]);
+    }
+
     async getAllPendingByProfile(profileId: number): Promise<ApplicationEntity[]> {
         const status = ApplicationStatus.Pending;
         const query = `

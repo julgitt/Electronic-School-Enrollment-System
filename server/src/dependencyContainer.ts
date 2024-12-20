@@ -63,4 +63,4 @@ export const applicationController = new ApplicationController(applicationServic
 const adminService = new AdminService(profileService, applicationService, tx);
 export const adminController = new AdminController(adminService);
 
-export const schoolAdminController = new SchoolAdminController(schoolService, profileService);
+export const schoolAdminController = new SchoolAdminController(schoolService, profileService, applicationService);

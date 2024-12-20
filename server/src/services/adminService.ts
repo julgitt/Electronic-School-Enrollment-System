@@ -42,7 +42,7 @@ export class AdminService {
                 const candidateId = application.candidate.id;
 
                 const applications = applicationsByCandidate.get(candidateId) || [];
-                applications.push({profileId, priority:  application.priority});
+                applications.push({profileId, priority: application.priority});
 
                 applicationsByCandidate.set(candidateId, applications);
             }
@@ -87,7 +87,7 @@ export class AdminService {
         candidateId: number,
         highestPriority: number,
         candidateApplications: ApplicationRequest[],
-        rankListsByProfile: Map<number,RankList>,
+        rankListsByProfile: Map<number, RankList>,
         applicationsByCandidate: Map<number, ApplicationRequest[]>,
     ) {
         let removedFlag = false;
@@ -96,7 +96,7 @@ export class AdminService {
             if (priority === highestPriority) continue;
 
             const rankList = rankListsByProfile.get(profileId);
-            const {accepted, reserve} = rankList ||  {accepted: [], reserve: []};
+            const {accepted, reserve} = rankList || {accepted: [], reserve: []};
 
             const removed = this.removeApp(candidateId, profileId, accepted, applicationsByCandidate);
             if (!removed) continue;
@@ -108,7 +108,7 @@ export class AdminService {
         return removedFlag;
     }
 
-    private removeApp(candidateId :number, profileId: number, accepted: RankedApplication[], applicationsByCandidate: Map<number, ApplicationRequest[]>) {
+    private removeApp(candidateId: number, profileId: number, accepted: RankedApplication[], applicationsByCandidate: Map<number, ApplicationRequest[]>) {
         const indexToRemove = accepted.findIndex(app => app.candidate.id === candidateId);
         if (indexToRemove === -1) return false;
         accepted.splice(indexToRemove, 1);
@@ -133,10 +133,10 @@ export class AdminService {
         await this.tx(async t => {
             for (const [_profileId, rankLists] of finalEnrollmentLists.entries()) {
                 const allApplications = [
-                    ...rankLists.accepted.map(app => ({ id: app.id, status: ApplicationStatus.Accepted })),
-                    ...rankLists.reserve.map(app => ({ id: app.id, status: ApplicationStatus.Rejected })),
+                    ...rankLists.accepted.map(app => ({id: app.id, status: ApplicationStatus.Accepted})),
+                    ...rankLists.reserve.map(app => ({id: app.id, status: ApplicationStatus.Rejected})),
                 ];
-                for (const { id, status } of allApplications) {
+                for (const {id, status} of allApplications) {
                     await this.applicationService.updateApplicationStatus(id, status, t);
                 }
             }

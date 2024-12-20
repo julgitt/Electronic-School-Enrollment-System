@@ -12,6 +12,8 @@ import {transactionFunction} from "../db";
 import {ProfileWithCriteria} from "../dto/profile/profileWithCriteria";
 import {CandidateService} from "./candidateService";
 import {RankedApplication} from "../dto/application/rankedApplication";
+import {GRADE_TO_POINTS} from "../../../adminConstants";
+import {GradeType} from "../dto/grade/gradeType";
 
 export class ProfileService {
     private applicationService!: ApplicationService;
@@ -23,6 +25,7 @@ export class ProfileService {
         private readonly tx: transactionFunction
     ) {
     }
+
     setApplicationService(applicationService: ApplicationService) {
         this.applicationService = applicationService;
     }
@@ -44,7 +47,7 @@ export class ProfileService {
     }
 
     async getProfileBySchool(schoolId: number): Promise<ProfileWithCriteria | null> {
-        const profile  = await this.profileRepository.getBySchool(schoolId);
+        const profile = await this.profileRepository.getBySchool(schoolId);
         if (!profile) return null;
 
         return {
@@ -62,11 +65,11 @@ export class ProfileService {
         return this.profileRepository.getAll();
     }
 
-    async deleteProfile(profileId: number, schoolId:  number) {
+    async deleteProfile(profileId: number, schoolId: number) {
         return this.profileRepository.delete(profileId, schoolId);
     }
 
-    async addProfile(profile: ProfileRequest, schoolId: number){
+    async addProfile(profile: ProfileRequest, schoolId: number) {
         const newProfile: Profile = {
             id: 0,
             name: profile.name,
@@ -89,7 +92,7 @@ export class ProfileService {
         });
     }
 
-    async updateProfile(profile: ProfileRequest, schoolId: number){
+    async updateProfile(profile: ProfileRequest, schoolId: number) {
         await this.getProfileByIdAndSchoolId(profile.id, schoolId);
 
         const updatedProfile: Profile = {
@@ -127,7 +130,7 @@ export class ProfileService {
         return rankLists;
     }
 
-    async getRankList(profileId:  number) {
+    async getRankList(profileId: number) {
         const criteria = await this.getProfileCriteria(profileId);
         const accepted = await this.applicationService.getAllAcceptedByProfile(profileId);
         const pending = await this.applicationService.getAllPendingApplicationsByProfile(profileId);
@@ -155,7 +158,7 @@ export class ProfileService {
         const candidate = await this.candidateService.getCandidateById(application.candidateId);
         const grades = await this.gradeService.getAllByCandidate(application.candidateId);
 
-        const points =  this.calculatePoints(criteria, grades);
+        const points = this.calculatePoints(criteria, grades);
 
         return {
             id: application.id,
@@ -166,7 +169,7 @@ export class ProfileService {
         }
     }
 
-    private async getProfileCapacity(profileId: number){
+    private async getProfileCapacity(profileId: number) {
         const capacity = await this.profileRepository.getProfileCapacity(profileId);
         if (!capacity) throw new ResourceNotFoundError('Nie znaleziono liczby miejsc dla profilu.');
         return capacity
@@ -185,17 +188,17 @@ export class ProfileService {
 
         let alternativeGrades = []
         for (let grade of grades) {
-            if (grade.type == "exam") {
-                points += grade.grade * 0.2;
+            if (grade.type == GradeType.Exam) {
+                points += grade.grade * 0.35;
             } else if (mandatorySubjects.some(s => s.id == grade.subjectId)) {
-                points += grade.grade;
+                points += GRADE_TO_POINTS[grade.grade] || 0;
             } else if (alternativeSubjects.some(s => s.id == grade.subjectId)) {
-                alternativeGrades.push(grade.grade);
+                alternativeGrades.push(GRADE_TO_POINTS[grade.grade] || 0);
             }
         }
         if (alternativeGrades.length > 0) {
             points += Math.max(...alternativeGrades);
         }
-        return points;
+        return Math.ceil(points * 100) / 100;
     }
 }

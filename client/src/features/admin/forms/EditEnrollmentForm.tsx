@@ -33,66 +33,48 @@ const EditEnrollmentForm: React.FC<EditEnrollmentFormProps> = ({
     <form method="POST" className={styles.form}>
         <h2>Edytuj terminy</h2>
         {error && <ErrorMessage message={error}/>}
-        <table>
-            <thead>
-            <tr>
-                <th>Tura</th>
-                <th>Data rozpoczecia</th>
-                <th>Data zakończenia</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            {updatedEnrollments && updatedEnrollments.map(enrollment => (
-                <tr key={enrollment.id}>
-                    <td>
-                        <InputField
-                            type="number"
-                            placeholder="1"
-                            value={enrollment.round}
-                            required
-                            onChange={(e) =>
-                                onEnrollmentChange(enrollment.id, 'round', e.target.value)}
-                        />
-                    </td>
-                    <td>
-                        <InputField
-                            placeholder="Data rozpoczęcia"
-                            type="date"
-                            value={new Date(enrollment.startDate).toISOString().split('T')[0]}
-                            required
-                            onChange={(e) =>
-                                onEnrollmentChange(enrollment.id, 'startDate', e.target.value)}
-                        />
-                    </td>
-                    <td>
-                        <InputField
-                            placeholder="Data zakończenia"
-                            type="date"
-                            value={new Date(enrollment.endDate).toISOString().split('T')[0]}
-                            required
-                            onChange={(e) =>
-                                onEnrollmentChange(enrollment.id, 'endDate', e.target.value)}
-                        />
-                    </td>
-                    <td>
-                        <MinusButton
-                            onClick={() => onDeleteEnrollment(enrollment.id)}
-                            disabled={loading}
-                        />
-                    </td>
-                </tr>
-            ))}
-            </tbody>
-        </table>
+        <div className={styles.horizontal}>
+            <h5>Tura</h5>
+            <h5>Data rozpoczecia</h5>
+            <h5>Data zakończenia</h5>
+        </div>
+        {updatedEnrollments && updatedEnrollments.map(enrollment => (
+            <div className={styles.horizontal}>
+                <InputField
+                    type="number"
+                    placeholder="1"
+                    value={enrollment.round}
+                    required
+                    onChange={(e) =>
+                        onEnrollmentChange(enrollment.id, 'round', e.target.value)}
+                />
+                <InputField
+                    placeholder="Data rozpoczęcia"
+                    type="date"
+                    value={new Date(enrollment.startDate).toISOString().split('T')[0]}
+                    required
+                    onChange={(e) =>
+                        onEnrollmentChange(enrollment.id, 'startDate', e.target.value)}
+                />
+                <InputField
+                    placeholder="Data zakończenia"
+                    type="date"
+                    value={new Date(enrollment.endDate).toISOString().split('T')[0]}
+                    required
+                    onChange={(e) =>
+                        onEnrollmentChange(enrollment.id, 'endDate', e.target.value)}
+                />
+                <MinusButton
+                    onClick={() => onDeleteEnrollment(enrollment.id)}
+                    disabled={loading}
+                />
+            </div>
+        ))}
         <div>
             <PlusButton
                 onClick={onAddEnrollment}
                 disabled={loading}
             />
-        </div>
-
-        <div>
             <Button onClick={onUndo} disabled={loading}> Cofnij </Button>
             <Button onClick={onSave}> Zapisz </Button>
         </div>

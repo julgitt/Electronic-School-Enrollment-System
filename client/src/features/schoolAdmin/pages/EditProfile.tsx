@@ -13,7 +13,7 @@ const EditProfile: React.FC = () => {
     const {data: subjects, loading: subjectsLoading} = useFetch<Subject[]>('/api/subjects');
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
-    const { formData, handleChange, updateListField, setFormData } = useFormData<Profile>({
+    const {formData, handleChange, updateListField, setFormData} = useFormData<Profile>({
         id: 0,
         name: "",
         capacity: 0,
@@ -32,7 +32,7 @@ const EditProfile: React.FC = () => {
             if (checked) {
                 return [
                     ...currentCriteria.filter(criterion => criterion.subjectId !== subjectId),
-                    { subjectId, type }
+                    {subjectId, type}
                 ];
             } else {
                 return currentCriteria.filter(

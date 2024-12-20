@@ -24,7 +24,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
                                                        onSubmit,
                                                    }) => (
     <form method="POST" onSubmit={onSubmit} className={styles.form}>
-        <h1>Rejestracja kandydata</h1>
+        <h2>Rejestracja kandydata</h2>
         {error && <ErrorMessage message={error}/>}
         <div className={styles.formInputGroup}>
             <InputField

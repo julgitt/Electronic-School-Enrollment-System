@@ -1,16 +1,12 @@
 .label {
+  margin-left: 50px;
   display: flex;
   align-items: center;
   gap: 10px;
   width: 40%;
 }
 
-.checkbox {
-  margin-right: 10px;
-}
-
 .checkboxItem {
-  margin: 0;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 500;
 }

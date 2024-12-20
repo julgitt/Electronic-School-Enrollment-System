@@ -1,12 +1,9 @@
 import {CandidateRepository} from "../repositories/candidateRepository";
 import {DataConflictError} from "../errors/dataConflictError";
 import {ResourceNotFoundError} from "../errors/resourceNotFoundError";
-import {GradeService} from "./gradeService";
-import {Grade} from "../dto/grade/grade";
 import {Candidate} from "../dto/candidate/candidate";
 import {CandidateEntity} from "../models/candidateEntity";
 import {CandidateRequest} from "../dto/candidate/candidateRequest";
-import {GradeByCandidate} from "../dto/grade/gradesByCandidate";
 
 export class CandidateService {
     constructor(

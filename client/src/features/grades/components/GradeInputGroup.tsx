@@ -13,7 +13,7 @@ const GradeInputGroup: React.FC<{
     onGradesChange: (grade: Grade) => void;
     title: string;
 }> = ({subjects, grades, type, onGradesChange, title}) => (
-    <div className={styles.formInputGroup}>
+    <div>
         <h4>{title}</h4>
         {subjects
             .filter(subject => type === GradeType.Certificate || subject.isExamSubject)
@@ -24,7 +24,7 @@ const GradeInputGroup: React.FC<{
 
                 return (
                     <div key={subject.id} className={styles.formInputGroupHorizontal}>
-                        <h5 className={styles.labelItem}>{subject.name}:</h5>
+                        <h6 className={styles.labelItem}>{subject.name}:</h6>
                         <InputField
                             type="number"
                             min={1}

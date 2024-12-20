@@ -10,11 +10,14 @@ function App() {
     return (
         <ErrorProvider>
             <Router>
-                <Header/>
-                <main className="main-content">
-                    <AppRoutes/>
-                </main>
-                <Footer/>
+                <div className="content">
+                    <Header/>
+                    <main className="main-content">
+                        <AppRoutes/>
+                    </main>
+                    <Footer/>
+                </div>
+
             </Router>
         </ErrorProvider>
 

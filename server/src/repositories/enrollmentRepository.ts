@@ -68,7 +68,8 @@ export class EnrollmentRepository {
 
     async delete(id: number, t: ITask<any>): Promise<void> {
         const query = `
-            DELETE FROM enrollments
+            DELETE
+            FROM enrollments
             WHERE id = $1
         `;
         const values = [id];

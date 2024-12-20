@@ -25,7 +25,7 @@ const GradeForm: React.FC<GradeFormProps> = ({
                                                  onGradesChange,
                                                  onSubmit,
                                              }) => (
-    <form method="POST" onSubmit={onSubmit} className={styles.form}>
+    <form method="POST" onSubmit={onSubmit} className={styles.form} style={{minWidth: '800px'}}>
         {error && <ErrorMessage message={error}/>}
         <h3>Wpisz swoje wyniki:</h3>
         <div className={styles.formInputGroupHorizontal}>

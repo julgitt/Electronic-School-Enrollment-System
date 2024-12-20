@@ -13,7 +13,8 @@ export class CandidateRepository {
 
     async deleteById(id: number): Promise<void> {
         const query = `
-            DELETE FROM candidates
+            DELETE
+            FROM candidates
             WHERE id = $1
         `;
         await db.query(query, [id]);

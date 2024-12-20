@@ -11,11 +11,11 @@ interface ProfileDropdownProps {
 }
 
 const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
-                                                           currentProfile,
-                                                           profiles,
-                                                           onSelectProfile,
-    onDeleteProfile
-                                                       }) => {
+                                                             currentProfile,
+                                                             profiles,
+                                                             onSelectProfile,
+                                                             onDeleteProfile
+                                                         }) => {
     const [isDropdownOpen, setDropdownOpen] = useState(false);
 
     return (

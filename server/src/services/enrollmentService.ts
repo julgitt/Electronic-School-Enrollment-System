@@ -4,10 +4,11 @@ import {Enrollment} from "../dto/enrollment";
 import {transactionFunction} from "../db";
 
 export class EnrollmentService {
-    constructor (
+    constructor(
         private enrollmentRepository: EnrollmentRepository,
         private readonly tx: transactionFunction
-    ) {}
+    ) {
+    }
 
     async getEnrollment(id: number): Promise<Enrollment> {
         const enrollment = await this.enrollmentRepository.getById(id);

@@ -19,19 +19,19 @@ const AddProfile: React.FC = () => {
     const [loading, setLoading] = useState(false);
 
     const handleCriteriaChange = (subjectId: number, type: ProfileCriteriaType, checked: boolean) => {
-       updateListField('criteria', (currentCriteria) => {
-           if (!Array.isArray(currentCriteria)) return currentCriteria;
-           if (checked) {
-               return [
-                   ...currentCriteria.filter(criterion => criterion.subjectId !== subjectId),
-                   { subjectId, type }
-               ];
-           } else {
-               return currentCriteria.filter(
-                   (criterion) => !(criterion.subjectId === subjectId && criterion.type === type)
-               );
-           }
-       });
+        updateListField('criteria', (currentCriteria) => {
+            if (!Array.isArray(currentCriteria)) return currentCriteria;
+            if (checked) {
+                return [
+                    ...currentCriteria.filter(criterion => criterion.subjectId !== subjectId),
+                    {subjectId, type}
+                ];
+            } else {
+                return currentCriteria.filter(
+                    (criterion) => !(criterion.subjectId === subjectId && criterion.type === type)
+                );
+            }
+        });
     };
 
     const handleAdd = async (event: React.FormEvent) => {

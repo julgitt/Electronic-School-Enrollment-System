@@ -1,7 +1,7 @@
 import {body} from 'express-validator';
 
 export const applicationValidator = [
-    body()
+    body('selections')
         .isArray()
         .bail()
         .custom((selections: { id: number, priority: number }[]) => {
@@ -19,5 +19,4 @@ export const applicationValidator = [
             }
             return true;
         }).withMessage("Priorytety muszą być unikalnymi liczbami całkowitymi większymi od zera"),
-
 ];

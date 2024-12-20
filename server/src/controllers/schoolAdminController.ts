@@ -5,12 +5,14 @@ import {SchoolService} from "../services/schoolService";
 import {ProfileService} from "../services/profileService";
 import {ProfileRequest} from "../dto/profile/profileRequest";
 import {ProfileWithCriteria} from "../dto/profile/profileWithCriteria";
+import {ApplicationService} from "../services/applicationService";
 
 
 export class SchoolAdminController {
     constructor(
         private schoolService: SchoolService,
-        private profileService: ProfileService
+        private profileService: ProfileService,
+        private applicationService: ApplicationService,
     ) {
     }
 
@@ -190,12 +192,23 @@ export class SchoolAdminController {
 
     async getAllApplicationsByProfile(req: Request, res: Response, next: NextFunction) {
         try {
-            const profileId = req.signedCookies.profileId;
-            if (!profileId) return res.status(200).json()
+            const profileId = req.signedCookies.profileId!;
             const list = await this.profileService.getRankList(profileId);
             return res.status(200).json(list)
         } catch (error) {
             return next(error);
         }
     }
+
+    async deleteApplication(req: Request, res: Response, next: NextFunction) {
+        try {
+            const profileId = req.signedCookies.profileId!;
+            const applicationId = Number(req.params.id)!;
+            await this.applicationService.deleteApplication(applicationId, profileId);
+            return res.status(204).json()
+        } catch (error) {
+            return next(error);
+        }
+    }
+
 }

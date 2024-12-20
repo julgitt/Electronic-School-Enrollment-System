@@ -15,6 +15,7 @@ import {ValidationError} from "../errors/validationError";
 import {Enrollment} from "../dto/enrollment";
 import {ApplicationStatus} from "../dto/application/applicationStatus";
 import {transactionFunction} from "../db";
+import {SCHOOL_MAX} from "../../../adminConstants";
 
 export class ApplicationService {
     private profileService!: ProfileService;
@@ -80,7 +81,7 @@ export class ApplicationService {
         const existingApplications: Application[] = await this.applicationRepository.getAllByCandidateAndEnrollmentId(candidateId, enrollment.id);
         if (existingApplications.length > 0) throw new DataConflictError('Aplikacja już istnieje.');
 
-        await this.validateProfilesExist(submissions);
+        await this.validateProfiles(submissions);
         this.assignPriorities(submissions);
 
         await this.tx(async t => {
@@ -98,7 +99,7 @@ export class ApplicationService {
         const applications: Application[] = await this.applicationRepository.getAllByCandidateAndEnrollmentId(candidateId, enrollment.id);
         if (applications.length === 0) throw new ResourceNotFoundError('Nie odnaleziono aplikacji.');
 
-        await this.validateProfilesExist(submissions);
+        await this.validateProfiles(submissions);
         this.assignPriorities(submissions);
 
         await this.tx(async t => {
@@ -110,6 +111,12 @@ export class ApplicationService {
                 await this.applicationRepository.insert(newApplication, t);
             }
         });
+    }
+
+    async deleteApplication(id: number, profileId: number) {
+        const application = await this.applicationRepository.getById(id);
+        if (!application || profileId != application.profileId) return new ResourceNotFoundError("Nie znaleziono aplikacji do usunięcia");
+        await this.applicationRepository.deleteById(id);
     }
 
     private createApplicationEntity(submission: ApplicationRequest, candidateId: number, enrollmentId: number): ApplicationEntity {
@@ -125,10 +132,17 @@ export class ApplicationService {
         };
     }
 
-    private async validateProfilesExist(submissions: ApplicationRequest[]) {
+    private async validateProfiles(submissions: ApplicationRequest[]) {
+        const schoolIds = new Set<number>();
+
         for (const submission of submissions) {
-            await this.profileService.getProfile(submission.profileId);
+            const profile = await this.profileService.getProfile(submission.profileId);
+            if (profile && profile.schoolId) {
+                schoolIds.add(profile.schoolId);
+            }
         }
+
+        if (schoolIds.size > SCHOOL_MAX) throw new ValidationError("Przekroczono dopuszczalną liczbę szkół");
     }
 
     private assignPriorities(submissions: ApplicationRequest[]) {
