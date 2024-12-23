@@ -7,7 +7,3 @@ export interface ProfileCriteria {
     type: ProfileCriteriaType;
 }
 
-
-export interface CriteriaByProfiles extends Map<number, ProfileCriteria[]> {
-}
-

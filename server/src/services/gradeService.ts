@@ -9,11 +9,14 @@ import {Grade} from "../dto/grade/grade";
 import {Subject} from "../dto/subject";
 import {GradeType} from "../dto/grade/gradeType";
 import {transactionFunction} from "../db";
+import {Enrollment} from "../dto/enrollment";
+import {EnrollmentService} from "./enrollmentService";
 
 export class GradeService {
     constructor(
         private gradeRepository: GradeRepository,
         private subjectService: SubjectService,
+        private enrollmentService: EnrollmentService,
         private readonly tx: transactionFunction
     ) {
     }
@@ -27,6 +30,9 @@ export class GradeService {
     }
 
     async submitGrades(submissions: GradeRequest[], candidateId: number): Promise<void> {
+        const enrollment: Enrollment | null = await this.enrollmentService.getCurrentEnrollment();
+        if (!enrollment) throw new ValidationError('Nie można złożyć aplikacji poza okresem naboru.');
+
         await this.tx(async t => {
             const subjects = await this.subjectService.getAllSubjects();
             const examSubjects = subjects.filter(s => s.isExamSubject);

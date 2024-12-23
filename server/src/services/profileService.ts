@@ -120,11 +120,11 @@ export class ProfileService {
 
     async getAllRankLists() {
         const profiles = await this.getAllProfiles();
-        const rankLists = new Map<number, { accepted: RankedApplication[], reserve: RankedApplication[] }>();
+        const rankLists = new Map<number, { accepted: RankedApplication[], reserve: RankedApplication[], rejected: RankedApplication[] }>();
 
         for (const profile of profiles) {
             const {accepted, reserve} = await this.getRankList(profile.id);
-            rankLists.set(profile.id, {accepted, reserve});
+            rankLists.set(profile.id, {accepted, reserve, rejected: []});
         }
 
         return rankLists;

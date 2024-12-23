@@ -96,9 +96,9 @@ export class AdminService {
             if (priority === highestPriority) continue;
 
             const rankList = rankListsByProfile.get(profileId);
-            const {accepted, reserve} = rankList || {accepted: [], reserve: []};
+            const {accepted, reserve, rejected} = rankList || {accepted: [], reserve: [], rejected: []};
 
-            const removed = this.removeApp(candidateId, profileId, accepted, applicationsByCandidate);
+            const removed = this.removeApp(candidateId, profileId, accepted, rejected, applicationsByCandidate);
             if (!removed) continue;
 
             removedFlag = true;
@@ -108,13 +108,15 @@ export class AdminService {
         return removedFlag;
     }
 
-    private removeApp(candidateId: number, profileId: number, accepted: RankedApplication[], applicationsByCandidate: Map<number, ApplicationRequest[]>) {
+    private removeApp(candidateId: number, profileId: number, accepted: RankedApplication[], rejected: RankedApplication[], applicationsByCandidate: Map<number, ApplicationRequest[]>) {
         const indexToRemove = accepted.findIndex(app => app.candidate.id === candidateId);
         if (indexToRemove === -1) return false;
-        accepted.splice(indexToRemove, 1);
+        const removed = accepted.splice(indexToRemove, 1);
+        rejected.push(removed[0]);
 
         const applications = applicationsByCandidate.get(candidateId) || [];
         applicationsByCandidate.set(candidateId, applications.filter(app => app.profileId !== profileId));
+
         return true;
     }
 
@@ -135,6 +137,7 @@ export class AdminService {
                 const allApplications = [
                     ...rankLists.accepted.map(app => ({id: app.id, status: ApplicationStatus.Accepted})),
                     ...rankLists.reserve.map(app => ({id: app.id, status: ApplicationStatus.Rejected})),
+                    ...rankLists.rejected.map(app => ({id: app.id, status: ApplicationStatus.Rejected})),
                 ];
                 for (const {id, status} of allApplications) {
                     await this.applicationService.updateApplicationStatus(id, status, t);

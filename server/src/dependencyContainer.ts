@@ -31,10 +31,6 @@ const subjectRepository: SubjectRepository = new SubjectRepository();
 const subjectService: SubjectService = new SubjectService(subjectRepository);
 export const subjectController: SubjectController = new SubjectController(subjectService);
 
-const gradeRepository = new GradeRepository();
-const gradeService = new GradeService(gradeRepository, subjectService, tx);
-export const gradeController = new GradeController(gradeService);
-
 const candidateRepository = new CandidateRepository();
 const candidateService = new CandidateService(candidateRepository);
 export const candidateController = new CandidateController(candidateService);
@@ -43,16 +39,20 @@ const userRepository = new UserRepository();
 const userService = new UserService(userRepository, tx);
 export const userController = new UserController(userService);
 
+const enrollmentRepository = new EnrollmentRepository();
+const enrollmentService = new EnrollmentService(enrollmentRepository, tx);
+export const enrollmentController = new EnrollmentController(enrollmentService);
+
+const gradeRepository = new GradeRepository();
+const gradeService = new GradeService(gradeRepository, subjectService, enrollmentService, tx);
+export const gradeController = new GradeController(gradeService);
+
 const profileRepository = new ProfileRepository()
 const profileService = new ProfileService(profileRepository, gradeService, candidateService, tx);
 
 const schoolRepository = new SchoolRepository();
 const schoolService = new SchoolService(schoolRepository, profileService, tx);
 export const schoolController = new SchoolController(schoolService);
-
-const enrollmentRepository = new EnrollmentRepository();
-const enrollmentService = new EnrollmentService(enrollmentRepository, tx);
-export const enrollmentController = new EnrollmentController(enrollmentService);
 
 const applicationRepository = new ApplicationRepository();
 const applicationService = new ApplicationService(applicationRepository, enrollmentService, schoolService, tx);
