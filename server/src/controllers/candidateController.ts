@@ -70,8 +70,6 @@ export class CandidateController {
     async getCandidate(req: Request, res: Response, next: NextFunction) {
         try {
             const userId: number = req.signedCookies.userId
-
-            //TODO: UNAUTHORIZED
             if (userId == null) return res.status(200).json();
 
             const candidateId: number = req.signedCookies.candidateId;
