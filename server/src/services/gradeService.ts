@@ -33,6 +33,8 @@ export class GradeService {
         const enrollment: Enrollment | null = await this.enrollmentService.getCurrentEnrollment();
         if (!enrollment) throw new ValidationError('Nie można złożyć aplikacji poza okresem naboru.');
 
+        if (await this.checkIfGradesSubmitted(candidateId)) throw new DataConflictError("Oceny już zostały złożone.")
+
         await this.tx(async t => {
             const subjects = await this.subjectService.getAllSubjects();
             const examSubjects = subjects.filter(s => s.isExamSubject);
