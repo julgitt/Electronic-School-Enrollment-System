@@ -1,4 +1,4 @@
-import {UserSelectedProfile} from "../types/userSelectedProfile.ts";
+import {UserSelectedProfile} from "../../features/application/types/userSelectedProfile.ts";
 
 export const submitApplication = async (
     selections: UserSelectedProfile[],
@@ -35,3 +35,12 @@ export const updateApplication = async (
 
     return data;
 }
+
+export const deleteApplication = async (id: number) => {
+    const response = await fetch(`api/admin/application/${id}`, {
+        method: 'DELETE',
+    });
+    if (!response.ok) throw new Error((await response.json()).message || 'Błąd podczas usuwania aplikacji');
+    window.location.reload();
+
+};

@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 
-import LoadingPage from "../../app/routes/LoadingPage.tsx";
-import {useFetch} from "../../shared/hooks/useFetch.ts";
-import {School} from "./types/schoolRequest.ts";
-import EditSchoolForm from "./forms/EditSchoolForm.tsx";
-import {updateSchools} from "./services/schoolService.ts";
+import LoadingPage from "../../../../app/routes/LoadingPage.tsx";
+import {useFetch} from "../../../../shared/hooks/useFetch.ts";
+import {School} from "../../types/schoolRequest.ts";
+import EditSchoolForm from "../../forms/EditSchoolForm.tsx";
+import {updateSchools} from "../../../../shared/services/schoolService.ts";
 
 const EditSchools: React.FC = () => {
     const {data: schools, loading: schoolsLoading} = useFetch<School[]>('api/schools');

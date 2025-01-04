@@ -1,16 +1,18 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import LoadingPage from "../../../app/routes/LoadingPage.tsx";
 import {useFetch} from "../../../shared/hooks/useFetch.ts";
 import {useFormData} from "../../../shared/hooks/useFormData.ts";
-import {ProfileCriteriaType} from "../types/profileRequest.ts";
+import {Profile, ProfileCriteriaType} from "../types/profileRequest.ts";
+import {Subject} from "../../grades/types/subject.ts";
+import ProfileForm from "../components/ProfileForm.tsx";
 
-const withProfileForm = (WrappedComponent: React.FC<any>, saveCallback: (data: any) => Promise<void>, fetchUrl?: string) => {
+const withProfileForm = (saveCallback: (data: any) => Promise<void>, fetchUrl?: string) => {
     return () => {
-        const { data: profile, loading: profileLoading } = useFetch(fetchUrl, fetchUrl!!);
-        const { data: subjects, loading: subjectsLoading } = useFetch<Subject[]>('/api/subjects');
+        const {data: profile, loading: profileLoading} = useFetch<Profile>(fetchUrl || '', fetchUrl != null);
+        const {data: subjects, loading: subjectsLoading} = useFetch<Subject[]>('/api/subjects');
         const [error, setError] = useState<string | null>(null);
         const [loading, setLoading] = useState(false);
-        const { formData, handleChange, updateListField, setFormData } = useFormData<Profile>({
+        const {formData, handleChange, updateListField, setFormData} = useFormData<Profile>({
             id: 0,
             name: "",
             capacity: 0,
@@ -21,7 +23,7 @@ const withProfileForm = (WrappedComponent: React.FC<any>, saveCallback: (data: a
             if (profile) setFormData(profile);
         }, [profile]);
 
-        if (subjectsLoading || profileLoading) return <LoadingPage />;
+        if (subjectsLoading || profileLoading) return <LoadingPage/>;
 
         const handleCriteriaChange = (subjectId: number, type: ProfileCriteriaType, checked: boolean) => {
             updateListField('criteria', (currentCriteria) => {
@@ -35,7 +37,7 @@ const withProfileForm = (WrappedComponent: React.FC<any>, saveCallback: (data: a
                     } else if (type == ProfileCriteriaType.Mandatory && mandatoryCount >= 3 && alternativeCount > 0) {
                         setError("Jeżeli jakiś przedmiot jest oznaczony jako alternatywny, obowiązują 3 przedmioty obowiązkowe.");
                     } else if (type == ProfileCriteriaType.Alternative && mandatoryCount >= 4) {
-                        setError("Jeżeli są 4 przedmioty obowiązkowe, nie można wybrać przedmiotu alternatywnego." );
+                        setError("Jeżeli są 4 przedmioty obowiązkowe, nie można wybrać przedmiotu alternatywnego.");
                         return currentCriteria;
                     }
                     return [

@@ -11,6 +11,7 @@ import subjectRoutes from './routes/subjectRoute';
 import enrollmentRoutes from './routes/deadlineRoute';
 import adminRoutes from './routes/adminRoute';
 import schoolAdminRoutes from './routes/schoolAdminRoute';
+import profileRoutes from './routes/profileRoute';
 
 import errorHandler from './middlewares/errorHandler';
 
@@ -29,6 +30,7 @@ app.use('/api', subjectRoutes);
 app.use('/api', enrollmentRoutes);
 app.use('/api', adminRoutes);
 app.use('/api', schoolAdminRoutes);
+app.use('/api', profileRoutes);
 
 app.use(errorHandler);
 

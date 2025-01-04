@@ -1,4 +1,4 @@
-import {Profile} from "../types/profileRequest.ts";
+import {Profile} from "../../features/schoolAdmin/types/profileRequest.ts";
 
 export const updateProfile = async (profile: Profile) => {
     const response = await fetch(`api/admin/profile/${profile.id}`, {
@@ -18,5 +18,13 @@ export const addProfile = async (profile: Profile) => {
     });
     if (!response.ok) throw new Error((await response.json()).message || 'Błąd podczas dodawania profilu');
     window.location.reload();
+};
 
+export const getPoints = async (profileId: number) => {
+    const response = await fetch(`api/profile/${profileId}/points`, {
+        method: 'GET',
+        headers: {'Content-Type': 'application/json'},
+    });
+    if (!response.ok) throw new Error((await response.json()).message || 'Błąd podczas pozyskiwania punktów');
+    return response.json()
 };

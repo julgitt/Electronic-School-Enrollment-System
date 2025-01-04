@@ -25,6 +25,7 @@ import {EnrollmentController} from "./controllers/enrollmentController";
 import {AdminService} from "./services/adminService";
 import {AdminController} from "./controllers/adminController";
 import {SchoolAdminController} from "./controllers/schoolAdminController";
+import {ProfileController} from "./controllers/profileController";
 
 
 const subjectRepository: SubjectRepository = new SubjectRepository();
@@ -48,7 +49,8 @@ const gradeService = new GradeService(gradeRepository, subjectService, enrollmen
 export const gradeController = new GradeController(gradeService);
 
 const profileRepository = new ProfileRepository()
-const profileService = new ProfileService(profileRepository, gradeService, candidateService, tx);
+const profileService = new ProfileService(profileRepository, gradeService, subjectService, candidateService, tx);
+export const profileController = new ProfileController(profileService);
 
 const schoolRepository = new SchoolRepository();
 const schoolService = new SchoolService(schoolRepository, profileService, tx);

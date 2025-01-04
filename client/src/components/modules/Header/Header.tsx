@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 
 import styles from './Header.module.scss';
 import {NavLink as Link} from "react-router-dom";
-import {logout} from "../../../features/auth/services/authService.ts";
+import {logout} from "../../../shared/services/authService.ts";
 import {useError} from "../../../shared/providers/errorProvider.tsx";
 import {useFetch} from "../../../shared/hooks/useFetch.ts";
 import {User} from "../../../shared/types/user.ts";

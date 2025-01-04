@@ -4,7 +4,7 @@ import {Button} from '../../../components/atomic/Button'
 import {PlusButton} from '../../../components/atomic/QuantityButton'
 import {ErrorMessage} from "../../../components/atomic/ErrorMessage";
 import {School} from "../../../shared/types/school.ts"
-import {SchoolSelection} from "../types/schoolSelection.ts"
+import {ProfilesSelection} from "../types/profilesSelection.ts"
 import {Profile} from "../../../shared/types/profile.ts";
 import {SCHOOL_MAX} from "../../../../../adminConstants.ts";
 
@@ -13,7 +13,7 @@ import SchoolSelectionItem from "./SchoolSelectionItem.tsx";
 import {SuccessMessage} from "../../../components/atomic/SuccessMessage";
 
 interface SchoolSelectionFormProps {
-    selections: SchoolSelection[];
+    selections: ProfilesSelection[];
     suggestions: School[];
     error: string | null;
     loading: boolean;
@@ -21,7 +21,6 @@ interface SchoolSelectionFormProps {
     onProfileChange: (profile: Profile, index: number) => void;
     onPriorityChange: (profileId: number, index: number, priority: number) => void;
     onAddSchool: () => void;
-    onPrev: (event: React.FormEvent) => void;
     onSubmit: (event: React.FormEvent) => void;
     successMessage: string | null;
 }

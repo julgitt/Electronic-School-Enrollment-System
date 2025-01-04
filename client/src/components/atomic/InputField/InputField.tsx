@@ -16,6 +16,8 @@ interface InputFieldProps {
     width?: string
     height?: string
     onBlur?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onFocus?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -33,6 +35,8 @@ const InputField: React.FC<InputFieldProps> = ({
                                                    height,
                                                    width = "100%",
                                                    onBlur = () => {
+                                                   },
+                                                   onFocus = () => {
                                                    }
                                                }) => {
     return (
@@ -51,6 +55,7 @@ const InputField: React.FC<InputFieldProps> = ({
             title={title}
             style={{width, height}}
             onBlur={onBlur}
+            onFocus={onFocus}
         />
     );
 };

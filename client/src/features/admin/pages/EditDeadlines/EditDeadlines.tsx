@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 
-import {Enrollment} from "../../shared/types/enrollment.ts";
-import LoadingPage from "../../app/routes/LoadingPage.tsx";
-import {useFetch} from "../../shared/hooks/useFetch.ts";
-import {updateEnrollments} from "./services/deadlineService.ts";
-import EditEnrollmentForm from "./forms/EditEnrollmentForm.tsx";
+import {Enrollment} from "../../../../shared/types/enrollment.ts";
+import LoadingPage from "../../../../app/routes/LoadingPage.tsx";
+import {useFetch} from "../../../../shared/hooks/useFetch.ts";
+import {updateEnrollments} from "../../../../shared/services/deadlineService.ts";
+import EditEnrollmentForm from "../../forms/EditEnrollmentForm.tsx";
 
 const EditDeadlines: React.FC = () => {
     const {data: enrollments, loading: enrollmentLoading} = useFetch<Enrollment[]>('api/enrollments');

@@ -12,15 +12,16 @@ import {Signup} from "../features/auth/pages/Signup";
 import {ApplicationStatus} from '../features/application/pages/ApplicationStatus';
 import {ApplicationSubmitted} from "../features/application/pages/ApplicationSubmitted";
 import {SubmitApplicationPastDeadline} from "../features/application/pages/SubmitApplicationPastDeadline";
-import SubmitGrades from "../features/grades/pages/SubmitGrades.tsx";
-import Enroll from "../features/admin/Enroll.tsx";
+import {SubmitGrades} from "../features/grades/pages/SubmitGrades";
+import {CalculatePoints} from "../features/grades/pages/CalculatePoints";
+import {Enroll} from "../features/admin/pages/Enroll";
 import {useError} from "../shared/providers/errorProvider.tsx";
 import {useEffect} from "react";
-import EditSchools from "../features/admin/EditSchools.tsx";
-import EditDeadlines from "../features/admin/EditDeadlines.tsx";
-import EditProfile from "../features/schoolAdmin/pages/EditProfile.tsx";
-import ProfileCandidatesRank from "../features/schoolAdmin/pages/ProfileCandidatesRank.tsx";
-import AddProfile from "../features/schoolAdmin/pages/AddProfile.tsx";
+import {EditSchools} from "../features/admin/pages/EditSchools";
+import {EditDeadlines} from "../features/admin/pages/EditDeadlines";
+import {EditProfile} from "../features/schoolAdmin/pages/EditProfile";
+import {ProfileCandidatesRank} from "../features/schoolAdmin/pages/ProfileCandidatesRank";
+import {AddProfile} from "../features/schoolAdmin/pages/AddProfile";
 
 const AppRoutes = () => {
     const {setError, error} = useError();
@@ -49,6 +50,7 @@ const AppRoutes = () => {
             <Route path="/applicationSubmitted" element={<ApplicationSubmitted/>}/>
             <Route path="/submitApplicationPastDeadline" element={<SubmitApplicationPastDeadline/>}/>
             <Route path="/submitGrades" element={<SubmitGrades/>}/>
+            <Route path="/calculatePoints" element={<CalculatePoints/>}/>
             {/* admin */}
             <Route path="/enroll" element={<Enroll/>}/>
             <Route path="/editSchools" element={<EditSchools/>}/>

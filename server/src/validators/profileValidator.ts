@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import {body} from "express-validator";
 import {ProfileCriteriaType} from "../models/profileCriteriaEntity";
 
 export const profileValidator = [
@@ -7,7 +7,7 @@ export const profileValidator = [
         .notEmpty()
         .withMessage("Nazwa profilu jest wymagana."),
     body("capacity")
-        .isInt({ min: 1 })
+        .isInt({min: 1})
         .withMessage("Ilość miejsc musi być większa od zera"),
     body("criteria.*.profileId")
         .isInt()

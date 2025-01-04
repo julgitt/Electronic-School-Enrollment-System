@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Grade} from "../types/grade.ts";
 import {Subject} from "../types/subject.ts";
 import {GradeToSubmit} from "../types/gradeToSubmit.ts";
-import {submitGrades} from "../services/gradeService.ts";
+import {submitGrades} from "../../../shared/services/gradeService.ts";
 import {GradeType} from "../types/gradeType.ts";
 
 export const useGradeForm = (subjects: Subject[]) => {

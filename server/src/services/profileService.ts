@@ -14,6 +14,8 @@ import {CandidateService} from "./candidateService";
 import {RankedApplication} from "../dto/application/rankedApplication";
 import {GRADE_TO_POINTS} from "../../../adminConstants";
 import {GradeType} from "../dto/grade/gradeType";
+import {GradesInfo, PointsInfo} from "../dto/grade/pointsInfo";
+import {SubjectService} from "./subjectService";
 
 export class ProfileService {
     private applicationService!: ApplicationService;
@@ -21,6 +23,7 @@ export class ProfileService {
     constructor(
         private profileRepository: ProfileRepository,
         private gradeService: GradeService,
+        private subjectService: SubjectService,
         private candidateService: CandidateService,
         private readonly tx: transactionFunction
     ) {
@@ -118,9 +121,30 @@ export class ProfileService {
         });
     }
 
+    async getPoints(profileId: number, candidateId: number): Promise<PointsInfo> {
+        const criteria = await this.getProfileCriteria(profileId);
+        const grades: Grade[] = await this.gradeService.getAllByCandidate(candidateId);
+
+        const gradesInfo: GradesInfo[] = (await Promise.all(grades
+            .map((async g => {
+                const criterion = criteria.find(c => c.subjectId == g.subjectId && g.type === GradeType.Certificate)
+                return criterion ? {
+                    grade: g.grade,
+                    subject: (await this.subjectService.getSubject(g.subjectId)).name,
+                    type: criterion.type
+                } : null
+            })))).filter(g => g !== null)
+
+        return {points: this.calculatePoints(criteria, grades), gradesInfo};
+    }
+
     async getAllRankLists() {
         const profiles = await this.getAllProfiles();
-        const rankLists = new Map<number, { accepted: RankedApplication[], reserve: RankedApplication[], rejected: RankedApplication[] }>();
+        const rankLists = new Map<number, {
+            accepted: RankedApplication[],
+            reserve: RankedApplication[],
+            rejected: RankedApplication[]
+        }>();
 
         for (const profile of profiles) {
             const {accepted, reserve} = await this.getRankList(profile.id);
@@ -181,7 +205,7 @@ export class ProfileService {
         return criteria;
     }
 
-    private calculatePoints(profileCriteria: ProfileCriteriaEntity[], grades: Grade[]) {
+    private calculatePoints(profileCriteria: ProfileCriteriaEntity[], grades: Grade[]): number {
         const mandatorySubjects = profileCriteria.filter(s => s.type === ProfileCriteriaType.Mandatory);
         const alternativeSubjects = profileCriteria.filter(s => s.type === ProfileCriteriaType.Alternative);
         let points = 0;
@@ -190,9 +214,9 @@ export class ProfileService {
         for (let grade of grades) {
             if (grade.type == GradeType.Exam) {
                 points += grade.grade * 0.35;
-            } else if (mandatorySubjects.some(s => s.id == grade.subjectId)) {
+            } else if (mandatorySubjects.some(s => s.subjectId == grade.subjectId)) {
                 points += GRADE_TO_POINTS[grade.grade] || 0;
-            } else if (alternativeSubjects.some(s => s.id == grade.subjectId)) {
+            } else if (alternativeSubjects.some(s => s.subjectId == grade.subjectId)) {
                 alternativeGrades.push(GRADE_TO_POINTS[grade.grade] || 0);
             }
         }

@@ -10,4 +10,15 @@ export class SubjectRepository {
 
         return await db.query(query) || [];
     }
+
+    async getById(id: number): Promise<SubjectEntity | null> {
+        const query = `
+            SELECT * 
+            FROM subjects
+            WHERE id = $1
+            LIMIT 1
+        `;
+
+        return await db.oneOrNone(query, [id]);
+    }
 }

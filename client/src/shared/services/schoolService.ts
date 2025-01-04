@@ -1,4 +1,4 @@
-import {School} from "../types/schoolRequest.ts";
+import {School} from "../../features/admin/types/schoolRequest.ts";
 
 export const updateSchools = async (schools: School[]) => {
     const response = await fetch(`api/schools`, {

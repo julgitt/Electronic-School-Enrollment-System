@@ -24,7 +24,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
                 onClick={() => setDropdownOpen(!isDropdownOpen)}
                 className={styles.dropdownButton}
             >
-                {("Profil:" && currentProfile.name) || "Profile"}
+                {currentProfile.name ? `Profil: ${currentProfile.name}` : "Profile"}
             </button>
             {isDropdownOpen && (
                 <div className={styles.dropdownContent}>

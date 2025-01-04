@@ -8,12 +8,12 @@ import SelectionForm from "../../components/SelectionForm.tsx";
 import LoadingPage from "../../../../app/routes/LoadingPage.tsx";
 import SubmitApplicationPastDeadline from "../SubmitApplicationPastDeadline/SubmitApplicationPastDeadline.tsx";
 import {useDeadlineCheck} from "../../../../shared/hooks/useDeadlineCheck.ts";
-import {SchoolSelection} from "../../types/schoolSelection.ts";
+import {ProfilesSelection} from "../../types/profilesSelection.ts";
 
 const SubmitApplication: React.FC = () => {
     const {
         data: submission, loading: applicationLoading, authorized,
-    } = useFetch<SchoolSelection[]>('/api/submissions');
+    } = useFetch<ProfilesSelection[]>('/api/submissions');
     const {data: suggestions, loading: schoolLoading} = useFetch<School[]>('/api/schools');
     const {isPastDeadline, loading: deadlineLoading} = useDeadlineCheck();
     const {

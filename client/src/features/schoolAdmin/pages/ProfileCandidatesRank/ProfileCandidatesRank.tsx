@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
-import {useFetch} from "../../../shared/hooks/useFetch.ts";
-import LoadingPage from "../../../app/routes/LoadingPage.tsx";
-import {RankedApplication} from "../../../shared/types/rankedApplication.ts";
-import ApplicationTable from "../components/ApplicationTable.tsx";
-import {ErrorMessage} from "../../../components/atomic/ErrorMessage";
-import {deleteApplication} from "../services/applicationService.ts";
-import {Profile} from "../../../shared/types/profile.ts";
+import {useFetch} from "../../../../shared/hooks/useFetch.ts";
+import LoadingPage from "../../../../app/routes/LoadingPage.tsx";
+import {RankedApplication} from "../../../../shared/types/rankedApplication.ts";
+import ApplicationTable from "../../components/ApplicationTable.tsx";
+import {ErrorMessage} from "../../../../components/atomic/ErrorMessage";
+import {deleteApplication} from "../../../../shared/services/applicationService.ts";
+import {Profile} from "../../../../shared/types/profile.ts";
 
 
 const ProfileCandidatesRank: React.FC = () => {

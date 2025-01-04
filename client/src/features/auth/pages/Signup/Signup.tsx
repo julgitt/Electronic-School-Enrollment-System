@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 
 import SignupForm from "../../forms/SignupForm.tsx";
-import {signup} from "../../services/authService.ts";
+import {signup} from "../../../../shared/services/authService.ts";
 
 import {SignupFormData} from "../../types/signUpFormData.ts";
 import {useFormData} from "../../../../shared/hooks/useFormData.ts";

@@ -1,14 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {submitApplication, updateApplication} from "../services/applicationService.ts";
+import {submitApplication, updateApplication} from "../../../shared/services/applicationService.ts";
 import {School} from "../../../shared/types/school.ts";
-import {SchoolSelection} from "../types/schoolSelection.ts"
+import {ProfilesSelection} from "../types/profilesSelection.ts"
 import {Profile} from "../../../shared/types/profile.ts";
 import {UserSelectedProfile} from "../types/userSelectedProfile.ts";
-import {AdditionalCriteria} from "../types/additionalCriteria.ts";
 import {SCHOOL_MAX} from "../../../../../adminConstants.ts";
 
-export const useApplicationForm = (submission: SchoolSelection[]) => {
-    const [selections, setSelections] = useState<SchoolSelection[]>([]);
+export const useApplicationForm = (submission: ProfilesSelection[]) => {
+    const [selections, setSelections] = useState<ProfilesSelection[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
@@ -26,16 +25,10 @@ export const useApplicationForm = (submission: SchoolSelection[]) => {
         const profiles: UserSelectedProfile[] = selections.flatMap(s =>
             s.profiles);
 
-        const additionalCriteria: AdditionalCriteria = {
-            isDisabled: disabled,
-            isVolunteering: volunteering,
-            isOlympiadLaureate: olympiadLaureate,
-        }
-
         try {
             const data = (submission && submission.length > 0)
-                ? await updateApplication(profiles, additionalCriteria)
-                : await submitApplication(profiles, additionalCriteria);
+                ? await updateApplication(profiles)
+                : await submitApplication(profiles);
             setSuccessMessage("Zapisano aplikację.");
             setTimeout(() => setSuccessMessage(null), 3000);
             window.location.href = data.redirect;

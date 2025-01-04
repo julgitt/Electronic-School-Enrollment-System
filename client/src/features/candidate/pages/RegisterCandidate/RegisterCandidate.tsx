@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 
 import {Candidate} from "../../../../shared/types/candidate.ts";
-import {register} from "../../services/candidateService.ts";
+import {register} from "../../../../shared/services/candidateService.ts";
 import {useFormData} from "../../../../shared/hooks/useFormData.ts";
 import RegisterCandidateForm from "../../forms/RegisterForm.tsx";
 

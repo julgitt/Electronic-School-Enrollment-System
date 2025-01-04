@@ -1,0 +1,1 @@
+export {default as CalculatePoints} from "./CalculatePoints.tsx";

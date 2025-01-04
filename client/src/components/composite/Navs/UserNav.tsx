@@ -77,6 +77,9 @@ const UserNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({renderLogo
                 {candidate && !areGradesSubmitted && (
                     <Link className={styles.navLink} to="/submitGrades">Dodaj wyniki</Link>
                 )}
+                {candidate && areGradesSubmitted && (
+                    <Link className={styles.navLink} to="/calculatePoints">Oblicz punkty</Link>
+                )}
             </div>
             <div className={styles.navMenu}>
                 {candidate && (

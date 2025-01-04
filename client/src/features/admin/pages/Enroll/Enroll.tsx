@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 
-import {Button} from "../../components/atomic/Button";
-import LoadingPage from "../../app/routes/LoadingPage.tsx";
-import {useError} from "../../shared/providers/errorProvider.tsx";
-import SuccessMessage from "../../components/atomic/SuccessMessage/SuccessMessage.tsx";
+import {Button} from "../../../../components/atomic/Button";
+import LoadingPage from "../../../../app/routes/LoadingPage.tsx";
+import {useError} from "../../../../shared/providers/errorProvider.tsx";
+import SuccessMessage from "../../../../components/atomic/SuccessMessage/SuccessMessage.tsx";
 
 const Enroll: React.FC = () => {
     const {setError} = useError();

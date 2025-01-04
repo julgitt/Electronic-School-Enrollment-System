@@ -46,7 +46,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
         <Button type="submit" disabled={loading}>
             {loading ? "Logowanie..." : "Zaloguj"}
         </Button>
-        <TextLink to="#">Przypomnij hasło</TextLink>
         <TextLink to="/signup">Załóż konto</TextLink>
     </form>
 );

@@ -1,0 +1,1 @@
+export {default as SubmitGrades} from "./SubmitGrades.tsx";

@@ -1,5 +1,5 @@
-import {SignupFormData} from "../types/signUpFormData.ts";
-import {LoginFormData} from "../types/loginFormData.ts";
+import {SignupFormData} from "../../features/auth/types/signUpFormData.ts";
+import {LoginFormData} from "../../features/auth/types/loginFormData.ts";
 
 export const login = async (formData: LoginFormData) => {
     const response = await fetch('/api/login', {

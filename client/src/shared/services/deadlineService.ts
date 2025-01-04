@@ -1,4 +1,4 @@
-import {Enrollment} from "../../../shared/types/enrollment.ts";
+import {Enrollment} from "../types/enrollment.ts";
 
 export const updateEnrollments = async (enrollments: Enrollment[]) => {
     const response = await fetch(`api/enrollments`, {
