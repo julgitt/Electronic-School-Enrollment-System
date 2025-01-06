@@ -45,6 +45,17 @@ form {
   width: 100%;
   gap: var(--spacing-xxxl);
   justify-content: center;
+  margin: 0 0 var(--spacing-lg) 0;
+}
+
+.horizontal2 {
+  display: grid;
+  align-items: center;
+  text-align: left;
+  grid-template-columns: 2fr 2fr 2fr 0.3fr;
+  width: 100%;
+  gap: var(--spacing-xxxl);
+  justify-content: center;
   margin: 0 0 var(--spacing-lg) 6rem;
 }
 

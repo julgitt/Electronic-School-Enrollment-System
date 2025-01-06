@@ -6,13 +6,25 @@ import {ITask} from "pg-promise";
 export class ProfileRepository {
     async getById(id: number): Promise<ProfileEntity | null> {
         const query = `
-            SELECT * 
+            SELECT *
             FROM profiles
             WHERE id = $1
             LIMIT 1
         `;
 
         return await db.oneOrNone(query, [id]);
+    }
+
+    async getBySchoolAndName(schoolId: number, name: string): Promise<ProfileEntity | null> {
+        const query = `
+            SELECT *
+            FROM profiles
+            WHERE school_id = $1
+              AND name = $2
+            LIMIT 1
+        `;
+
+        return await db.oneOrNone(query, [schoolId, name]);
     }
 
     async getBySchool(schoolId: number): Promise<ProfileEntity | null> {
@@ -88,8 +100,7 @@ export class ProfileRepository {
     async update(profile: ProfileEntity, t: ITask<any>): Promise<void> {
         const query = `
             UPDATE profiles
-            SET 
-                name = $2,
+            SET name     = $2,
                 capacity = $3
             WHERE id = $1
         `;

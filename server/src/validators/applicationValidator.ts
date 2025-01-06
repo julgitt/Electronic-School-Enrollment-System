@@ -1,7 +1,7 @@
 import {body} from 'express-validator';
 
 export const applicationValidator = [
-    body('selections')
+    body()
         .isArray()
         .bail()
         .custom((selections: { id: number, priority: number }[]) => {

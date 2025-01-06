@@ -1,4 +1,3 @@
-/*
 import assert from 'assert';
 import {afterEach} from 'mocha';
 import sinon from 'sinon';
@@ -37,8 +36,9 @@ describe('ApplicationService', () => {
         })
 
         applicationService = new ApplicationService(
-            applicationRepoStub, profileServiceStub, enrollmentServiceStub, schoolServiceStub, txStub
+            applicationRepoStub, enrollmentServiceStub, schoolServiceStub, txStub
         );
+        applicationService.setProfileService(profileServiceStub);
     });
 
     afterEach(() => {
@@ -105,13 +105,10 @@ describe('ApplicationService', () => {
         it('should throw ValidationError if outside enrollment period', async () => {
             enrollmentServiceStub.getCurrentEnrollment.resolves(null);
 
-            try {
-                await applicationService.addApplication([], 1);
-                assert.fail('Expected an error to be thrown');
-            } catch (err) {
-                assert(err instanceof ValidationError);
-                assert.equal(err.message, 'Outside the enrollment period.')
-            }
+            await assert.rejects(
+                () => applicationService.addApplication([], 1),
+                (err) => err instanceof ValidationError && err.message === 'Nie można złożyć aplikacji poza okresem naboru.'
+            );
         });
 
         it('should throw DataConflictError if application already exists', async () => {
@@ -132,12 +129,10 @@ describe('ApplicationService', () => {
                 priority: 1
             } as ApplicationEntity]);
 
-            try {
-                await applicationService.addApplication([{profileId: 1, priority: 1}], 1);
-            } catch (err) {
-                assert(err instanceof DataConflictError);
-                assert.equal(err.message, 'Application already exists');
-            }
+            await assert.rejects(
+                () => applicationService.addApplication([{profileId: 1, priority: 1}], 1),
+                (err) => err instanceof DataConflictError && err.message === 'Aplikacja już istnieje.'
+            );
         });
 
         it('should throw ValidationError if profile does not exist', async () => {
@@ -180,6 +175,34 @@ describe('ApplicationService', () => {
         });
     });
 
+    describe('deleteApplication', () => {
+        it('should delete application', async () => {
+            const mockApplication: ApplicationEntity = {
+                id: 1,
+                candidateId: 1,
+                profileId: 1,
+                enrollmentId: 1,
+                status: ApplicationStatus.Pending,
+                priority: 1,
+                createdAt: new Date(),
+                updatedAt: new Date()
+            }
+            applicationRepoStub.getById.resolves(mockApplication);
+
+            await applicationService.deleteApplication(1, 1);
+
+            assert.equal(applicationRepoStub.deleteById.callCount, 1);
+        });
+
+        it('should throw ResourceNotFoundError if application does not exist', async () => {
+            applicationRepoStub.getById.resolves(null);
+            await assert.rejects(
+                () => applicationService.deleteApplication(1, 1),
+                (err) => err instanceof ResourceNotFoundError && err.message === 'Nie znaleziono aplikacji do usunięcia.'
+            );
+        });
+    });
+
     describe('updateApplication', () => {
         it('should throw ResourceNotFoundError if no applications found for candidate and enrollment', async () => {
             const mockEnrollment: Enrollment = {
@@ -191,12 +214,10 @@ describe('ApplicationService', () => {
             enrollmentServiceStub.getCurrentEnrollment.resolves(mockEnrollment);
             applicationRepoStub.getAllByCandidateAndEnrollmentId.resolves([]);
 
-            try {
-                await applicationService.updateApplication([{profileId: 1, priority: 1}], 1);
-            } catch (err) {
-                assert(err instanceof ResourceNotFoundError);
-                assert.equal(err.message, 'Applications not found.');
-            }
+            await assert.rejects(
+                () => applicationService.updateApplication([{profileId: 1, priority: 1}], 1),
+                (err) => err instanceof ResourceNotFoundError && err.message === 'Nie odnaleziono aplikacji.'
+            );
         });
 
         it('should successfully update applications', async () => {
@@ -297,23 +318,28 @@ describe('ApplicationService', () => {
                 createdAt: new Date(), updatedAt: new Date(),
             }];
 
-            applicationRepoStub.getAllPendingByProfile.resolves(mockApplications);
+            applicationRepoStub.getAllByProfileAndStatus.resolves(mockApplications);
 
-            const result = await applicationService.getAllPendingApplicationsByProfile(1);
+            const result = await applicationService.getAllPendingByProfile(1);
 
             assert.deepEqual(result, mockApplications);
-            assert(applicationRepoStub.getAllPendingByProfile.calledOnceWith(1));
+            assert(applicationRepoStub.getAllByProfileAndStatus.calledOnceWith(1));
         });
     });
 
-    describe('getAllEnrolledByProfile', async () => {
+    describe('getAllAcceptedByProfile', async () => {
         it('should return the number of enrolled candidates for the given profile', async () => {
-            applicationRepoStub.getEnrolledByProfile.resolves(10);
+            const mockApplications: ApplicationEntity[] = [{
+                id: 1, candidateId: 1, profileId: 1, enrollmentId: 1, priority: 1, status: ApplicationStatus.Pending,
+                createdAt: new Date(), updatedAt: new Date(),
+            }];
 
-            const result = await applicationService.getAcceptedCountByProfile(1);
+            applicationRepoStub.getAllByProfileAndStatus.resolves(mockApplications);
 
-            assert.equal(result, 10);
-            assert(applicationRepoStub.getEnrolledByProfile.calledOnceWith(1));
+            const result = await applicationService.getAllAcceptedByProfile(1);
+
+            assert.deepEqual(result, mockApplications);
+            assert(applicationRepoStub.getAllByProfileAndStatus.calledOnceWith(1));
         });
     });
 
@@ -327,4 +353,4 @@ describe('ApplicationService', () => {
             assert(applicationRepoStub.updateStatus.calledOnceWith(1, ApplicationStatus.Accepted, transactionMock));
         });
     });
-})*/
+})

@@ -1,16 +1,16 @@
 import React from "react";
 
 import {SuggestionBox} from '../../../components/composite/SuggestionBox';
-import {School} from "../../../shared/types/school.ts";
+import {SchoolWithProfiles} from "../../../shared/types/schoolWithProfiles.ts";
 import {ProfilesSelection} from "../types/profilesSelection.ts";
 import {Profile} from "../../../shared/types/profile.ts";
 import ProfileSelection from "./ProfileSelectionItem.tsx";
 
 const SchoolSelectionItem: React.FC<{
     selection: ProfilesSelection;
-    suggestions: School[];
+    suggestions: SchoolWithProfiles[];
     index: number;
-    onSchoolChange: (school: School | null, index: number) => void;
+    onSchoolChange: (school: SchoolWithProfiles | null, index: number) => void;
     onProfileChange: (profile: Profile, index: number) => void;
     onPriorityChange: (profileId: number, index: number, priority: number) => void;
     selections: ProfilesSelection[];
@@ -30,7 +30,7 @@ const SchoolSelectionItem: React.FC<{
                 defaultValue={selection.school?.name || ''}
                 onChange={selectedName => {
                     const selectedSchool = suggestions.find((s) => s.name === selectedName) || null;
-                    if (!selection.school || !selectedSchool || selectedSchool.name !== selection.school.name) {
+                    if ((selectedSchool?.name || "") !== (selection.school?.name || "")) {
                         onSchoolChange(selectedSchool, index);
                     }
                 }}

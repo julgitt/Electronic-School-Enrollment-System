@@ -7,7 +7,7 @@ export class SubjectService {
     }
 
     async getSubject(id: number): Promise<Subject> {
-        const subject =  await this.subjectRepository.getById(id);
+        const subject = await this.subjectRepository.getById(id);
         if (!subject) throw new ResourceNotFoundError("Nie znaleziono przedmiotu");
         return subject;
     }

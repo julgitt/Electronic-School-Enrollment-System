@@ -15,8 +15,10 @@ const SuggestionBox: React.FC<SuggestionBoxProps> = React.memo(({
                                                                     placeholder,
                                                                     defaultValue,
                                                                     suggestions,
-                                                                    onChange = () => {},
-    onSelect = () => {},
+                                                                    onChange = () => {
+                                                                    },
+                                                                    onSelect = () => {
+                                                                    },
                                                                 }) => {
     const [value, setValue] = useState<string>(defaultValue || '');
     const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>(suggestions);

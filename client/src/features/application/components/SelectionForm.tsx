@@ -3,7 +3,7 @@ import React from "react";
 import {Button} from '../../../components/atomic/Button'
 import {PlusButton} from '../../../components/atomic/QuantityButton'
 import {ErrorMessage} from "../../../components/atomic/ErrorMessage";
-import {School} from "../../../shared/types/school.ts"
+import {SchoolWithProfiles} from "../../../shared/types/schoolWithProfiles.ts"
 import {ProfilesSelection} from "../types/profilesSelection.ts"
 import {Profile} from "../../../shared/types/profile.ts";
 import {SCHOOL_MAX} from "../../../../../adminConstants.ts";
@@ -14,10 +14,10 @@ import {SuccessMessage} from "../../../components/atomic/SuccessMessage";
 
 interface SchoolSelectionFormProps {
     selections: ProfilesSelection[];
-    suggestions: School[];
+    suggestions: SchoolWithProfiles[];
     error: string | null;
     loading: boolean;
-    onSchoolChange: (school: School | null, index: number) => void;
+    onSchoolChange: (school: SchoolWithProfiles | null, index: number) => void;
     onProfileChange: (profile: Profile, index: number) => void;
     onPriorityChange: (profileId: number, index: number, priority: number) => void;
     onAddSchool: () => void;
@@ -43,16 +43,18 @@ const SelectionForm: React.FC<SchoolSelectionFormProps> = ({
 
         <div className={styles.mainFormInputGroup}>
             {selections.map((selection, index) => (
-                <SchoolSelectionItem
-                    key={selection.school?.id || index}
-                    selection={selection}
-                    suggestions={suggestions}
-                    index={index}
-                    onSchoolChange={onSchoolChange}
-                    onProfileChange={onProfileChange}
-                    onPriorityChange={onPriorityChange}
-                    selections={selections}
-                />
+                <div key={index}>
+                    <SchoolSelectionItem
+                        key={selection.school?.id || index}
+                        selection={selection}
+                        suggestions={suggestions}
+                        index={index}
+                        onSchoolChange={onSchoolChange}
+                        onProfileChange={onProfileChange}
+                        onPriorityChange={onPriorityChange}
+                        selections={selections}
+                    />
+                </div>
             ))}
         </div>
         <div>

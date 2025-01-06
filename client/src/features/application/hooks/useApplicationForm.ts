@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {submitApplication, updateApplication} from "../../../shared/services/applicationService.ts";
-import {School} from "../../../shared/types/school.ts";
+import {SchoolWithProfiles} from "../../../shared/types/schoolWithProfiles.ts";
 import {ProfilesSelection} from "../types/profilesSelection.ts"
 import {Profile} from "../../../shared/types/profile.ts";
 import {UserSelectedProfile} from "../types/userSelectedProfile.ts";
@@ -29,7 +29,6 @@ export const useApplicationForm = (submission: ProfilesSelection[]) => {
             const data = (submission && submission.length > 0)
                 ? await updateApplication(profiles)
                 : await submitApplication(profiles);
-            setSuccessMessage("Zapisano aplikację.");
             setTimeout(() => setSuccessMessage(null), 3000);
             window.location.href = data.redirect;
         } catch (err: any) {
@@ -39,7 +38,7 @@ export const useApplicationForm = (submission: ProfilesSelection[]) => {
         }
     };
 
-    const handleSchoolChange = (suggestion: School | null, index: number) => {
+    const handleSchoolChange = (suggestion: SchoolWithProfiles | null, index: number) => {
         if (suggestion === null) {
             const newSelection = selections.filter((_, i) => i !== index);
             setSelections(newSelection);

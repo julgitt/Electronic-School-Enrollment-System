@@ -1,4 +1,3 @@
-/*
 import assert from 'assert';
 import {afterEach} from 'mocha';
 import sinon from 'sinon';
@@ -7,48 +6,21 @@ import {CandidateService} from "../../../src/services/candidateService";
 import {CandidateRepository} from "../../../src/repositories/candidateRepository";
 import {ResourceNotFoundError} from "../../../src/errors/resourceNotFoundError";
 import {DataConflictError} from "../../../src/errors/dataConflictError";
-import {GradeService} from "../../../src/services/gradeService";
-import {GradeEntity} from "../../../src/models/gradeEntity";
 import {CandidateEntity} from "../../../src/models/candidateEntity";
 import {CandidateRequest} from "../../../src/dto/candidate/candidateRequest";
-import {GradeType} from "../../../src/dto/grade/gradeType";
 
 
 describe('CandidateService', () => {
     let candidateService: CandidateService;
     let candidateRepoStub: sinon.SinonStubbedInstance<CandidateRepository>;
-    let gradeServiceStub: sinon.SinonStubbedInstance<GradeService>;
 
     beforeEach(() => {
         candidateRepoStub = sinon.createStubInstance(CandidateRepository);
-        gradeServiceStub = sinon.createStubInstance(GradeService);
-        candidateService = new CandidateService(gradeServiceStub, candidateRepoStub);
+        candidateService = new CandidateService(candidateRepoStub);
     });
 
     afterEach(() => {
         sinon.restore();
-    });
-
-    describe('getAllWithGrades', () => {
-        it('should return candidates with their grades', async () => {
-            const mockCandidates: CandidateEntity[] = [
-                {id: 1, userId: 1, firstName: 'Jan', lastName: 'Kowalski', pesel: '12345678901'},
-                {id: 2, userId: 1, firstName: 'Agata', lastName: 'Nowak', pesel: '12345678902'},
-            ];
-            const mockGrades: GradeEntity[] = [
-                {candidateId: 1, subjectId: 2, grade: 5, type: GradeType.Certificate},
-                {candidateId: 2, subjectId: 4, grade: 6, type: GradeType.Certificate}
-            ];
-
-            candidateRepoStub.getAll.resolves(mockCandidates);
-            gradeServiceStub.getAllByCandidate.resolves(mockGrades);
-
-            const result = await candidateService.getGradesByCandidates();
-
-            assert.equal(result.size, 2);
-            assert.deepEqual(result.get(1), mockGrades);
-            assert.deepEqual(result.get(2), mockGrades);
-        });
     });
 
     describe('getLastCreatedCandidateByUser', () => {
@@ -93,13 +65,10 @@ describe('CandidateService', () => {
         it('should throw ResourceNotFoundError if the candidate does not exist', async () => {
             candidateRepoStub.getById.resolves(null);
 
-            try {
-                await candidateService.getCandidate(1, 1)
-                assert.fail('Expected an error to be thrown');
-            } catch (err) {
-                assert(err instanceof ResourceNotFoundError);
-                assert.equal((err as Error).message, 'Candidate not found.')
-            }
+            await assert.rejects(
+                () => candidateService.getCandidate(1, 1),
+                (err) => err instanceof ResourceNotFoundError && err.message === 'Nie znaleziono kandydata.'
+            );
         });
 
         it('should throw ResourceNotFoundError if the candidate is not related to logged in user', async () => {
@@ -112,13 +81,32 @@ describe('CandidateService', () => {
             };
             candidateRepoStub.getById.resolves(candidate);
 
-            try {
-                await candidateService.getCandidate(1, 1);
-                assert.fail('Expected an error to be thrown');
-            } catch (err) {
-                assert(err instanceof ResourceNotFoundError);
-                assert.equal((err as Error).message, 'Candidate not found.')
-            }
+            await assert.rejects(
+                () => candidateService.getCandidate(1, 1),
+                (err) => err instanceof ResourceNotFoundError && err.message === 'Nie znaleziono kandydata.'
+            );
+        });
+    });
+
+    describe('getCandidateById', () => {
+        it('should return the candidate if exists', async () => {
+            const candidate = {
+                id: 1, userId: 1, firstName: 'Jan', lastName: 'Kowalski', pesel: '12345678901'
+            };
+            candidateRepoStub.getById.resolves(candidate);
+
+            const result = await candidateService.getCandidateById(1);
+            assert.deepEqual(result, candidate);
+            assert.equal(candidateRepoStub.getById.callCount, 1);
+        });
+
+        it('should throw ResourceNotFoundError if the candidate by id does not exist', async () => {
+            candidateRepoStub.getById.resolves(null);
+
+            await assert.rejects(
+                () => candidateService.getCandidateById(1),
+                (err) => err instanceof ResourceNotFoundError && err.message === "Nie znaleziono kandydata."
+            )
         });
     });
 
@@ -179,9 +167,8 @@ describe('CandidateService', () => {
                 assert.fail('Expected an error to be thrown');
             } catch (error) {
                 assert(error instanceof DataConflictError);
-                assert.strictEqual(error.message, 'There is already candidate with that pesel.');
+                assert.equal(error.message, 'Już istnieje kandydat z tym numerem pesel.');
             }
         });
     });
 });
-*/

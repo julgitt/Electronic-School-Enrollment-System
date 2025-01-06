@@ -1,4 +1,3 @@
-/*
 import assert from 'assert';
 import {afterEach} from 'mocha';
 import sinon from 'sinon';
@@ -13,21 +12,25 @@ import {GradeRequest} from "../../../src/dto/grade/gradeRequest";
 import {ValidationError} from "../../../src/errors/validationError";
 import {DataConflictError} from "../../../src/errors/dataConflictError";
 import {GradeType} from "../../../src/dto/grade/gradeType";
+import {EnrollmentService} from "../../../src/services/enrollmentService";
+import {Enrollment} from "../../../src/dto/enrollment";
 
 describe('GradeService', () => {
     let gradeService: GradeService;
     let gradeRepoStub: sinon.SinonStubbedInstance<GradeRepository>;
     let subjectServiceStub: sinon.SinonStubbedInstance<SubjectService>;
+    let enrollmentServiceStub: sinon.SinonStubbedInstance<EnrollmentService>;
     let txStub: sinon.SinonStub;
 
     beforeEach(() => {
         gradeRepoStub = sinon.createStubInstance(GradeRepository);
         subjectServiceStub = sinon.createStubInstance(SubjectService);
+        enrollmentServiceStub = sinon.createStubInstance(EnrollmentService);
         txStub = sinon.stub().callsFake(async (callback: (t: ITask<any>) => Promise<void>) => {
             await callback({} as unknown as ITask<any>);
         })
 
-        gradeService = new GradeService(gradeRepoStub, subjectServiceStub, txStub);
+        gradeService = new GradeService(gradeRepoStub, subjectServiceStub, enrollmentServiceStub, txStub);
     });
 
     afterEach(() => {
@@ -85,6 +88,7 @@ describe('GradeService', () => {
             ];
 
             subjectServiceStub.getAllSubjects.resolves(mockSubjects);
+            enrollmentServiceStub.getCurrentEnrollment.resolves({} as Enrollment);
             gradeRepoStub.getByCandidateSubjectType.resolves(null);
             gradeRepoStub.insert.resolves();
 
@@ -105,14 +109,13 @@ describe('GradeService', () => {
             ];
 
             subjectServiceStub.getAllSubjects.resolves(mockSubjects);
+            enrollmentServiceStub.getCurrentEnrollment.resolves({} as Enrollment);
 
-            try {
-                await gradeService.submitGrades(mockSubmissions, 1);
-                assert.fail('Expected ValidationError to be thrown');
-            } catch (err) {
-                assert(err instanceof ValidationError);
-                assert.equal(err.message, 'Wrong number of grades.');
-            }
+
+            await assert.rejects(
+                () => gradeService.submitGrades(mockSubmissions, 1),
+                (err) => err instanceof ValidationError && err.message === 'Błędna ilość ocen.'
+            );
         });
 
         it('should throw ValidationError if certificate grade for an subject is missing', async () => {
@@ -127,14 +130,12 @@ describe('GradeService', () => {
             ];
 
             subjectServiceStub.getAllSubjects.resolves(mockSubjects);
+            enrollmentServiceStub.getCurrentEnrollment.resolves({} as Enrollment);
 
-            try {
-                await gradeService.submitGrades(mockSubmissions, 1);
-                assert.fail('Expected ValidationError to be thrown');
-            } catch (err) {
-                assert(err instanceof ValidationError);
-                assert.equal(err.message, 'Grade for subject 2: historia not found.');
-            }
+            await assert.rejects(
+                () => gradeService.submitGrades(mockSubmissions, 1),
+                (err) => err instanceof ValidationError && err.message === 'Brak oceny dla przedmiotu: 2: historia.'
+            );
         });
 
         it('should throw ValidationError if exam grade for a subject is missing', async () => {
@@ -149,36 +150,12 @@ describe('GradeService', () => {
             ];
 
             subjectServiceStub.getAllSubjects.resolves(mockSubjects);
+            enrollmentServiceStub.getCurrentEnrollment.resolves({} as Enrollment);
 
-            try {
-                await gradeService.submitGrades(mockSubmissions, 1);
-                assert.fail('Expected ValidationError to be thrown');
-            } catch (err) {
-                assert(err instanceof ValidationError);
-                assert.equal(err.message, 'Grade for subject 1: matematyka not found.');
-            }
-        });
-
-        it('should throw ValidationError if grade for a subject is missing', async () => {
-            const mockSubjects: Subject[] = [
-                {id: 1, name: "matematyka", isExamSubject: true},
-                {id: 2, name: "historia", isExamSubject: false},
-            ];
-            const mockSubmissions: GradeRequest[] = [
-                {subjectId: 1, grade: 3, type: GradeType.Certificate},
-                {subjectId: 1, grade: 4, type: GradeType.Exam},
-                {subjectId: 1, grade: 4, type: GradeType.Exam}
-            ];
-
-            subjectServiceStub.getAllSubjects.resolves(mockSubjects);
-
-            try {
-                await gradeService.submitGrades(mockSubmissions, 1);
-                assert.fail('Expected ValidationError to be thrown');
-            } catch (err) {
-                assert(err instanceof ValidationError);
-                assert.equal(err.message, 'Grade for subject 2: historia not found.');
-            }
+            await assert.rejects(
+                () => gradeService.submitGrades(mockSubmissions, 1),
+                (err) => err instanceof ValidationError && err.message === 'Brak oceny dla przedmiotu: 1: matematyka.'
+            );
         });
 
         it('should throw DataConflictError if grade already exists', async () => {
@@ -197,15 +174,13 @@ describe('GradeService', () => {
 
             subjectServiceStub.getAllSubjects.resolves(mockSubjects);
             gradeRepoStub.getByCandidateSubjectType.resolves(existingGrade);
+            enrollmentServiceStub.getCurrentEnrollment.resolves({} as Enrollment);
 
-            try {
-                await gradeService.submitGrades(mockSubmissions, 1);
-                assert.fail('Expected DataConflictError to be thrown');
-            } catch (err) {
-                assert(err instanceof DataConflictError);
-                assert.equal(err.message, 'Grade already exists');
-            }
+            await assert.rejects(
+                () => gradeService.submitGrades(mockSubmissions, 1),
+                (err) => err instanceof DataConflictError && err.message === 'Ocena już istnieje'
+            );
         });
     });
 
-})*/
+})

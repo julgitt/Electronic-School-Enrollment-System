@@ -1,85 +1,85 @@
 {
   "processes": {
-    "c05cd4c5-6bc6-4f43-97db-acde7606218a": {
+    "4adc1458-7c6a-43d3-a647-fda39183dce0": {
       "parent": null,
       "children": []
     }
   },
   "files": {
-    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/services/adminService.ts": [
-      "c05cd4c5-6bc6-4f43-97db-acde7606218a"
-    ],
-    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/models/profileCriteriaEntity.ts": [
-      "c05cd4c5-6bc6-4f43-97db-acde7606218a"
-    ],
-    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/dto/applicationStatus.ts": [
-      "c05cd4c5-6bc6-4f43-97db-acde7606218a"
-    ],
-    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/errors/resourceNotFoundError.ts": [
-      "c05cd4c5-6bc6-4f43-97db-acde7606218a"
-    ],
-    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/errors/customError.ts": [
-      "c05cd4c5-6bc6-4f43-97db-acde7606218a"
-    ],
-    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/services/profileService.ts": [
-      "c05cd4c5-6bc6-4f43-97db-acde7606218a"
-    ],
-    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/services/candidateService.ts": [
-      "c05cd4c5-6bc6-4f43-97db-acde7606218a"
-    ],
-    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/errors/dataConflictError.ts": [
-      "c05cd4c5-6bc6-4f43-97db-acde7606218a"
-    ],
-    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/services/applicationService.ts": [
-      "c05cd4c5-6bc6-4f43-97db-acde7606218a"
-    ],
-    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/errors/validationError.ts": [
-      "c05cd4c5-6bc6-4f43-97db-acde7606218a"
-    ],
-    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/repositories/applicationRepository.ts": [
-      "c05cd4c5-6bc6-4f43-97db-acde7606218a"
+    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/repositories/profileRepository.ts": [
+      "4adc1458-7c6a-43d3-a647-fda39183dce0"
     ],
     "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/db.ts": [
-      "c05cd4c5-6bc6-4f43-97db-acde7606218a"
+      "4adc1458-7c6a-43d3-a647-fda39183dce0"
     ],
-    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/services/schoolService.ts": [
-      "c05cd4c5-6bc6-4f43-97db-acde7606218a"
+    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/services/profileService.ts": [
+      "4adc1458-7c6a-43d3-a647-fda39183dce0"
     ],
-    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/services/enrollmentService.ts": [
-      "c05cd4c5-6bc6-4f43-97db-acde7606218a"
+    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/models/profileCriteriaEntity.ts": [
+      "4adc1458-7c6a-43d3-a647-fda39183dce0"
     ],
-    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/repositories/candidateRepository.ts": [
-      "c05cd4c5-6bc6-4f43-97db-acde7606218a"
+    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/errors/resourceNotFoundError.ts": [
+      "4adc1458-7c6a-43d3-a647-fda39183dce0"
+    ],
+    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/errors/customError.ts": [
+      "4adc1458-7c6a-43d3-a647-fda39183dce0"
+    ],
+    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/dto/grade/gradeType.ts": [
+      "4adc1458-7c6a-43d3-a647-fda39183dce0"
+    ],
+    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/errors/dataConflictError.ts": [
+      "4adc1458-7c6a-43d3-a647-fda39183dce0"
     ],
     "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/services/gradeService.ts": [
-      "c05cd4c5-6bc6-4f43-97db-acde7606218a"
+      "4adc1458-7c6a-43d3-a647-fda39183dce0"
     ],
-    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/repositories/enrollmentRepository.ts": [
-      "c05cd4c5-6bc6-4f43-97db-acde7606218a"
-    ],
-    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/repositories/gradeRepository.ts": [
-      "c05cd4c5-6bc6-4f43-97db-acde7606218a"
+    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/errors/validationError.ts": [
+      "4adc1458-7c6a-43d3-a647-fda39183dce0"
     ],
     "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/services/subjectService.ts": [
-      "c05cd4c5-6bc6-4f43-97db-acde7606218a"
+      "4adc1458-7c6a-43d3-a647-fda39183dce0"
     ],
-    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/repositories/profileRepository.ts": [
-      "c05cd4c5-6bc6-4f43-97db-acde7606218a"
+    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/services/candidateService.ts": [
+      "4adc1458-7c6a-43d3-a647-fda39183dce0"
+    ],
+    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/services/schoolService.ts": [
+      "4adc1458-7c6a-43d3-a647-fda39183dce0"
+    ],
+    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/services/applicationService.ts": [
+      "4adc1458-7c6a-43d3-a647-fda39183dce0"
+    ],
+    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/dto/application/applicationStatus.ts": [
+      "4adc1458-7c6a-43d3-a647-fda39183dce0"
+    ],
+    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/repositories/applicationRepository.ts": [
+      "4adc1458-7c6a-43d3-a647-fda39183dce0"
+    ],
+    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/services/enrollmentService.ts": [
+      "4adc1458-7c6a-43d3-a647-fda39183dce0"
+    ],
+    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/repositories/candidateRepository.ts": [
+      "4adc1458-7c6a-43d3-a647-fda39183dce0"
+    ],
+    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/repositories/enrollmentRepository.ts": [
+      "4adc1458-7c6a-43d3-a647-fda39183dce0"
+    ],
+    "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/repositories/gradeRepository.ts": [
+      "4adc1458-7c6a-43d3-a647-fda39183dce0"
     ],
     "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/repositories/schoolRepository.ts": [
-      "c05cd4c5-6bc6-4f43-97db-acde7606218a"
+      "4adc1458-7c6a-43d3-a647-fda39183dce0"
     ],
     "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/repositories/subjectRepository.ts": [
-      "c05cd4c5-6bc6-4f43-97db-acde7606218a"
+      "4adc1458-7c6a-43d3-a647-fda39183dce0"
     ],
     "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/services/userService.ts": [
-      "c05cd4c5-6bc6-4f43-97db-acde7606218a"
+      "4adc1458-7c6a-43d3-a647-fda39183dce0"
     ],
     "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/errors/authenticationError.ts": [
-      "c05cd4c5-6bc6-4f43-97db-acde7606218a"
+      "4adc1458-7c6a-43d3-a647-fda39183dce0"
     ],
     "/home/julia/praca_inżynierska/electronic-school-enrollment-system/server/src/repositories/userRepository.ts": [
-      "c05cd4c5-6bc6-4f43-97db-acde7606218a"
+      "4adc1458-7c6a-43d3-a647-fda39183dce0"
     ]
   },
   "externalIds": {}

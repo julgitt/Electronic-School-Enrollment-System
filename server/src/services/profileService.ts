@@ -18,6 +18,7 @@ import {GradesInfo, PointsInfo} from "../dto/grade/pointsInfo";
 import {SubjectService} from "./subjectService";
 import {ProfileWithInfo} from "../dto/profile/profileInfo";
 import {SchoolService} from "./schoolService";
+import {DataConflictError} from "../errors/dataConflictError";
 
 export class ProfileService {
     private applicationService!: ApplicationService;
@@ -77,7 +78,7 @@ export class ProfileService {
 
     async getProfilesWithInfo() {
         const profiles = await this.getAllProfiles()
-        const profilesInfo :ProfileWithInfo[] = await Promise.all(profiles.map(async p => {
+        const profilesInfo: ProfileWithInfo[] = await Promise.all(profiles.map(async p => {
             const schoolName = (await this.schoolService.getSchool(p.schoolId)).name
 
             const criteria = await this.getProfileCriteria(p.id);
@@ -85,7 +86,7 @@ export class ProfileService {
                 const subject = await this.subjectService.getSubject(c.subjectId);
                 return subject.name;
             }));
-            const applicationNumber = (await this.applicationService.getAllPendingApplicationsByProfile(p.id)).length;
+            const applicationNumber = (await this.applicationService.getAllPendingByProfile(p.id)).length;
 
             return {id: p.id, name: p.name, schoolName, criteriaSubjects, applicationNumber}
         }))
@@ -94,10 +95,15 @@ export class ProfileService {
     }
 
     async deleteProfile(profileId: number, schoolId: number) {
-        return this.profileRepository.delete(profileId, schoolId);
+        const profile = await this.profileRepository.getById(profileId);
+        if (!profile || profile.schoolId != schoolId) throw new ResourceNotFoundError("Nie znaleziono profilu do usunięcia.");
+        await this.profileRepository.delete(profileId, schoolId);
     }
 
     async addProfile(profile: ProfileRequest, schoolId: number) {
+        if (await this.profileRepository.getBySchoolAndName(schoolId, profile.name))
+            throw new DataConflictError("Profil o podanej nazwie już istnieje.");
+
         const newProfile: Profile = {
             id: 0,
             name: profile.name,
@@ -182,7 +188,7 @@ export class ProfileService {
     async getRankList(profileId: number) {
         const criteria = await this.getProfileCriteria(profileId);
         const accepted = await this.applicationService.getAllAcceptedByProfile(profileId);
-        const pending = await this.applicationService.getAllPendingApplicationsByProfile(profileId);
+        const pending = await this.applicationService.getAllPendingByProfile(profileId);
 
         const rankedAccepted = await this.createRankList(accepted, criteria);
         const rankedPending = await this.createRankList(pending, criteria);

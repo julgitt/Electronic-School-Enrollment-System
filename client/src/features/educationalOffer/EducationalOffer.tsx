@@ -57,23 +57,25 @@ const EducationalOffer: React.FC = () => {
                 return (
                     <>
                         <div className={styles.horizontalListing}>
-                        {
-                            filter.map(elem => (
-                            <div key={filter.indexOf(elem)}>
-                                <button onClick={() => deleteFilter(key, elem)}>{elem + " X"}</button>
-                            </div>
-                        ))}
+                            {
+                                filter.map(elem => (
+                                    <div key={filter.indexOf(elem)}>
+                                        <button onClick={() => deleteFilter(key, elem)}>{elem + " X"}</button>
+                                    </div>
+                                ))}
                         </div>
 
                         <SuggestionBox
-                            placeholder={"dodaj filtrowanie "  +  (() => {switch(key as string) {
-                                case 'criteriaSubjects':
-                                    return "przedmiotu rekrutacyjnego";
-                                case 'schoolName':
-                                    return "nazwy szkoły";
-                                case 'name':
-                                    return "nazwy profilu";
-                            }})()}
+                            placeholder={"dodaj filtrowanie " + (() => {
+                                switch (key as string) {
+                                    case 'criteriaSubjects':
+                                        return "przedmiotu rekrutacyjnego";
+                                    case 'schoolName':
+                                        return "nazwy szkoły";
+                                    case 'name':
+                                        return "nazwy profilu";
+                                }
+                            })()}
                             suggestions={Array.from(profilesFields)}
                             onSelect={selectedName => {
                                 if (profilesFields.has(selectedName))
@@ -103,18 +105,7 @@ const EducationalOffer: React.FC = () => {
                 <tr>
                     <th>Nazwa profilu</th>
                     <th>Nazwa Szkoły</th>
-                    <th>Liczba kandydatów  <div className={styles.selectionElement}>
-                        <Checkbox
-                            checked={ascSort}
-                            onChange={(event) => handleSortChange(true, event.target.checked)}
-                            itemName={"Sortuj rosnąco po popularności"}
-                        />
-                        <Checkbox
-                            checked={descSort}
-                            onChange={(event) => handleSortChange(false, event.target.checked)}
-                            itemName={"Sortuj malejąco po popularności"}
-                        />
-                    </div></th>
+                    <th>Liczba kandydatów</th>
                 </tr>
                 </thead>
                 <tbody>

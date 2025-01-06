@@ -9,9 +9,6 @@ export const profileValidator = [
     body("capacity")
         .isInt({min: 1})
         .withMessage("Ilość miejsc musi być większa od zera"),
-    body("criteria.*.profileId")
-        .isInt()
-        .withMessage("Kryteria muszą mieć prawidłowe id profilu."),
     body("criteria.*.subjectId")
         .isInt()
         .withMessage("Kryteria muszą mieć prawidłowe id przedmiotu"),
@@ -28,7 +25,7 @@ export const profileValidator = [
 
         if (alternativeCount > 0 && mandatoryCount != 3)
             throw new Error("Jeżeli jakiś przedmiot jest oznaczony jako alternatywny, obowiązują 3 przedmioty obowiązkowe.");
-        if (mandatoryCount != 4)
+        if (mandatoryCount > 4)
             throw new Error("Można dodać maksymalnie 4 przedmioty obowiązkowe.");
 
         return true;

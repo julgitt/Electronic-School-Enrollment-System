@@ -1,4 +1,4 @@
-# Electronic School Enrollment System
+# Electronic SchoolWithProfiles Enrollment System
 
 ## Application created as an engineering thesis.
 

@@ -54,7 +54,7 @@ export class SchoolRepository {
         await t.none(query, values);
     }
 
-    async get(id: number, adminId: number) {
+    async getByIdAndAdmin(id: number, adminId: number) {
         const query = `
             SELECT
                 s.id,
@@ -68,7 +68,7 @@ export class SchoolRepository {
         return await db.oneOrNone<SchoolEntity>(query, [id, adminId]);
     }
 
-    async getFirstByAdminId(id: number) {
+    async getFirstByAdmin(id: number) {
         const query = `
             SELECT
                 s.id,
@@ -82,7 +82,7 @@ export class SchoolRepository {
         return await db.oneOrNone<SchoolEntity>(query, id);
     }
 
-    async getAllByAdminId(id: number) {
+    async getAllByAdmin(id: number) {
         const query = `
             SELECT
                 s.id,

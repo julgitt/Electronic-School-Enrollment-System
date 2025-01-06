@@ -6,7 +6,7 @@ import LoadingPage from "../../../../app/routes/LoadingPage.tsx";
 import {SubmitApplicationPastDeadline} from "../../../application/pages/SubmitApplicationPastDeadline";
 import {useDeadlineCheck} from "../../../../shared/hooks/useDeadlineCheck.ts";
 import {SuggestionBox} from "../../../../components/composite/SuggestionBox";
-import {School} from "../../../../shared/types/school.ts";
+import {SchoolWithProfiles} from "../../../../shared/types/schoolWithProfiles.ts";
 import {ProfileSelection} from "../../../application/types/profilesSelection.ts";
 import {Button} from "../../../../components/atomic/Button"
 
@@ -17,7 +17,7 @@ import {ProfileCriteriaType} from "../../../schoolAdmin/types/profileRequest.ts"
 import {PointsInfo} from "../../types/pointsInfo.ts";
 
 const CalculatePoints: React.FC = () => {
-    let {data: suggestions, loading: schoolLoading} = useFetch<School[]>('/api/schools');
+    let {data: suggestions, loading: schoolLoading} = useFetch<SchoolWithProfiles[]>('/api/schools');
     const {isPastDeadline, loading: deadlineLoading} = useDeadlineCheck();
     const [selection, setSelection] = useState<ProfileSelection>({school: null, profile: null});
     const [pointsInfo, setPointsInfo] = useState<PointsInfo | null>(null);
@@ -87,7 +87,7 @@ const CalculatePoints: React.FC = () => {
             </div>
             {pointsInfo && <h4> Oceny ze świadectwa: </h4>}
             {pointsInfo && pointsInfo.gradesInfo.map((gradeInfo) => (
-                <div key={gradeInfo.subject} className={styles.horizontal}>
+                <div key={gradeInfo.subject} className={styles.horizontal2}>
                     <h6>{gradeInfo.subject}</h6>
                     <h6>{gradeInfo.grade}</h6>
                     <h6>{gradeInfo.type === ProfileCriteriaType.Alternative ? "Opcjonalne" : "Wymagane"}</h6>

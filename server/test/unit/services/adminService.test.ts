@@ -5,7 +5,6 @@ import sinon from 'sinon';
 import {AdminService} from "../../../src/services/adminService";
 import {ITask} from "pg-promise";
 import {ProfileService} from "../../../src/services/profileService";
-import {CandidateService} from "../../../src/services/candidateService";
 import {ApplicationService} from "../../../src/services/applicationService";
 import {ApplicationStatus} from "../../../src/dto/application/applicationStatus";
 import assert from "assert";
@@ -14,13 +13,11 @@ import {GradeType} from "../../../src/dto/grade/gradeType";
 
 describe('AdminService', () => {
     let adminService: AdminService;
-    let candidateServiceStub: sinon.SinonStubbedInstance<CandidateService>;
     let profileServiceStub: sinon.SinonStubbedInstance<ProfileService>;
     let applicationServiceStub: sinon.SinonStubbedInstance<ApplicationService>;
     let txStub: sinon.SinonStub;
 
     beforeEach(() => {
-        candidateServiceStub = sinon.createStubInstance(CandidateService);
         applicationServiceStub = sinon.createStubInstance(ApplicationService);
         profileServiceStub = sinon.createStubInstance(ProfileService);
         txStub = sinon.stub().callsFake(async (callback: (t: ITask<any>) => Promise<void>) => {
@@ -28,7 +25,6 @@ describe('AdminService', () => {
         })
 
         adminService = new AdminService(
-            candidateServiceStub,
             profileServiceStub,
             applicationServiceStub,
             txStub
@@ -84,25 +80,6 @@ describe('AdminService', () => {
                     `for ID ${appId}`
                 );
             }
-        });
-    });
-
-    describe('calculatePoints', () => {
-        it('should calculate points correctly for mandatory and alternative subjects', () => {
-            const mockProfileCriteria = [
-                {id: 1, subjectId: 1, profileId: 1, type: ProfileCriteriaType.Mandatory},
-                {id: 2, subjectId: 2, profileId: 1, type: ProfileCriteriaType.Alternative},
-                {id: 3, subjectId: 3, profileId: 1, type: ProfileCriteriaType.Alternative}
-            ];
-            const mockGrades = [
-                {grade: 60, subjectId: 1, type: GradeType.Exam},
-                {grade: 5, subjectId: 2, type: GradeType.Certificate},
-                {grade: 4, subjectId: 2, type: GradeType.Certificate}
-            ];
-
-            const result = adminService.calculatePoints(mockProfileCriteria, mockGrades);
-
-            assert.equal(result, 17);
         });
     });
 
@@ -181,5 +158,4 @@ describe('AdminService', () => {
         ]);
         return applicationsMap.get(profileId) || [];
     }
-})
-*/
+})*/

@@ -71,7 +71,7 @@ export class SchoolAdminController {
             });
 
             return res.status(200).json({
-                message: 'School switched successfully',
+                message: 'SchoolWithProfiles switched successfully',
                 school: newSchool
             });
         } catch (error) {

@@ -4,12 +4,12 @@ import {NavLink as Link} from "react-router-dom";
 import styles from '../../modules/Header/Header.module.scss';
 import {SchoolDropdown} from "../Dropdown/SchoolDropdown";
 import {useFetch} from "../../../shared/hooks/useFetch.ts";
-import {School} from "../../../shared/types/school.ts";
 import {useError} from "../../../shared/providers/errorProvider.tsx";
 import {switchSchool} from "./Services/schoolService.ts";
 import {Profile} from "../../../shared/types/profile.ts";
 import {ProfileDropdown} from "../Dropdown/ProfileDropdown";
 import {deleteProfile, switchProfile} from "./Services/profileService.ts";
+import {School} from "../../../features/admin/types/schoolRequest.ts";
 
 const SchoolAdminNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({renderLogoutLink}) => {
     const {setError} = useError();

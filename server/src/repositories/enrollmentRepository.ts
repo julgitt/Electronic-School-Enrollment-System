@@ -55,10 +55,9 @@ export class EnrollmentRepository {
     async update(enrollment: EnrollmentEntity, t: ITask<any>): Promise<void> {
         const query = `
             UPDATE enrollments
-            SET 
-                round = $2,
+            SET round      = $2,
                 start_date = $3,
-                end_date = $4
+                end_date   = $4
             WHERE id = $1
         `;
         const values = [enrollment.id, enrollment.round, enrollment.startDate, enrollment.endDate];

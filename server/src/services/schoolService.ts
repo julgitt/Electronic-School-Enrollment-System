@@ -48,26 +48,21 @@ export class SchoolService {
         }
     }
 
-    async getSchoolByAdminAndId(id: number, adminId: number): Promise<SchoolWithProfiles> {
-        const school: School | null = await this.schoolRepository.get(id, adminId);
+    async getSchoolByAdminAndId(id: number, adminId: number): Promise<School> {
+        const school: School | null = await this.schoolRepository.getByIdAndAdmin(id, adminId);
         if (school == null) throw new ResourceNotFoundError('Szkoła nie znaleziona');
-
         return {
             id: school.id,
             name: school.name,
-            profiles: await this.profileService.getProfilesBySchool(school.id),
         }
     }
 
-    async getSchoolByAdmin(adminId: number): Promise<School> {
-        const school: School | null = await this.schoolRepository.getFirstByAdminId(adminId);
-        if (school == null) throw new ResourceNotFoundError('Szkoła nie znaleziona');
-
-        return school
+    async getSchoolByAdmin(adminId: number): Promise<School | null> {
+        return this.schoolRepository.getFirstByAdmin(adminId);
     }
 
     async getSchoolsByAdmin(adminId: number): Promise<School[]> {
-        return await this.schoolRepository.getAllByAdminId(adminId);
+        return await this.schoolRepository.getAllByAdmin(adminId);
     }
 
     async updateSchools(schools: School[]): Promise<void> {
@@ -97,6 +92,4 @@ export class SchoolService {
             }
         });
     }
-
-
 }

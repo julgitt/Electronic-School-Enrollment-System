@@ -36,7 +36,7 @@ const ProfileCandidatesRank: React.FC = () => {
         <div>
             <h1>Kandydaci</h1>
             {error && <ErrorMessage message={error}/>}
-            {(!data || (data.accepted.length === 0 && data.reserve.length === 0)) ? (
+            {(!data || (data.accepted.length === 0 && data.reserve.length === 0) && data.prevAccepted.length === 0) ? (
                 <p>Nie znaleziono aplikacji.</p>
             ) : (
                 <>

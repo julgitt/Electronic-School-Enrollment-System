@@ -1,13 +1,13 @@
-import {School} from "../../../shared/types/school.ts";
+import {SchoolWithProfiles} from "../../../shared/types/schoolWithProfiles.ts";
 import {UserSelectedProfile} from "./userSelectedProfile.ts";
 import {Profile} from "../../../shared/types/profile.ts";
 
 export interface ProfilesSelection {
-    school: School | null;
+    school: SchoolWithProfiles | null;
     profiles: UserSelectedProfile[];
 }
 
 export interface ProfileSelection {
-    school: School | null;
+    school: SchoolWithProfiles | null;
     profile: Profile | null;
 }

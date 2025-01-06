@@ -57,7 +57,7 @@ export class ApplicationService {
         )
     }
 
-    async getAllPendingApplicationsByProfile(profileId: number): Promise<Application[]> {
+    async getAllPendingByProfile(profileId: number): Promise<Application[]> {
         return this.applicationRepository.getAllByProfileAndStatus(profileId, ApplicationStatus.Pending);
     }
 
@@ -113,9 +113,9 @@ export class ApplicationService {
         });
     }
 
-    async deleteApplication(id: number, profileId: number) {
+    async deleteApplication(id: number, profileId: number): Promise<void> {
         const application = await this.applicationRepository.getById(id);
-        if (!application || profileId != application.profileId) return new ResourceNotFoundError("Nie znaleziono aplikacji do usunięcia");
+        if (!application || profileId != application.profileId) throw new ResourceNotFoundError("Nie znaleziono aplikacji do usunięcia.");
         await this.applicationRepository.deleteById(id);
     }
 

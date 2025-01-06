@@ -1,4 +1,3 @@
-/*
 import assert from 'assert';
 import {afterEach} from 'mocha';
 import sinon from 'sinon';
@@ -60,7 +59,7 @@ describe('UserService', () => {
 
             await assert.rejects(
                 () => userService.login('nonexistent', 'password123'),
-                (err) => err instanceof AuthenticationError && err.message === 'Invalid credentials.'
+                (err) => err instanceof AuthenticationError && err.message === 'Nieprawidłowe email/nazwa użytkownika lub hasło'
             );
 
             assert.equal(userRepoStub.getWithRolesByLoginOrEmail.callCount, 1);
@@ -81,7 +80,7 @@ describe('UserService', () => {
 
             await assert.rejects(
                 () => userService.login('testuser', 'wrongpassword'),
-                (err) => err instanceof AuthenticationError && err.message === 'Invalid credentials.'
+                (err) => err instanceof AuthenticationError && err.message === 'Nieprawidłowe email/nazwa użytkownika lub hasło'
             );
 
             assert.equal(userRepoStub.getWithRolesByLoginOrEmail.callCount, 1);
@@ -135,7 +134,7 @@ describe('UserService', () => {
                     email: 'new@example.com',
                     password: 'password123'
                 }),
-                (err) => err instanceof DataConflictError && err.message === 'Username is already taken.'
+                (err) => err instanceof DataConflictError && err.message === 'Już istnieje konto powiązane z tą nazwą użytkownika.'
             );
 
             assert.equal(userRepoStub.getWithoutRolesByLoginOrEmail.callCount, 1);
@@ -160,7 +159,7 @@ describe('UserService', () => {
                     email: 'existing@example.com',
                     password: 'password123'
                 }),
-                (err) => err instanceof DataConflictError && err.message === 'There is already an account with that email.'
+                (err) => err instanceof DataConflictError && err.message === 'Już istnieje konto powiązane z tym adresem email.'
             );
 
             assert.equal(userRepoStub.getWithoutRolesByLoginOrEmail.callCount, 1);
@@ -169,4 +168,4 @@ describe('UserService', () => {
             assert.equal(userRepoStub.insertUserRoles.callCount, 0);
         });
     });
-})*/
+})
