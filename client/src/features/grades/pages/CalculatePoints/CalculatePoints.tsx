@@ -58,6 +58,7 @@ const CalculatePoints: React.FC = () => {
                 <SuggestionBox
                     placeholder="Szkoła"
                     suggestions={suggestions.map(s => s.name)}
+                    defaultValue={selection.school?.name || ''}
                     onChange={selectedName => {
                         const selectedSchool = suggestions.find((s) => s.name === selectedName) || null;
                         if (selection.school?.name !== selectedName) {
@@ -76,7 +77,6 @@ const CalculatePoints: React.FC = () => {
                         defaultValue={selection.profile?.name || ''}
                         onChange={selectedName => {
                             const selectedProfile = selection.school?.profiles.find((p) => p.name === selectedName) || null;
-                            console.log(selectedProfile);
                             if (selection.profile?.name !== selectedName) setSelection({
                                 school: selection.school,
                                 profile: selectedProfile

@@ -54,6 +54,7 @@ const Header: React.FC = () => {
                 <div className={styles.navMenu}>
                     <Link className={styles.navLink} to="/">System naboru do szkół</Link>
                     <Link className={styles.navLink} to="/dates">Terminy</Link>
+                    <Link className={styles.navLink} to="/educationalOffer">Oferta</Link>
                 </div>
                 <div className={styles.navMenu}>
                     <Link className={styles.navLink} to="/login">Zaloguj się</Link>

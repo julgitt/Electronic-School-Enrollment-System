@@ -10,4 +10,9 @@ router.get('/profile/:id/points', authorize("user"), async (req: Request, res: R
     return await profileController.getPoints(req, res, next);
 });
 
+router.get('/profiles/info', async (req: Request, res: Response, next: NextFunction) => {
+    return await profileController.getProfilesWithInfo(req, res, next);
+});
+
+
 export default router;

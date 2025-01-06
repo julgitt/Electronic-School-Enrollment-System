@@ -16,4 +16,13 @@ export class ProfileController {
             return next(error);
         }
     }
+
+    async getProfilesWithInfo(req: Request, res: Response, next: NextFunction) {
+        try {
+            const profilesWithInfo = await this.profileService.getProfilesWithInfo();
+            return res.status(201).json(profilesWithInfo);
+        } catch (error) {
+            return next(error);
+        }
+    }
 }

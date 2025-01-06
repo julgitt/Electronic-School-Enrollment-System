@@ -76,20 +76,7 @@ export class ApplicationRepository {
         await db.none(query, [id]);
     }
 
-    async getAllPendingByProfile(profileId: number): Promise<ApplicationEntity[]> {
-        const status = ApplicationStatus.Pending;
-        const query = `
-            SELECT *
-            FROM applications
-            WHERE profile_id = $1
-              and status = $2
-        `;
-
-        return db.query(query, [profileId, status]);
-    }
-
-    async getAllAcceptedByProfile(profileId: number): Promise<ApplicationEntity[]> {
-        const status = ApplicationStatus.Accepted
+    async getAllByProfileAndStatus(profileId: number, status: ApplicationStatus): Promise<ApplicationEntity[]> {
         const query = `
             SELECT *
             FROM applications

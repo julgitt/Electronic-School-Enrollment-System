@@ -22,6 +22,7 @@ import {EditDeadlines} from "../features/admin/pages/EditDeadlines";
 import {EditProfile} from "../features/schoolAdmin/pages/EditProfile";
 import {ProfileCandidatesRank} from "../features/schoolAdmin/pages/ProfileCandidatesRank";
 import {AddProfile} from "../features/schoolAdmin/pages/AddProfile";
+import {EducationalOffer} from "../features/educationalOffer";
 
 const AppRoutes = () => {
     const {setError, error} = useError();
@@ -43,6 +44,7 @@ const AppRoutes = () => {
             <Route path="/dates" element={<Deadlines/>}/>
             <Route path="/login" element={<Login/>}/>
             <Route path="/signup" element={<Signup/>}/>
+            <Route path="educationalOffer" element={<EducationalOffer/>}/>
             {/* user */}
             <Route path="/registerCandidate" element={<RegisterCandidate/>}/>
             <Route path="/submitApplication" element={<SubmitApplication/>}/>

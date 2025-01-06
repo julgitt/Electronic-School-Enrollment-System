@@ -54,6 +54,8 @@ export const profileController = new ProfileController(profileService);
 
 const schoolRepository = new SchoolRepository();
 const schoolService = new SchoolService(schoolRepository, profileService, tx);
+
+profileService.setSchoolService(schoolService);
 export const schoolController = new SchoolController(schoolService);
 
 const applicationRepository = new ApplicationRepository();

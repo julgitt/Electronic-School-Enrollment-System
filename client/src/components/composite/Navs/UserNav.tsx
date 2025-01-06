@@ -71,6 +71,7 @@ const UserNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({renderLogo
             <div className={styles.navMenu}>
                 <Link className={styles.navLink} to="/">System naboru do szkół</Link>
                 <Link className={styles.navLink} to="/dates">Terminy</Link>
+                <Link className={styles.navLink} to="/educationalOffer">Oferta</Link>
                 {candidate && !isPastDeadline && (
                     <Link className={styles.navLink} to="/submitApplication">Złóż kandydaturę</Link>
                 )}

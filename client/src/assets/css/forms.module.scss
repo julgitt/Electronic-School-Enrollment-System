@@ -30,6 +30,13 @@ form {
   margin-bottom: var(--spacing-lg);
 }
 
+.horizontalListing {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: var(--spacing-xl);
+}
+
 .horizontal {
   display: grid;
   align-items: center;

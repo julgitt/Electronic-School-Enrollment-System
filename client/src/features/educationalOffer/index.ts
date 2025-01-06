@@ -1,0 +1,1 @@
+export {default as EducationalOffer} from "./EducationalOffer";

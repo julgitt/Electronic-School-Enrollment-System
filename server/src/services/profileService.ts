@@ -16,9 +16,12 @@ import {GRADE_TO_POINTS} from "../../../adminConstants";
 import {GradeType} from "../dto/grade/gradeType";
 import {GradesInfo, PointsInfo} from "../dto/grade/pointsInfo";
 import {SubjectService} from "./subjectService";
+import {ProfileWithInfo} from "../dto/profile/profileInfo";
+import {SchoolService} from "./schoolService";
 
 export class ProfileService {
     private applicationService!: ApplicationService;
+    private schoolService!: SchoolService;
 
     constructor(
         private profileRepository: ProfileRepository,
@@ -31,6 +34,10 @@ export class ProfileService {
 
     setApplicationService(applicationService: ApplicationService) {
         this.applicationService = applicationService;
+    }
+
+    setSchoolService(schoolService: SchoolService) {
+        this.schoolService = schoolService;
     }
 
     async getProfile(profileId: number): Promise<Profile> {
@@ -66,6 +73,24 @@ export class ProfileService {
 
     async getAllProfiles(): Promise<Profile[]> {
         return this.profileRepository.getAll();
+    }
+
+    async getProfilesWithInfo() {
+        const profiles = await this.getAllProfiles()
+        const profilesInfo :ProfileWithInfo[] = await Promise.all(profiles.map(async p => {
+            const schoolName = (await this.schoolService.getSchool(p.schoolId)).name
+
+            const criteria = await this.getProfileCriteria(p.id);
+            const criteriaSubjects = await Promise.all(criteria.map(async c => {
+                const subject = await this.subjectService.getSubject(c.subjectId);
+                return subject.name;
+            }));
+            const applicationNumber = (await this.applicationService.getAllPendingApplicationsByProfile(p.id)).length;
+
+            return {id: p.id, name: p.name, schoolName, criteriaSubjects, applicationNumber}
+        }))
+
+        return profilesInfo;
     }
 
     async deleteProfile(profileId: number, schoolId: number) {

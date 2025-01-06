@@ -7,14 +7,16 @@ interface SuggestionBoxProps {
     placeholder: string;
     suggestions: string[];
     defaultValue?: string;
-    onChange: (suggestion: string) => void;
+    onChange?: (suggestion: string) => void;
+    onSelect?: (selection: string) => void;
 }
 
 const SuggestionBox: React.FC<SuggestionBoxProps> = React.memo(({
                                                                     placeholder,
                                                                     defaultValue,
                                                                     suggestions,
-                                                                    onChange,
+                                                                    onChange = () => {},
+    onSelect = () => {},
                                                                 }) => {
     const [value, setValue] = useState<string>(defaultValue || '');
     const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>(suggestions);
@@ -59,7 +61,10 @@ const SuggestionBox: React.FC<SuggestionBoxProps> = React.memo(({
                         <li
                             key={index}
                             className={styles.suggestionItem}
-                            onClick={() => handleSelect(suggestion)}
+                            onClick={() => {
+                                onSelect(suggestion)
+                                handleSelect(suggestion)
+                            }}
                         >
                             {suggestion}
                         </li>

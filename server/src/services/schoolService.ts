@@ -17,6 +17,12 @@ export class SchoolService {
         return await this.schoolRepository.getAll();
     }
 
+    async getSchool(id: number): Promise<School> {
+        const school = await this.schoolRepository.getById(id);
+        if (!school) throw new ResourceNotFoundError("Nie znaleziono szkoły")
+        return school;
+    }
+
     async getAllSchoolsWithProfiles(): Promise<SchoolWithProfiles[]> {
         let schools: School[] = await this.schoolRepository.getAll();
         let schoolsWithProfiles: SchoolWithProfiles[] = [];

@@ -58,11 +58,11 @@ export class ApplicationService {
     }
 
     async getAllPendingApplicationsByProfile(profileId: number): Promise<Application[]> {
-        return this.applicationRepository.getAllPendingByProfile(profileId);
+        return this.applicationRepository.getAllByProfileAndStatus(profileId, ApplicationStatus.Pending);
     }
 
     async getAllAcceptedByProfile(profileId: number): Promise<Application[]> {
-        return this.applicationRepository.getAllAcceptedByProfile(profileId)
+        return this.applicationRepository.getAllByProfileAndStatus(profileId, ApplicationStatus.Accepted)
     }
 
     async getAllApplicationSubmissions(candidateId: number): Promise<ApplicationBySchool[]> {
