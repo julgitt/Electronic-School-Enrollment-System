@@ -38,7 +38,6 @@ export class ApplicationController {
             await this.applicationService.addApplication(applications, candidateId);
             return res.status(201).json({
                 message: 'Application successful',
-                redirect: '/applicationSubmitted'
             });
         } catch (error) {
             return next(error)
@@ -53,7 +52,6 @@ export class ApplicationController {
             await this.applicationService.updateApplication(applications, candidateId);
             return res.status(201).json({
                 message: 'Application successfully updated',
-                redirect: '/applicationSubmitted'
             });
         } catch (error) {
             return next(error)

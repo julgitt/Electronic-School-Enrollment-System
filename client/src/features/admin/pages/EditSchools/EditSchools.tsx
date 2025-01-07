@@ -11,6 +11,7 @@ const EditSchools: React.FC = () => {
     const [updatedSchools, setUpdatedSchools] = useState<School[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
     useEffect(() => {
         if (schools && schools.length > 0) {
@@ -38,9 +39,13 @@ const EditSchools: React.FC = () => {
     }
 
     const handleSave = async () => {
+        setError(null)
         setLoading(true);
         try {
             await updateSchools(updatedSchools);
+
+            setSuccessMessage("Zapisano zmiany");
+            setTimeout(() => setSuccessMessage(null), 3000);
         } catch (err: any) {
             setError(err.message);
         } finally {
@@ -64,6 +69,7 @@ const EditSchools: React.FC = () => {
             onDeleteSchool={handleDeleteSchool}
             onSave={handleSave}
             onUndo={handleUndo}
+            successMessage={successMessage}
         />
     );
 };

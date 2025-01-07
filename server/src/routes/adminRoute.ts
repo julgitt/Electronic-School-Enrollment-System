@@ -20,7 +20,7 @@ router.put('/enrollments', authorize('admin'), enrollmentValidator, handleValida
     return enrollmentController.updateEnrollments(req, res, next);
 });
 
-router.put('/schools', authorize('admin'), enrollmentValidator, handleValidationErrors, async (req: Request, res: Response, next: NextFunction) => {
+router.put('/schools', authorize('admin'), async (req: Request, res: Response, next: NextFunction) => {
     return await schoolController.updateSchools(req, res, next);
 });
 

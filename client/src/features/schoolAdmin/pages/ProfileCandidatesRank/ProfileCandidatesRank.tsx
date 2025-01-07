@@ -19,6 +19,7 @@ const ProfileCandidatesRank: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
 
     const handleDeleteApplication = async (id: number) => {
+        setError(null)
         setLoading(true);
         try {
             await deleteApplication(id);

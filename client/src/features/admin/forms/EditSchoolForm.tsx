@@ -8,6 +8,7 @@ import styles from "../../../assets/css/forms.module.scss";
 import {InputField} from "../../../components/atomic/InputField";
 import {School} from "../types/schoolRequest.ts";
 import {Button} from "../../../components/atomic/Button";
+import SuccessMessage from "../../../components/atomic/SuccessMessage/SuccessMessage.tsx";
 
 interface EditSchoolFormProps {
     updatedSchools: School[];
@@ -18,6 +19,7 @@ interface EditSchoolFormProps {
     onDeleteSchool: (id: number) => void;
     onSave: () => void;
     onUndo: () => void;
+    successMessage: string | null;
 }
 
 const EditSchoolForm: React.FC<EditSchoolFormProps> = ({
@@ -28,7 +30,8 @@ const EditSchoolForm: React.FC<EditSchoolFormProps> = ({
                                                            onAddSchool,
                                                            onDeleteSchool,
                                                            onSave,
-                                                           onUndo
+                                                           onUndo,
+    successMessage
                                                        }) => (
     <form method="POST" className={styles.form}>
         <h2>Edytuj szkoły</h2>
@@ -61,6 +64,7 @@ const EditSchoolForm: React.FC<EditSchoolFormProps> = ({
             <Button onClick={onUndo} disabled={loading}> Cofnij </Button>
             <Button onClick={onSave}> Zapisz </Button>
         </div>
+        {successMessage && (<SuccessMessage message={successMessage}/>)}
     </form>
 )
 

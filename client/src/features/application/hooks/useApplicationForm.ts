@@ -26,11 +26,11 @@ export const useApplicationForm = (submission: ProfilesSelection[]) => {
             s.profiles);
 
         try {
-            const data = (submission && submission.length > 0)
+            (submission && submission.length > 0)
                 ? await updateApplication(profiles)
                 : await submitApplication(profiles);
+            setSuccessMessage("Zapisano zmiany");
             setTimeout(() => setSuccessMessage(null), 3000);
-            window.location.href = data.redirect;
         } catch (err: any) {
             setError(err.message);
         } finally {

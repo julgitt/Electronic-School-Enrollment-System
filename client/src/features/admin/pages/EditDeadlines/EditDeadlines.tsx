@@ -44,6 +44,7 @@ const EditDeadlines: React.FC = () => {
     };
 
     const handleSave = async () => {
+        setError(null);
         setLoading(true);
         try {
             await updateEnrollments(updatedEnrollments);

@@ -10,7 +10,6 @@ import {Login} from "../features/auth/pages/Login";
 import {RegisterCandidate} from "../features/candidate/pages/RegisterCandidate";
 import {Signup} from "../features/auth/pages/Signup";
 import {ApplicationStatus} from '../features/application/pages/ApplicationStatus';
-import {ApplicationSubmitted} from "../features/application/pages/ApplicationSubmitted";
 import {SubmitApplicationPastDeadline} from "../features/application/pages/SubmitApplicationPastDeadline";
 import {SubmitGrades} from "../features/grades/pages/SubmitGrades";
 import {CalculatePoints} from "../features/grades/pages/CalculatePoints";
@@ -49,7 +48,6 @@ const AppRoutes = () => {
             <Route path="/registerCandidate" element={<RegisterCandidate/>}/>
             <Route path="/submitApplication" element={<SubmitApplication/>}/>
             <Route path="/applicationStatus" element={<ApplicationStatus/>}/>
-            <Route path="/applicationSubmitted" element={<ApplicationSubmitted/>}/>
             <Route path="/submitApplicationPastDeadline" element={<SubmitApplicationPastDeadline/>}/>
             <Route path="/submitGrades" element={<SubmitGrades/>}/>
             <Route path="/calculatePoints" element={<CalculatePoints/>}/>
