@@ -1,13 +1,11 @@
 import {ApplicationStatus} from "./applicationStatus";
 import {Candidate} from "../candidate/candidate";
-import {Profile} from "../profile/profile";
 import {ProfileWithInfo} from "../profile/profileInfo";
 
-export type RankList = { profile: ProfileWithInfo, accepted: RankedApplication[], reserve: RankedApplication[], rejected: RankedApplication[] };
-
-export interface RankedApplication {
+export interface ApplicationWithInfo {
     id: number;
     candidate: Candidate;
+    profile: ProfileWithInfo;
     points: number;
     priority: number;
     status: ApplicationStatus;

@@ -11,7 +11,7 @@ import {ProfileRequest} from "../dto/profile/profileRequest";
 import {transactionFunction} from "../db";
 import {ProfileWithCriteria} from "../dto/profile/profileWithCriteria";
 import {CandidateService} from "./candidateService";
-import {RankedApplication} from "../dto/application/rankedApplication";
+import {RankedApplication, RankList} from "../dto/application/rankedApplication";
 import {GRADE_TO_POINTS} from "../../../adminConstants";
 import {GradeType} from "../dto/grade/gradeType";
 import {GradesInfo, PointsInfo} from "../dto/grade/pointsInfo";
@@ -79,7 +79,7 @@ export class ProfileService {
     async getProfilesWithInfo() {
         const profiles = await this.getAllProfiles()
         const profilesInfo: ProfileWithInfo[] = await Promise.all(profiles.map(async p => {
-            const schoolName = (await this.schoolService.getSchool(p.schoolId)).name
+            const school = (await this.schoolService.getSchool(p.schoolId))
 
             const criteria = await this.getProfileCriteria(p.id);
             const criteriaSubjects = await Promise.all(criteria.map(async c => {
@@ -88,7 +88,7 @@ export class ProfileService {
             }));
             const applicationNumber = (await this.applicationService.getAllPendingByProfile(p.id)).length;
 
-            return {id: p.id, name: p.name, schoolName, criteriaSubjects, applicationNumber}
+            return {id: p.id, name: p.name, school, criteriaSubjects, applicationNumber}
         }))
 
         return profilesInfo;
@@ -170,16 +170,12 @@ export class ProfileService {
     }
 
     async getAllRankLists() {
-        const profiles = await this.getAllProfiles();
-        const rankLists = new Map<number, {
-            accepted: RankedApplication[],
-            reserve: RankedApplication[],
-            rejected: RankedApplication[]
-        }>();
+        const profiles = await this.getProfilesWithInfo();
+        const rankLists = new Map<number, RankList>();
 
         for (const profile of profiles) {
             const {accepted, reserve} = await this.getRankList(profile.id);
-            rankLists.set(profile.id, {accepted, reserve, rejected: []});
+            rankLists.set(profile.id, {profile, accepted, reserve, rejected: []});
         }
 
         return rankLists;

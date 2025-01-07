@@ -4,6 +4,7 @@ import {ApplicationStatus} from "../dto/application/applicationStatus";
 import {ApplicationRequest} from "../dto/application/applicationRequest";
 import {transactionFunction} from "../db";
 import {RankedApplication, RankList} from "../dto/application/rankedApplication";
+import {ApplicationWithInfo} from "../dto/application/applicationWithInfo";
 
 
 export class AdminService {
@@ -14,10 +15,10 @@ export class AdminService {
     ) {
     }
 
-    async processProfileEnrollments(): Promise<void> {
+    async processProfileEnrollments(): Promise<ApplicationWithInfo[]> {
         const rankListsByProfile = await this.profileService.getAllRankLists();
         const finalEnrollmentLists = await this.finalizeEnrollmentProcess(rankListsByProfile);
-        await this.updateApplicationStatuses(finalEnrollmentLists);
+        return await this.updateApplicationStatuses(finalEnrollmentLists)
     }
 
     private async finalizeEnrollmentProcess(rankListsByProfile: Map<number, RankList>) {
@@ -132,17 +133,20 @@ export class AdminService {
     }
 
     private async updateApplicationStatuses(finalEnrollmentLists: Map<number, RankList>) {
+        const updatedApplications: ApplicationWithInfo[]  = []
         await this.tx(async t => {
             for (const [_profileId, rankLists] of finalEnrollmentLists.entries()) {
-                const allApplications = [
-                    ...rankLists.accepted.map(app => ({id: app.id, status: ApplicationStatus.Accepted})),
-                    ...rankLists.reserve.map(app => ({id: app.id, status: ApplicationStatus.Rejected})),
-                    ...rankLists.rejected.map(app => ({id: app.id, status: ApplicationStatus.Rejected})),
+                const allApplications= [
+                    ...rankLists.accepted.map(app => ({...app, status: ApplicationStatus.Accepted, profile: rankLists.profile})),
+                    ...rankLists.reserve.map(app => ({...app, status: ApplicationStatus.Rejected, profile: rankLists.profile})),
+                    ...rankLists.rejected.map(app => ({...app, status: ApplicationStatus.Rejected, profile: rankLists.profile})),
                 ];
-                for (const {id, status} of allApplications) {
-                    await this.applicationService.updateApplicationStatus(id, status, t);
+                for (const a of allApplications) {
+                    await this.applicationService.updateApplicationStatus(a.id, a.status, t);
+                    updatedApplications.push(a);
                 }
             }
         });
+        return updatedApplications;
     }
 }

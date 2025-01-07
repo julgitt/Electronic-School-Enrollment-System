@@ -8,7 +8,7 @@ import RegisterCandidateForm from "../../forms/RegisterForm.tsx";
 const RegisterCandidate: React.FC = () => {
     const {formData, handleChange} = useFormData<Candidate>({
         id: 0,
-        user_id: 0,
+        userId: 0,
         firstName: '',
         lastName: '',
         pesel: '',

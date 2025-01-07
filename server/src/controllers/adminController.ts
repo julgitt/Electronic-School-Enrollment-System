@@ -9,8 +9,8 @@ export class AdminController {
 
     async enroll(_req: Request, res: Response, next: NextFunction) {
         try {
-            await this.adminService.processProfileEnrollments();
-            return res.status(200).json({message: "Enrolled successfully."});
+            const enrollmentInfo = await this.adminService.processProfileEnrollments();
+            return res.status(200).json(enrollmentInfo);
         } catch (error) {
             return next(error);
         }
