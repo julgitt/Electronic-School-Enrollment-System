@@ -17,10 +17,8 @@ function App() {
                     </main>
                     <Footer/>
                 </div>
-
             </Router>
         </ErrorProvider>
-
     );
 }
 

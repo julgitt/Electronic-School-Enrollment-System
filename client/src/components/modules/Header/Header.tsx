@@ -44,21 +44,53 @@ const Header: React.FC = () => {
         </Link>
     );
 
+    const toggleTheme= () => {
+        const currentTheme = document.documentElement.getAttribute("data-bs-theme");
+        let newTheme;
+        switch(currentTheme) {
+            case "light":
+                newTheme =  "dark";
+                break;
+            case "dark":
+                newTheme = "high-contrast";
+                break;
+            default:
+                newTheme = "light"
+        }
+        document.documentElement.setAttribute("data-bs-theme", newTheme);
+    }
+
     const renderNav = () => {
         if (roles.includes('admin')) return <AdminNav renderLogoutLink={renderLogoutLink}/>;
         if (roles.includes('user')) return <UserNav renderLogoutLink={renderLogoutLink}/>;
         if (roles.includes('schoolAdmin')) return <SchoolAdminNav renderLogoutLink={renderLogoutLink}/>;
 
         return (
-            <nav className={styles.nav}>
-                <div className={styles.navMenu}>
-                    <Link className={styles.navLink} to="/">System naboru do szkół</Link>
-                    <Link className={styles.navLink} to="/dates">Terminy</Link>
-                    <Link className={styles.navLink} to="/educationalOffer">Oferta</Link>
-                </div>
-                <div className={styles.navMenu}>
-                    <Link className={styles.navLink} to="/login">Zaloguj się</Link>
-                    <Link className={styles.navLink} to="/signup">Zarejestruj się</Link>
+            <nav className="navbar navbar-expand-lg">
+                <div className="container-fluid">
+                    <a className="navbar-brand" href="/">System naboru do szkół</a>
+                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <span className="navbar-toggler-icon"></span>
+                    </button>
+                    <div className="collapse navbar-collapse" id="navbarNav">
+                        <ul className="navbar-nav ms-auto">
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/dates">Terminy</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/educationalOffer">Oferta</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/login">Zaloguj się</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/signup">Zarejestruj się</Link>
+                            </li>
+                        </ul>
+                        <button onClick={toggleTheme}>Motyw</button>
+                    </div>
                 </div>
             </nav>
         );
