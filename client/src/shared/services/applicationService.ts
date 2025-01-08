@@ -36,11 +36,10 @@ export const updateApplication = async (
     return data;
 }
 
-export const deleteApplication = async (id: number) => {
+export const rejectApplication = async (id: number) => {
     const response = await fetch(`api/admin/application/${id}`, {
-        method: 'DELETE',
+        method: 'PUT',
     });
-    if (!response.ok) throw new Error((await response.json()).message || 'Błąd podczas usuwania aplikacji');
+    if (!response.ok) throw new Error((await response.json()).message || 'Błąd podczas odrzucania aplikacji');
     window.location.reload();
-
 };

@@ -4,7 +4,7 @@ import LoadingPage from "../../../../app/routes/LoadingPage.tsx";
 import {RankedApplication} from "../../../../shared/types/rankedApplication.ts";
 import ApplicationTable from "../../components/ApplicationTable.tsx";
 import {ErrorMessage} from "../../../../components/atomic/ErrorMessage";
-import {deleteApplication} from "../../../../shared/services/applicationService.ts";
+import {rejectApplication} from "../../../../shared/services/applicationService.ts";
 import {Profile} from "../../../../shared/types/profile.ts";
 
 
@@ -18,11 +18,11 @@ const ProfileCandidatesRank: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    const handleDeleteApplication = async (id: number) => {
+    const handleRejectApplication = async (id: number) => {
         setError(null)
         setLoading(true);
         try {
-            await deleteApplication(id);
+            await rejectApplication(id);
         } catch (err: any) {
             setError(err.message);
         } finally {
@@ -57,8 +57,8 @@ const ProfileCandidatesRank: React.FC = () => {
                         <ApplicationTable
                             title={"Aplikacje zaakceptowane w poprzednich turach:"}
                             applications={data.prevAccepted}
-                            canDelete={true}
-                            onDelete={handleDeleteApplication}
+                            canReject={true}
+                            onReject={handleRejectApplication}
                             loading={loading}
                         />
                     )}

@@ -66,14 +66,14 @@ export class ApplicationRepository {
         return await db.oneOrNone(query, [id]);
     }
 
-    async deleteById(id: number): Promise<void> {
+    async rejectById(id: number): Promise<void> {
         const query = `
-            DELETE
-            FROM applications
+            UPDATE applications
+            SET status = $2
             WHERE id = $1
         `;
 
-        await db.none(query, [id]);
+        await db.none(query, [id, ApplicationStatus.Rejected]);
     }
 
     async getAllByProfileAndStatus(profileId: number, status: ApplicationStatus): Promise<ApplicationEntity[]> {

@@ -189,15 +189,15 @@ describe('ApplicationService', () => {
             }
             applicationRepoStub.getById.resolves(mockApplication);
 
-            await applicationService.deleteApplication(1, 1);
+            await applicationService.rejectApplication(1, 1);
 
-            assert.equal(applicationRepoStub.deleteById.callCount, 1);
+            assert.equal(applicationRepoStub.rejectById.callCount, 1);
         });
 
         it('should throw ResourceNotFoundError if application does not exist', async () => {
             applicationRepoStub.getById.resolves(null);
             await assert.rejects(
-                () => applicationService.deleteApplication(1, 1),
+                () => applicationService.rejectApplication(1, 1),
                 (err) => err instanceof ResourceNotFoundError && err.message === 'Nie znaleziono aplikacji do usunięcia.'
             );
         });

@@ -113,10 +113,10 @@ export class ApplicationService {
         });
     }
 
-    async deleteApplication(id: number, profileId: number): Promise<void> {
+    async rejectApplication(id: number, profileId: number): Promise<void> {
         const application = await this.applicationRepository.getById(id);
         if (!application || profileId != application.profileId) throw new ResourceNotFoundError("Nie znaleziono aplikacji do usunięcia.");
-        await this.applicationRepository.deleteById(id);
+        await this.applicationRepository.rejectById(id);
     }
 
     private createApplicationEntity(submission: ApplicationRequest, candidateId: number, enrollmentId: number): ApplicationEntity {

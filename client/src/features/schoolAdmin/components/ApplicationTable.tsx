@@ -6,21 +6,21 @@ interface ApplicationsTableProps {
     applications: RankedApplication[];
     title: string
     loading?: boolean;
-    canDelete?: boolean
-    onDelete?: (id: number) => void;
+    canReject?: boolean
+    onReject?: (id: number) => void;
 }
 
 const ApplicationsTable: React.FC<ApplicationsTableProps> = ({
                                                                  applications,
                                                                  title,
-                                                                 onDelete,
+                                                                 onReject,
                                                                  loading = false,
-                                                                 canDelete = false
+                                                                 canReject = false
                                                              }) => {
 
-    const handleDelete = (applicationId: number) => {
-        if (onDelete && window.confirm("Czy na pewno chcesz usunąć tę aplikację?")) {
-            onDelete(applicationId);
+    const handleReject = (applicationId: number) => {
+        if (onReject && window.confirm("Czy na pewno chcesz odrzucić tę aplikację?")) {
+            onReject(applicationId);
         }
     };
 
@@ -34,8 +34,8 @@ const ApplicationsTable: React.FC<ApplicationsTableProps> = ({
                     <th>Nazwisko</th>
                     <th>Punkty</th>
                     <th>Status</th>
-                    {(canDelete) && (
-                        <th>Usuń</th>
+                    {(canReject) && (
+                        <th>Odrzuć</th>
                     )}
                 </tr>
                 </thead>
@@ -46,10 +46,10 @@ const ApplicationsTable: React.FC<ApplicationsTableProps> = ({
                         <td>{application.candidate.lastName}</td>
                         <td>{application.points}</td>
                         <td>{application.status}</td>
-                        {(canDelete) && (
+                        {(canReject) && (
                             <td>
                                 <MinusButton
-                                    onClick={() => handleDelete(application.id)}
+                                    onClick={() => handleReject(application.id)}
                                     disabled={loading}
                                 />
                             </td>

@@ -200,11 +200,11 @@ export class SchoolAdminController {
         }
     }
 
-    async deleteApplication(req: Request, res: Response, next: NextFunction) {
+    async rejectApplication(req: Request, res: Response, next: NextFunction) {
         try {
             const profileId = req.signedCookies.profileId!;
             const applicationId = Number(req.params.id)!;
-            await this.applicationService.deleteApplication(applicationId, profileId);
+            await this.applicationService.rejectApplication(applicationId, profileId);
             return res.status(204).json()
         } catch (error) {
             return next(error);

@@ -88,7 +88,7 @@ export class ProfileService {
             }));
             const applicationNumber = (await this.applicationService.getAllPendingByProfile(p.id)).length;
 
-            return {id: p.id, name: p.name, school, criteriaSubjects, applicationNumber}
+            return {id: p.id, name: p.name, schoolId: school.id, schoolName: school.name, criteriaSubjects, applicationNumber}
         }))
 
         return profilesInfo;

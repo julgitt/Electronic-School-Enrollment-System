@@ -51,8 +51,8 @@ const Enroll: React.FC = () => {
                     candidateLastName: a.candidate.lastName,
                     profileId: a.profile.id,
                     profileName: a.profile.name,
-                    schoolId: a.profile.school.id,
-                    schoolName: a.profile.school.name,
+                    schoolId: a.profile.schoolId,
+                    schoolName: a.profile.schoolName,
                 }
             }), [
                 {key: "id", label: "ID aplikacji"},
@@ -119,7 +119,7 @@ const Enroll: React.FC = () => {
                             <td>{application.candidate.firstName}</td>
                             <td>{application.candidate.lastName}</td>
                             <td>{application.profile.name}</td>
-                            <td>{application.profile.school.name}</td>
+                            <td>{application.profile.schoolName}</td>
                             <td>{application.points}</td>
                             <td>{application.priority}</td>
                             <td>{application.status}</td>

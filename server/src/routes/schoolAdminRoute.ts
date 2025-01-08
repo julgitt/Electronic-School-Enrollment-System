@@ -46,8 +46,8 @@ router.put('/admin/profile/:id', authorize('schoolAdmin'), profileValidator, han
     return await schoolAdminController.updateProfile(req, res, next);
 });
 
-router.delete('/admin/application/:id', authorize('schoolAdmin'), async (req: Request, res: Response, next: NextFunction) => {
-    return await schoolAdminController.deleteApplication(req, res, next);
+router.put('/admin/application/:id', authorize('schoolAdmin'), async (req: Request, res: Response, next: NextFunction) => {
+    return await schoolAdminController.rejectApplication(req, res, next);
 });
 
 export default router;
