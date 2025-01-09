@@ -21,6 +21,8 @@ import {ProfileRequest} from "../../../src/dto/profile/profileRequest";
 import {DataConflictError} from "../../../src/errors/dataConflictError";
 import {GradeType} from "../../../src/dto/grade/gradeType";
 import {GradeEntity} from "../../../src/models/gradeEntity";
+import {Candidate} from "../../../src/dto/candidate/candidate";
+import {ProfileWithInfo} from "../../../src/dto/profile/profileInfo";
 
 describe('ProfileService', () => {
     let profileService: ProfileService;
@@ -46,6 +48,8 @@ describe('ProfileService', () => {
         profileService = new ProfileService(profileRepoStub, gradeServiceStub, subjectServiceStub, candidateServiceStub, txStub);
         profileService.setSchoolService(schoolServiceStub)
         profileService.setApplicationService(applicationServiceStub)
+
+
     });
 
     afterEach(() => {
@@ -91,7 +95,7 @@ describe('ProfileService', () => {
             ];
             profileRepoStub.getAllBySchool.resolves(mockProfiles);
 
-            const result = await profileService.getProfilesBySchool(1);
+            const result = await profileService.getAllProfilesBySchool(1);
 
             assert.equal(profileRepoStub.getAllBySchool.callCount, 1);
             assert.equal(result, mockProfiles);
@@ -100,7 +104,7 @@ describe('ProfileService', () => {
             const mockProfiles: ProfileEntity[] = []
             profileRepoStub.getAllBySchool.resolves(mockProfiles);
 
-            const result = await profileService.getProfilesBySchool(1);
+            const result = await profileService.getAllProfilesBySchool(1);
 
             assert.equal(profileRepoStub.getAllBySchool.callCount, 1);
             assert.equal(result, mockProfiles);
@@ -200,6 +204,7 @@ describe('ProfileService', () => {
             assert.deepEqual(result, [{
                 id: mockProfile.id,
                 name: mockProfile.name,
+                schoolId: mockSchool.id,
                 schoolName: mockSchool.name,
                 criteriaSubjects: ["matematyka"],
                 applicationNumber: 2
@@ -365,4 +370,137 @@ describe('ProfileService', () => {
             ]);
         });
     })
+
+    describe('getRankList', async () => {
+        it('should get rank list with applications sort by points', async () => {
+            const mockProfileCriteria = [
+                {id: 1, subjectId: 1, profileId: 1, type: ProfileCriteriaType.Mandatory},
+                {id: 2, subjectId: 2, profileId: 1, type: ProfileCriteriaType.Alternative},
+                {id: 3, subjectId: 3, profileId: 1, type: ProfileCriteriaType.Alternative}
+            ];
+            const mockAcceptedApplications: Application[] = [];
+            const mockPendingApplications: Application[] = [
+                {id: 1, profileId: 1, candidateId: 1} as Application,
+                {id: 2, profileId: 1, candidateId: 2} as Application,
+                {id: 3, profileId: 1, candidateId: 3} as Application,
+            ];
+            const mockProfileCapacity: number = 2;
+
+            gradeServiceStub.getAllByCandidate.callsFake((candidateId: number) => {
+                return Promise.resolve(getMockGradesByCandidate(candidateId));
+            });
+
+            candidateServiceStub.getCandidateById.callsFake((candidateId: number) => {
+                return Promise.resolve({id: candidateId} as Candidate)
+            });
+
+            profileRepoStub.getProfileCriteria.resolves(mockProfileCriteria);
+            profileRepoStub.getProfileCapacity.resolves(mockProfileCapacity);
+            applicationServiceStub.getAllAcceptedByProfile.resolves(mockAcceptedApplications);
+            applicationServiceStub.getAllPendingByProfile.resolves(mockPendingApplications);
+
+            const result = await profileService.getRankList(1);
+
+            assert.deepEqual(result.prevAccepted, []);
+            assert.equal(result.reserve.length, 1);
+            assert.equal(result.reserve[0].id, 1);
+            assert.equal(result.reserve[0].points, 95);
+
+            assert.equal(result.accepted.length, 2);
+            assert.equal(result.accepted[0].id, 3);
+            assert.equal(result.accepted[0].points, 139);
+
+            assert.equal(result.accepted[1].id, 2);
+            assert.equal(result.accepted[1].points, 106.75);
+
+        })
+    })
+
+    describe('getAllRankLists', () => {
+        it('should get all rank lists for all profiles', async () => {
+            const getRankListStub = sinon.stub(profileService, 'getRankList');
+            getRankListStub.callsFake((_profileId: number) => {
+                return Promise.resolve({accepted: [], reserve: [], prevAccepted: []});
+            });
+            const getProfilesWithInfoStub = sinon.stub(profileService, 'getProfilesWithInfo');
+            getProfilesWithInfoStub.callsFake(() => {
+                return Promise.resolve([{id: 1} as ProfileWithInfo, {id: 2} as ProfileWithInfo, {id: 3} as ProfileWithInfo]);
+            });
+
+            const result = await profileService.getAllRankLists();
+
+            assert.equal(result.size, 3);
+            assert(result.has(1));
+            assert(result.has(2));
+            assert(result.has(3));
+            assert.equal(getProfilesWithInfoStub.callCount, 1);
+            assert.equal(getRankListStub.callCount, 3);
+        });
+    })
+
+    function getMockGradesByCandidate(id: number): GradeEntity[] {
+        const grades = new Map([
+            [1, [
+                {subjectId: 1, type: GradeType.Exam, candidateId: 1, grade: 50}, {
+                    subjectId: 1,
+                    type: GradeType.Certificate,
+                    candidateId: 1,
+                    grade: 3
+                },
+                {subjectId: 2, type: GradeType.Exam, candidateId: 1, grade: 50}, {
+                    subjectId: 2,
+                    type: GradeType.Certificate,
+                    candidateId: 1,
+                    grade: 3
+                },
+                {subjectId: 3, type: GradeType.Exam, candidateId: 1, grade: 100}, {
+                    subjectId: 3,
+                    type: GradeType.Certificate,
+                    candidateId: 1,
+                    grade: 5
+                },
+            ]],
+            [2, [
+                {subjectId: 1, type: GradeType.Exam, grade: 75, candidateId: 2}, {
+                    subjectId: 1,
+                    type: GradeType.Certificate,
+                    grade: 4,
+                    candidateId: 2
+                },
+                {subjectId: 2, type: GradeType.Exam, grade: 75, candidateId: 2}, {
+                    subjectId: 2,
+                    type: GradeType.Certificate,
+                    grade: 4,
+                    candidateId: 2
+                },
+                {subjectId: 3, type: GradeType.Exam, grade: 75, candidateId: 2}, {
+                    subjectId: 3,
+                    type: GradeType.Certificate,
+                    grade: 4,
+                    candidateId: 2
+                },
+            ]],
+            [3, [
+                {subjectId: 1, type: GradeType.Exam, candidateId: 3, grade: 100}, {
+                    subjectId: 1,
+                    type: GradeType.Certificate,
+                    candidateId: 3,
+                    grade: 5
+                },
+                {subjectId: 2, type: GradeType.Exam, candidateId: 3, grade: 100}, {
+                    subjectId: 2,
+                    type: GradeType.Certificate,
+                    candidateId: 3,
+                    grade: 5
+                },
+                {subjectId: 3, type: GradeType.Exam, candidateId: 3, grade: 100}, {
+                    subjectId: 3,
+                    type: GradeType.Certificate,
+                    candidateId: 3,
+                    grade: 5
+                }
+            ]],
+        ])
+        return grades.get(id) || [];
+    }
 })

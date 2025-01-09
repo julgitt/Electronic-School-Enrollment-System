@@ -86,47 +86,47 @@ const Enroll: React.FC = () => {
                     Zacznij nabór
                 </Button>
                 {enrollmentInfo && enrollmentInfo.length > 0 && (
-                <Button
-                    onClick={handleExportClick}
-                >
-                    Eksportuj
-                </Button>
+                    <Button
+                        onClick={handleExportClick}
+                    >
+                        Eksportuj
+                    </Button>
                 )}
             </div>
             {successMessage && (<SuccessMessage message={successMessage}/>)}
 
             {enrollmentInfo && enrollmentInfo.length > 0 && (
                 <>
-                <table>
-                    <thead>
-                    <tr>
-                        <th>id<br/>aplikacji</th>
-                        <th>id<br/>kandydata</th>
-                        <th>imię</th>
-                        <th>nazwisko</th>
-                        <th>nazwa<br/>profilu</th>
-                        <th>nazwa szkoły</th>
-                        <th>punkty</th>
-                        <th>priorytet</th>
-                        <th>status</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {enrollmentInfo.map((application) => (
-                        <tr key={application.id}>
-                            <td>{application.id}</td>
-                            <td>{application.candidate.id}</td>
-                            <td>{application.candidate.firstName}</td>
-                            <td>{application.candidate.lastName}</td>
-                            <td>{application.profile.name}</td>
-                            <td>{application.profile.schoolName}</td>
-                            <td>{application.points}</td>
-                            <td>{application.priority}</td>
-                            <td>{application.status}</td>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>id<br/>aplikacji</th>
+                            <th>id<br/>kandydata</th>
+                            <th>imię</th>
+                            <th>nazwisko</th>
+                            <th>nazwa<br/>profilu</th>
+                            <th>nazwa szkoły</th>
+                            <th>punkty</th>
+                            <th>priorytet</th>
+                            <th>status</th>
                         </tr>
-                    ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                        {enrollmentInfo.map((application) => (
+                            <tr key={application.id}>
+                                <td>{application.id}</td>
+                                <td>{application.candidate.id}</td>
+                                <td>{application.candidate.firstName}</td>
+                                <td>{application.candidate.lastName}</td>
+                                <td>{application.profile.name}</td>
+                                <td>{application.profile.schoolName}</td>
+                                <td>{application.points}</td>
+                                <td>{application.priority}</td>
+                                <td>{application.status}</td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
                 </>
             )}
         </form>

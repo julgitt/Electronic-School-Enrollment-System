@@ -111,7 +111,7 @@ export class SchoolAdminController {
         try {
             const schoolId = req.signedCookies.schoolId
             if (schoolId == null) return res.status(200).json();
-            const profiles = await this.profileService.getProfilesBySchool(schoolId)
+            const profiles = await this.profileService.getAllProfilesBySchool(schoolId)
             return res.status(200).json(profiles);
         } catch (error) {
             return next(error);

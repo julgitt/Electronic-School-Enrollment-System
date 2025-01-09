@@ -32,6 +32,21 @@ export class ApplicationService {
         this.profileService = profileService;
     }
 
+    /**
+     * Pobiera wszystkie aplikacje wraz z profilami złożone przez podanego kandydata
+     *
+     * @param {number} candidateId - identyfikator kandydata.
+     * @returns {Promise<School>} Zwraca tablicę obiektów aplikacji z profilami. Obiekty te zawierają:
+     *
+     *  id: number - identyfikator aplikacji
+     *  round: number - turę naboru
+     *  school: SchoolWithProfiles - obiekt szkoły do której złożono aplikację wraz ze wszystkimi profilami szkoły
+     *  profile: Profile - obiekt profilu do którego złożono aplikację
+     *  priority: number - priorytet
+     *  status: string - status aplikacji
+     *  createdAt: Date | number - data utworzenia aplikacji
+     *  updatedAt: Date | number - data modyfikacji aplikacji
+     */
     async getAllApplications(candidateId: number): Promise<ApplicationWithProfiles[]> {
         const applications = await this.applicationRepository.getAllByCandidate(candidateId);
 
@@ -57,23 +72,82 @@ export class ApplicationService {
         )
     }
 
+    /**
+     * Pobiera wszystkie aplikacje ze statusem oczekującym dla podanego profilu
+     *
+     * @param {number} profileId - identyfikator profilu.
+     * @returns {Promise<Application[]>} Zwraca tablicę obiektów oczekujących aplikacji. Obiekty te zawierają:
+     *
+     *  id: number - identyfikator aplikacji
+     *  profileId: number - identyfikator profilu
+     *  candidateId: number - identyfikator kandydata
+     *  priority: number - priorytet
+     *  status: string - status aplikacji
+     */
     async getAllPendingByProfile(profileId: number): Promise<Application[]> {
         return this.applicationRepository.getAllByProfileAndStatus(profileId, ApplicationStatus.Pending);
     }
 
+    /**
+     * Pobiera wszystkie aplikacje ze statusem zaakceptowanym dla podanego profilu
+     *
+     * @param {number} profileId - identyfikator profilu.
+     * @returns {Promise<Application[]>} Zwraca tablicę obiektów zaakceptowanych aplikacji. Obiekty te zawierają:
+     *
+     *  id: number - identyfikator aplikacji
+     *  profileId: number - identyfikator profilu
+     *  candidateId: number - identyfikator kandydata
+     *  priority: number - priorytet
+     *  status: string - status aplikacji
+     */
     async getAllAcceptedByProfile(profileId: number): Promise<Application[]> {
         return this.applicationRepository.getAllByProfileAndStatus(profileId, ApplicationStatus.Accepted)
     }
 
+    /**
+     * Pobiera wszystkie aplikacje złożone przez podanego kandydata, pogrupowane ze względu na szkoły.
+     * Zatem wszystkie profile należące do danej szkoły, do których złożył aplikację kandydat, będą w jednej grupie.
+     *
+     * @param {number} candidate - identyfikator kadnydata.
+     * @returns {Promise<ApplicationBySchool[]>} Zwraca tablicę obiektów pogrupowanych aplikacji. Obiekty te zawierają:
+     *
+     *  - school: SchoolWithProfiles - szkołę wraz ze wszystkimi profilami należącymi do tej szkoły
+     *  - profiles:  ApplicationRequest[]:
+     *
+     *     - profileId: number - identyfikator profilu
+     *     - priority: number - priorytet
+     */
     async getAllApplicationSubmissions(candidateId: number): Promise<ApplicationBySchool[]> {
         const applications: ApplicationWithProfiles[] = await this.getAllApplications(candidateId);
         return this.groupApplicationsBySchool(applications);
     }
 
-    async updateApplicationStatus(id: number, status: string, t: ITask<any>) {
+    /**
+     * Aktualizuje status podanej aplikacji, na ten, podany w argumencie.
+     *
+     * @param {number} id - identyfikator aplikacji.
+     * @param {ApplicationStatus} status - status aplikacji ("Oczekujący" | "Przyjęty" | "Odrzucony"
+     * @param {ITask<any>} t - obiekt transakcji
+     * @returns {Promise<void>}
+     */
+    async updateApplicationStatus(id: number, status: ApplicationStatus, t: ITask<any>): Promise<void> {
         return this.applicationRepository.updateStatus(id, status, t);
     }
 
+
+    /**
+     * Dodaje nowe aplikacje złożone przez podanego kandydata.
+     *
+     * @param {number} candidateId - identyfikator kandydata składającego aplikacje.
+     * @param {ApplicationRequest[]} submissions - tablica  obiektów aplikacji, które zawierają:
+     *
+     *  - profileId: number - identyfikator profilu
+     *  - priority: number - priorytet aplikacji
+     * @returns {Promise<void>}
+     *
+     * @throws {ValidationError} Jeśli kandydat próbuje złożyć aplikację poza okresem naboru
+     * @throws {DataConflictError} Jeśli kandydat już wcześniej złożył aplikację
+     */
     async addApplication(submissions: ApplicationRequest[], candidateId: number): Promise<void> {
         const enrollment: Enrollment | null = await this.enrollmentService.getCurrentEnrollment();
         if (!enrollment) throw new ValidationError('Nie można złożyć aplikacji poza okresem naboru.');
@@ -92,6 +166,19 @@ export class ApplicationService {
         });
     }
 
+    /**
+     * Aktualizuje aplikacje złożone przez podanego kandydata.
+     *
+     * @param {number} candidateId - identyfikator kandydata edytującego aplikacje.
+     * @param {ApplicationRequest[]} submissions - tablica  obiektów aplikacji, które zawierają:
+     *
+     *  - profileId: number - identyfikator profilu
+     *  - priority: number - priorytet aplikacji
+     * @returns {Promise<void>}
+     *
+     * @throws {ValidationError} Jeśli kandydat próbuje edytować aplikację poza okresem naboru
+     * @throws {ResourceNotFoundError} Jeśli nie znaleziono aplikacji
+     */
     async updateApplication(submissions: ApplicationRequest[], candidateId: number): Promise<void> {
         const enrollment: Enrollment | null = await this.enrollmentService.getCurrentEnrollment();
         if (!enrollment) throw new ValidationError('Nie można złożyć aplikacji poza okresem naboru.');
@@ -113,6 +200,16 @@ export class ApplicationService {
         });
     }
 
+    /**
+     * Aktualizuje status aplikacji o podanym identyfikatorze na odrzucony. Wymaga profilu,
+     * aby uwierzytelnić że aktualizacje przeprowadza administrator szkolny, który ma dostęp do zarządzania tą aplikacją
+     *
+     * @param {number} id - identyfikator aplikacji.
+     * @param {number} profileId - identyfikator profilu.
+     * @returns {Promise<void>}
+     *
+     * @throws {ResourceNotFoundError} Jeśli nie znaleziono aplikacji
+     */
     async rejectApplication(id: number, profileId: number): Promise<void> {
         const application = await this.applicationRepository.getById(id);
         if (!application || profileId != application.profileId) throw new ResourceNotFoundError("Nie znaleziono aplikacji do usunięcia.");

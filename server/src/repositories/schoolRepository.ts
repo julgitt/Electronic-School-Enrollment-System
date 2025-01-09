@@ -56,12 +56,12 @@ export class SchoolRepository {
 
     async getByIdAndAdmin(id: number, adminId: number) {
         const query = `
-            SELECT
-                s.id,
-                s.name
+            SELECT s.id,
+                   s.name
             FROM schools s
-            JOIN school_admins a ON s.id = a.school_id
-            WHERE a.school_id = $1 AND a.user_id = $2 
+                     JOIN school_admins a ON s.id = a.school_id
+            WHERE a.school_id = $1
+              AND a.user_id = $2
             LIMIT 1;
         `;
 

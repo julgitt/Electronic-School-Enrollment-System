@@ -44,8 +44,8 @@ describe('SchoolService', () => {
             ];
 
             schoolRepoStub.getAll.resolves(mockSchools);
-            profileServiceStub.getProfilesBySchool.withArgs(1).resolves(mockProfiles1);
-            profileServiceStub.getProfilesBySchool.withArgs(2).resolves(mockProfiles2);
+            profileServiceStub.getAllProfilesBySchool.withArgs(1).resolves(mockProfiles1);
+            profileServiceStub.getAllProfilesBySchool.withArgs(2).resolves(mockProfiles2);
 
             const result = await schoolService.getAllSchoolsWithProfiles();
 
@@ -54,7 +54,7 @@ describe('SchoolService', () => {
                 {id: 2, name: 'School 2', profiles: mockProfiles2},
             ]);
             assert.equal(schoolRepoStub.getAll.callCount, 1);
-            assert.equal(profileServiceStub.getProfilesBySchool.callCount, 2);
+            assert.equal(profileServiceStub.getAllProfilesBySchool.callCount, 2);
         });
     });
 
@@ -68,13 +68,13 @@ describe('SchoolService', () => {
             ];
 
             schoolRepoStub.getById.resolves(mockSchool);
-            profileServiceStub.getProfilesBySchool.resolves(mockProfiles);
+            profileServiceStub.getAllProfilesBySchool.resolves(mockProfiles);
 
             const result = await schoolService.getSchoolWithProfiles(1);
 
             assert.deepEqual(result, {id: 1, name: 'School 1', profiles: mockProfiles});
             assert.equal(schoolRepoStub.getById.callCount, 1);
-            assert.equal(profileServiceStub.getProfilesBySchool.callCount, 1);
+            assert.equal(profileServiceStub.getAllProfilesBySchool.callCount, 1);
         })
 
         it('should throw an error when the school with profiles does not exist', async () => {
@@ -86,7 +86,7 @@ describe('SchoolService', () => {
             );
 
             assert.equal(schoolRepoStub.getById.callCount, 1);
-            assert.equal(profileServiceStub.getProfilesBySchool.callCount, 0);
+            assert.equal(profileServiceStub.getAllProfilesBySchool.callCount, 0);
         });
     })
 

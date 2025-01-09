@@ -31,7 +31,7 @@ const EditSchoolForm: React.FC<EditSchoolFormProps> = ({
                                                            onDeleteSchool,
                                                            onSave,
                                                            onUndo,
-    successMessage
+                                                           successMessage
                                                        }) => (
     <form method="POST" className={styles.form}>
         <h2>Edytuj szkoły</h2>

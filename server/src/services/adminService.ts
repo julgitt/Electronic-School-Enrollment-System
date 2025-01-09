@@ -3,7 +3,7 @@ import {ProfileService} from "./profileService";
 import {ApplicationStatus} from "../dto/application/applicationStatus";
 import {ApplicationRequest} from "../dto/application/applicationRequest";
 import {transactionFunction} from "../db";
-import {RankedApplication, RankList} from "../dto/application/rankedApplication";
+import {RankedApplication, RankListWithInfo} from "../dto/application/rankedApplication";
 import {ApplicationWithInfo} from "../dto/application/applicationWithInfo";
 
 
@@ -21,7 +21,7 @@ export class AdminService {
         return await this.updateApplicationStatuses(finalEnrollmentLists)
     }
 
-    private async finalizeEnrollmentProcess(rankListsByProfile: Map<number, RankList>) {
+    private async finalizeEnrollmentProcess(rankListsByProfile: Map<number, RankListWithInfo>) {
         const applicationsByCandidate = this.toApplicationsByCandidate(rankListsByProfile)
         let backtrack = true;
 
@@ -35,7 +35,7 @@ export class AdminService {
         return rankListsByProfile;
     }
 
-    private toApplicationsByCandidate(rankedListsByProfile: Map<number, RankList>) {
+    private toApplicationsByCandidate(rankedListsByProfile: Map<number, RankListWithInfo>) {
         const applicationsByCandidate = new Map<number, ApplicationRequest[]>();
 
         for (const [profileId, {accepted}] of rankedListsByProfile.entries()) {
@@ -54,7 +54,7 @@ export class AdminService {
     private async processProfileApplications(
         accepted: RankedApplication[],
         applicationsByCandidate: Map<number, ApplicationRequest[]>,
-        rankListsByProfile: Map<number, RankList>
+        rankListsByProfile: Map<number, RankListWithInfo>
     ): Promise<boolean> {
         for (const application of accepted) {
             const candidateId = application.candidate.id;
@@ -88,7 +88,7 @@ export class AdminService {
         candidateId: number,
         highestPriority: number,
         candidateApplications: ApplicationRequest[],
-        rankListsByProfile: Map<number, RankList>,
+        rankListsByProfile: Map<number, RankListWithInfo>,
         applicationsByCandidate: Map<number, ApplicationRequest[]>,
     ) {
         let removedFlag = false;
@@ -132,14 +132,26 @@ export class AdminService {
         applicationsByCandidate.set(movedApp.candidate.id, candidateApps);
     }
 
-    private async updateApplicationStatuses(finalEnrollmentLists: Map<number, RankList>) {
-        const updatedApplications: ApplicationWithInfo[]  = []
+    private async updateApplicationStatuses(finalEnrollmentLists: Map<number, RankListWithInfo>) {
+        const updatedApplications: ApplicationWithInfo[] = []
         await this.tx(async t => {
             for (const [_profileId, rankLists] of finalEnrollmentLists.entries()) {
-                const allApplications= [
-                    ...rankLists.accepted.map(app => ({...app, status: ApplicationStatus.Accepted, profile: rankLists.profile})),
-                    ...rankLists.reserve.map(app => ({...app, status: ApplicationStatus.Rejected, profile: rankLists.profile})),
-                    ...rankLists.rejected.map(app => ({...app, status: ApplicationStatus.Rejected, profile: rankLists.profile})),
+                const allApplications = [
+                    ...rankLists.accepted.map(app => ({
+                        ...app,
+                        status: ApplicationStatus.Accepted,
+                        profile: rankLists.profile
+                    })),
+                    ...rankLists.reserve.map(app => ({
+                        ...app,
+                        status: ApplicationStatus.Rejected,
+                        profile: rankLists.profile
+                    })),
+                    ...rankLists.rejected.map(app => ({
+                        ...app,
+                        status: ApplicationStatus.Rejected,
+                        profile: rankLists.profile
+                    })),
                 ];
                 for (const a of allApplications) {
                     await this.applicationService.updateApplicationStatus(a.id, a.status, t);

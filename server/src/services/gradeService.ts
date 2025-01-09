@@ -21,14 +21,44 @@ export class GradeService {
     ) {
     }
 
-    async getAllByCandidate(candidateId: number) {
+    /**
+     *  Pobiera wszystkie oceny dla podanego kandydata.
+     *
+     * @param {number} candidateId - identyfikator kandydata.
+     * @returns {Promise<Profile>} Zwraca obiekt oceny, zawierający:
+     *
+     *  - grade: wartość oceny
+     *  - subjectId: identyfikator przedmiotu, z którego jest ocena
+     *  - type: typ oceny - czy jest to ocena ze świadectwa czy z egzaminu
+     */
+    async getAllByCandidate(candidateId: number): Promise<Grade[]> {
         return this.gradeRepository.getAllByCandidate(candidateId);
     }
 
+    /**
+     *  Zwraca informację, czy kandydat już podał swoje oceny.
+     *
+     * @param {number} candidateId - identyfikator kandydata.
+     * @returns {Promise<boolean>} Zwraca wartość false - jeśli kandydat nie podawał ocen, wpp true
+     */
     async checkIfGradesSubmitted(candidateId: number): Promise<boolean> {
         return !!(await this.gradeRepository.getByCandidate(candidateId));
     }
 
+    /**
+     *  Dodaje oceny do bazy danych dla danego kandydata.
+     *
+     * @param {GradeRequest} submissions - tablica ocen uzyskanych przez kadnydata. Każdy obiekt zawiera:
+     *
+     * - subjectId - identyfikator przedmiotu
+     * - grade - wartość oceny
+     * - type - typ oceny (czy jest ze świadectwa czy z egzaminu)
+     * @param {number} candidateId - identyfikator kandydata.
+     * @returns {Promise<void>}
+     *
+     * @throws {ValidationError} Jeśli kandydat próbuje złożyć oceny poza okresem naboru
+     * @throws {DataConflictError} Jeśli oceny zostały już złożone przez kandydata
+     */
     async submitGrades(submissions: GradeRequest[], candidateId: number): Promise<void> {
         const enrollment: Enrollment | null = await this.enrollmentService.getCurrentEnrollment();
         if (!enrollment) throw new ValidationError('Nie można złożyć aplikacji poza okresem naboru.');

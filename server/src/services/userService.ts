@@ -17,6 +17,15 @@ export class UserService {
     ) {
     }
 
+    /**
+     *  Loguje użytkownika na podstawie loginu i hasła.
+     *
+     * @param {string} login - Login lub email użytkownika.
+     * @param {string} password - Hasło użytkownika.
+     * @returns {Promise<UserWithRoles>} Zwraca obiekt użytkownika razem z jego rolami.
+     *
+     * @throws {AuthenticationError} Jeśli login/email lub hasło są nieprawodłowe.
+     */
     async login(login: string, password: string): Promise<UserWithRoles> {
         const existingUser: UserWithRoles | null = await this.userRepository.getWithRolesByLoginOrEmail(login, login);
         if (!existingUser || !(await compare(password, existingUser.password))) {
@@ -26,6 +35,14 @@ export class UserService {
         return existingUser;
     }
 
+    /**
+     *  Rejestruje nowego użytkownika.
+     *
+     * @param {userRequest} user - obiekt zawierający nazwę użytkownika, email oraz hasło.
+     * @returns {Promise<void>}
+     *
+     * @throws {DataConflictError} Jeśli istnieje już użytkownik z podanym emailem lub nazwą użytkownika.
+     */
     async register(user: userRequest): Promise<void> {
         const existingUser: User | null = await this.userRepository.getWithoutRolesByLoginOrEmail(user.username, user.email);
         if (existingUser) {
