@@ -108,7 +108,7 @@ export class ApplicationService {
      * Pobiera wszystkie aplikacje złożone przez podanego kandydata, pogrupowane ze względu na szkoły.
      * Zatem wszystkie profile należące do danej szkoły, do których złożył aplikację kandydat, będą w jednej grupie.
      *
-     * @param {number} candidate - identyfikator kadnydata.
+     * @param {number} candidateId - identyfikator kandydata.
      * @returns {Promise<ApplicationBySchool[]>} Zwraca tablicę obiektów pogrupowanych aplikacji. Obiekty te zawierają:
      *
      *  - school: SchoolWithProfiles - szkołę wraz ze wszystkimi profilami należącymi do tej szkoły
