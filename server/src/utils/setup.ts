@@ -25,24 +25,46 @@ import * as path from "node:path";
 let userId = 0;
 let schoolId = 0;
 
-export const runSimulation = async () => {
-    const profileCapacity = 300
-    const p = 300
-    for (let c = 1; c <= 100000; c *= 10) {
-        //const p = Math.floor(c / profileCapacity) + 6;
-        let time = 0;
-        console.log(`Running simulation for ${c} candidates and ${p} profiles`);
-        time = await runEnrollment(c, 6, profileCapacity, p);
+export const runSimulations = async () => {
+    const capacity = 30;
+    const repetitions = 5;
+    const _p = 300;
+    const _c = 1000;
 
-        fs.appendFile(
-            'executionTime.txt',
-            time.toString() + ' ' + c.toString() + ' ' + p.toString() + '\n',
-            (err) => {
-                if(err) console.log("error:" + err)
-            });
+    for (let c = 1; c <= 10000; c *= 10) {
+        await runSimulation(_p, c, capacity, repetitions);
     }
-    console.log("end")
+    for (let p = 6; p <= 6000; p *= 10) {
+        await runSimulation(p, _c, capacity, repetitions);
+    }
+
+    console.log("Simulations complete");
+};
+
+const runSimulation = async (p: number, c: number, capacity: number, repetitions: number) => {
+    console.log(`Running simulation for ${c} candidates, ${p} profiles, and ${capacity} profile capacity`);
+
+    const totalTime = await runRepeatedSimulations(c, p, capacity, repetitions);
+    const averageTime = totalTime / repetitions;
+
+    fs.appendFile(
+        'executionTime.txt',
+        `${averageTime} ${c} ${p} ${capacity}\n`,
+        (err) => {
+            if (err) console.log("Error:" + err);
+        }
+    );
 }
+
+const runRepeatedSimulations = async (c: number, p: number, profileCapacity: number, repetitions: number) => {
+    let totalTime = 0;
+
+    for (let i = 0; i < repetitions; i++) {
+        totalTime += await runEnrollment(c, 6, profileCapacity, p);
+    }
+
+    return totalTime;
+};
 
 const runEnrollment = async (
     candidatesNumber: number,
