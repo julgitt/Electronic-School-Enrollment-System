@@ -50,4 +50,14 @@ export class UserRepository {
 
         return await db.oneOrNone(query, [username, email]);
     }
+
+    async deleteById(id: number): Promise<void> {
+        const query = `
+            DELETE 
+            FROM users
+            WHERE id = $1
+        `;
+
+        await db.none(query, [id]);
+    }
 }

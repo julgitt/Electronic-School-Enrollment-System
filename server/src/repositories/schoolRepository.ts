@@ -22,14 +22,15 @@ export class SchoolRepository {
         return await db.query<SchoolEntity[]>(query);
     }
 
-    async insert(newSchool: SchoolEntity, t: ITask<any>): Promise<void> {
+    async insert(newSchool: SchoolEntity, t: ITask<any>): Promise<SchoolEntity> {
         const query = `
             INSERT INTO schools (name)
             VALUES ($1)
+            RETURNING *
         `;
         const values = [newSchool.name];
 
-        await t.none(query, values);
+        return await t.one(query, values);
     }
 
     async update(school: SchoolEntity, t: ITask<any>): Promise<void> {

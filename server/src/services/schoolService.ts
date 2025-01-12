@@ -113,13 +113,45 @@ export class SchoolService {
     }
 
     /**
+     *  Dodaje podaną szkołę do bazy danych:
+     *
+     * @param {School} school - obiekt szkoły zawierający:
+     *
+     *  - `id` (number) - identyfikator szkoły (zostanie zastąpiony przez ten, wygenerowany w bazie danych)
+     *  - `name` (string) nowa nazwa szkoły
+     * @returns {Promise<School>} Szkołę wraz z identyfikatorem nadanym przez bazę danych
+     */
+    async addSchool(school: School): Promise<School> {
+        let result: School | null = null;
+        await this.tx(async t => {
+            result = await this.schoolRepository.insert(school, t)
+        });
+        return result!;
+    }
+
+    /**
+     *  Usuwa szkołę o podanym id:
+     *
+     * @param {number} id - identyfikator szkoły
+     *
+     * @returns {Promise<void>}
+     */
+    async deleteSchool(id: number): Promise<void> {
+        await this.tx(async t => {
+            await this.schoolRepository.delete(id, t)
+        });
+    }
+
+    /**
      *  Aktualizuje podane szkoły poprzez:
      *  - dodanie szkół, których id nie jest obecne w bazie danych
      *  - usunięcie szkół, których nie ma w podanych szkołach, a które są obecne w bazie danych
      *  - zaktualizowanie szkół których id jest obecne w podanych szkołach oraz w bazie danych.
      *
      * @param {School[]} schools - tablica obiektów szkół do aktualizowania.
+     *
      * Każdy obiekt zawiera:
+     *
      *  - `id` (number) - identyfikator szkoły
      *  - `name` (string) nowa nazwa szkoły
      * @returns {Promise<void>}

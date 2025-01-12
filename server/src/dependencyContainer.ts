@@ -29,42 +29,42 @@ import {ProfileController} from "./controllers/profileController";
 
 
 const subjectRepository: SubjectRepository = new SubjectRepository();
-const subjectService: SubjectService = new SubjectService(subjectRepository);
+export const subjectService: SubjectService = new SubjectService(subjectRepository);
 export const subjectController: SubjectController = new SubjectController(subjectService);
 
 const candidateRepository = new CandidateRepository();
-const candidateService = new CandidateService(candidateRepository);
+export const candidateService = new CandidateService(candidateRepository);
 export const candidateController = new CandidateController(candidateService);
 
 const userRepository = new UserRepository();
-const userService = new UserService(userRepository, tx);
+export const userService = new UserService(userRepository, tx);
 export const userController = new UserController(userService);
 
 const enrollmentRepository = new EnrollmentRepository();
-const enrollmentService = new EnrollmentService(enrollmentRepository, tx);
+export const enrollmentService = new EnrollmentService(enrollmentRepository, tx);
 export const enrollmentController = new EnrollmentController(enrollmentService);
 
 const gradeRepository = new GradeRepository();
-const gradeService = new GradeService(gradeRepository, subjectService, enrollmentService, tx);
+export const gradeService = new GradeService(gradeRepository, subjectService, enrollmentService, tx);
 export const gradeController = new GradeController(gradeService);
 
 const profileRepository = new ProfileRepository()
-const profileService = new ProfileService(profileRepository, gradeService, subjectService, candidateService, tx);
+export const profileService = new ProfileService(profileRepository, gradeService, subjectService, candidateService, tx);
 export const profileController = new ProfileController(profileService);
 
 const schoolRepository = new SchoolRepository();
-const schoolService = new SchoolService(schoolRepository, profileService, tx);
+export const schoolService = new SchoolService(schoolRepository, profileService, tx);
 
 profileService.setSchoolService(schoolService);
 export const schoolController = new SchoolController(schoolService);
 
 const applicationRepository = new ApplicationRepository();
-const applicationService = new ApplicationService(applicationRepository, enrollmentService, schoolService, tx);
+export const applicationService = new ApplicationService(applicationRepository, enrollmentService, schoolService, tx);
 profileService.setApplicationService(applicationService);
 applicationService.setProfileService(profileService);
 export const applicationController = new ApplicationController(applicationService);
 
-const adminService = new AdminService(profileService, applicationService, tx);
+export const adminService = new AdminService(profileService, applicationService, tx);
 export const adminController = new AdminController(adminService);
 
 export const schoolAdminController = new SchoolAdminController(schoolService, profileService, applicationService);

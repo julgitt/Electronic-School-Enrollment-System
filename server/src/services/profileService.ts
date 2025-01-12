@@ -171,11 +171,12 @@ export class ProfileService {
      * - capacity: (number) - liczba miejsc do rekrutacji w profilu
      * - criteria: (ProfileCriteria[]) - tablica obiektów kryteriów rekrutacyjnych dla profilu
      * @param {number} schoolId - identyfikator szkoły, do której dodajemy profil.
-     * @returns {Promise<void>}
+     * @returns {Promise<number>} identyfikator dodanego profilu nadany przez bazę danych.
      *
      * @throws {DataConflictError} Jeśli profil o podanej nazwie już istnieje dla danej szkoły.
      */
-    async addProfile(profile: ProfileRequest, schoolId: number): Promise<void> {
+    async addProfile(profile: ProfileRequest, schoolId: number): Promise<number> {
+        let insertedProfileId = 0;
         if (await this.profileRepository.getBySchoolAndName(schoolId, profile.name))
             throw new DataConflictError("Profil o podanej nazwie już istnieje.");
 
@@ -187,18 +188,19 @@ export class ProfileService {
         }
 
         await this.tx(async t => {
-            const insertedProfile = await this.profileRepository.insert(newProfile, t);
+            insertedProfileId = (await this.profileRepository.insert(newProfile, t)).id;
 
             for (const criteria of profile.criteria) {
                 const newProfileCriteria: ProfileCriteriaEntity = {
                     id: 0,
-                    profileId: insertedProfile.id,
+                    profileId: insertedProfileId,
                     subjectId: criteria.subjectId,
                     type: criteria.type,
                 }
                 await this.profileRepository.insertCriteria(newProfileCriteria, t);
             }
         });
+        return insertedProfileId;
     }
 
     /**

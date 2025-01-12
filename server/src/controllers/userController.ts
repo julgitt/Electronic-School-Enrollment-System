@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from 'express';
 
 import {UserService} from "../services/userService";
-import {userRequest} from "../dto/user/userRequest";
+import {UserRequest} from "../dto/user/userRequest";
 import {UserWithRoles} from "../dto/user/userWithRoles";
 
 
@@ -11,7 +11,7 @@ export class UserController {
 
     async register(req: Request, res: Response, next: NextFunction) {
         try {
-            const user: userRequest = req.body;
+            const user: UserRequest = req.body;
 
             await this.userService.register(user);
             return res.status(201).json({
