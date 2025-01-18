@@ -73,7 +73,7 @@ const UserNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({renderLogo
                 <Link className={styles.navLink} to="/dates">Terminy</Link>
                 <Link className={styles.navLink} to="/educationalOffer">Oferta</Link>
                 {candidate && !isPastDeadline && (
-                    <Link className={styles.navLink} to="/submitApplication">Złóż kandydaturę</Link>
+                    <Link className={styles.navLink} to="/submitApplication">Złóż wniosek</Link>
                 )}
                 {candidate && !areGradesSubmitted && (
                     <Link className={styles.navLink} to="/submitGrades">Dodaj wyniki</Link>

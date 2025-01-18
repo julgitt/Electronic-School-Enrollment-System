@@ -27,7 +27,7 @@ let schoolId = 0;
 
 export const runSimulations = async () => {
     const capacity = 30;
-    const repetitions = 5;
+    const repetitions = 1;
     const _p = 300;
     const _c = 1000;
 
