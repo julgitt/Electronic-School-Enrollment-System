@@ -12,7 +12,7 @@ import {transactionFunction} from "../db";
 import {ProfileWithCriteria} from "../dto/profile/profileWithCriteria";
 import {CandidateService} from "./candidateService";
 import {RankedApplication, RankList, RankListWithInfo} from "../dto/application/rankedApplication";
-import {GRADE_TO_POINTS} from "../../../adminConstants";
+import {GRADE_TO_POINTS} from "../../../public/adminConstants";
 import {GradeType} from "../dto/grade/gradeType";
 import {GradesInfo, PointsInfo} from "../dto/grade/pointsInfo";
 import {SubjectService} from "./subjectService";

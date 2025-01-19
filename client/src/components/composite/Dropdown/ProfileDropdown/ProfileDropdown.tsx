@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import styles from './ProfileDropdown.module.scss';
+import styles from './../Dropdown.module.scss';
 import {Profile} from "../../../../shared/types/profile.ts";
 import {NavLink as Link} from "react-router-dom";
 

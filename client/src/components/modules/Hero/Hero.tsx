@@ -7,7 +7,7 @@ import './Hero.module.scss';
 const Hero: React.FC = () => {
     return (
         <section className="hero">
-            <h2>Witamy w systemie naboru do szkół ponadpodstawowych</h2>
+            <h1>Witamy w systemie naboru do szkół ponadpodstawowych</h1>
             <p>Sprawdź naszą ofertę i złóż wniosek już dziś!</p>
             <Button>
                 <Link to="/submitApplication">Aplikuj</Link>

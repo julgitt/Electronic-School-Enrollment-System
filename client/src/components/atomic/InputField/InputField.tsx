@@ -12,6 +12,7 @@ interface InputFieldProps {
     pattern?: string;
     minLength?: number;
     min?: number;
+    max?: number;
     title?: string;
     width?: string
     height?: string
@@ -31,6 +32,7 @@ const InputField: React.FC<InputFieldProps> = ({
                                                    pattern,
                                                    minLength,
                                                    min,
+                                                   max,
                                                    title,
                                                    height,
                                                    width = "100%",
@@ -52,6 +54,7 @@ const InputField: React.FC<InputFieldProps> = ({
             pattern={pattern}
             minLength={minLength}
             min={min}
+            max={max}
             title={title}
             style={{width, height}}
             onBlur={onBlur}

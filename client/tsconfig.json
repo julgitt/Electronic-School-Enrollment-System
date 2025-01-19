@@ -30,6 +30,6 @@
     "cypress/**/*.ts",
     "vite.config.ts",
     "src",
-    "../adminConstants.ts"
+    "../public/adminConstants.ts"
   ]
 }

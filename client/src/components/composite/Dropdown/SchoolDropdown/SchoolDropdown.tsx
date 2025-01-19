@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import styles from './SchoolDropdown.module.scss';
+import styles from './../Dropdown.module.scss';
 import {School} from "../../../../features/admin/types/schoolRequest.ts";
 
 interface SchoolDropdownProps {

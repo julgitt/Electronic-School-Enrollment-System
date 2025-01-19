@@ -35,7 +35,7 @@ const EditEnrollmentForm: React.FC<EditEnrollmentFormProps> = ({
         {error && <ErrorMessage message={error}/>}
         <div className={styles.horizontal}>
             <h5>Tura</h5>
-            <h5>Data rozpoczecia</h5>
+            <h5>Data rozpoczęcia</h5>
             <h5>Data zakończenia</h5>
         </div>
         {updatedEnrollments && updatedEnrollments.map(enrollment => (

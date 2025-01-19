@@ -35,7 +35,7 @@ const ProfileSelection: React.FC<{
                             placeholder="1"
                             width="75px"
                             height="20px"
-                            title="Priorytet: Im wyższy numer, tym ważniejszy element."
+                            title="Priorytet: Im niższy numer, tym ważniejszy element."
                         />
                     )}
                 </div>

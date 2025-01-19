@@ -28,6 +28,7 @@ const GradeInputGroup: React.FC<{
                         <InputField
                             type="number"
                             min={1}
+                            max={type == GradeType.Exam? 100 : 6}
                             value={gradeValue}
                             onChange={(e) =>
                                 onGradesChange({
@@ -37,7 +38,7 @@ const GradeInputGroup: React.FC<{
                                 })
                             }
                             placeholder="0"
-                            width="75px"
+                            width={type == GradeType.Exam? "78px" : "65px"}
                             height="20px"
                         />
                     </div>

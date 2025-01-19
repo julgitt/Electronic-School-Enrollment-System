@@ -15,7 +15,7 @@ import {ValidationError} from "../errors/validationError";
 import {Enrollment} from "../dto/enrollment";
 import {ApplicationStatus} from "../dto/application/applicationStatus";
 import {transactionFunction} from "../db";
-import {SCHOOL_MAX} from "../../../adminConstants";
+import {SCHOOL_MAX} from "../../../public/adminConstants";
 
 export class ApplicationService {
     private profileService!: ProfileService;

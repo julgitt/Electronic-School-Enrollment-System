@@ -4,7 +4,7 @@ import {SchoolWithProfiles} from "../../../shared/types/schoolWithProfiles.ts";
 import {ProfilesSelection} from "../types/profilesSelection.ts"
 import {Profile} from "../../../shared/types/profile.ts";
 import {UserSelectedProfile} from "../types/userSelectedProfile.ts";
-import {SCHOOL_MAX} from "../../../../../adminConstants.ts";
+import {SCHOOL_MAX} from "../../../../../public/adminConstants.ts";
 
 export const useApplicationForm = (submission: ProfilesSelection[]) => {
     const [selections, setSelections] = useState<ProfilesSelection[]>([]);

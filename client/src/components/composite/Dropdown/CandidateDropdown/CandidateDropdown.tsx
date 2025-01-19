@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {NavLink as Link} from 'react-router-dom';
-import styles from './CandidateDropdown.module.scss';
+import styles from './../Dropdown.module.scss';
 import {Candidate} from "../../../../shared/types/candidate.ts";
 
 interface CandidateDropdownProps {
@@ -45,7 +45,7 @@ const CandidateDropdown: React.FC<CandidateDropdownProps> = ({
                         className={styles.dropdownItem}
                         onClick={() => setDropdownOpen(false)}
                     >
-                        Nowy Kandydat
+                        + Nowy Kandydat
                     </Link>
                     <button
                         onClick={() => {
@@ -54,7 +54,7 @@ const CandidateDropdown: React.FC<CandidateDropdownProps> = ({
                         }}
                         className={styles.dropdownItem}
                     >
-                        Usuń Obecnego Kandydata
+                        - Usuń Obecnego Kandydata
                     </button>
                 </div>
             )}

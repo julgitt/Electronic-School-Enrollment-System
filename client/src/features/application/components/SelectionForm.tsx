@@ -6,7 +6,7 @@ import {ErrorMessage} from "../../../components/atomic/ErrorMessage";
 import {SchoolWithProfiles} from "../../../shared/types/schoolWithProfiles.ts"
 import {ProfilesSelection} from "../types/profilesSelection.ts"
 import {Profile} from "../../../shared/types/profile.ts";
-import {SCHOOL_MAX} from "../../../../../adminConstants.ts";
+import {SCHOOL_MAX} from "../../../../../public/adminConstants.ts";
 
 import styles from "../../../assets/css/forms.module.scss";
 import SchoolSelectionItem from "./SchoolSelectionItem.tsx";
@@ -38,7 +38,7 @@ const SelectionForm: React.FC<SchoolSelectionFormProps> = ({
                                                                successMessage
                                                            }) => (
     <form method="POST" onSubmit={onSubmit} className={styles.form}>
-        <h2>Wybór szkół</h2>
+        <h2>Wybór profili</h2>
         {error && <ErrorMessage message={error}/>}
 
         <div className={styles.mainFormInputGroup}>

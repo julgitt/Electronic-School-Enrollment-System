@@ -6,7 +6,7 @@ import styles from '../../modules/Header/Header.module.scss';
 const AdminMenu: React.FC<{ renderLogoutLink: () => JSX.Element }> = ({renderLogoutLink}) => (
     <nav className={styles.nav}>
         <div className={styles.navMenu}>
-            <Link className={styles.navLink} to="/enroll">Włącz nabór</Link>
+            <Link className={styles.navLink} to="/enroll">Nabór</Link>
             <Link className={styles.navLink} to="/editSchools">Edytuj Szkoły</Link>
             <Link className={styles.navLink} to="/editDeadlines">Edytuj Terminy</Link>
         </div>
