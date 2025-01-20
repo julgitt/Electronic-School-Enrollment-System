@@ -132,6 +132,28 @@ describe('SchoolService', () => {
         });
     })
 
+    describe('addSchool', async () => {
+        it('should successfully add school', async () => {
+            const mockSchool: SchoolEntity = {id: 1, name: 'School 1'};
+
+            schoolRepoStub.insert.resolves();
+
+            const result = await schoolService.addSchool(mockSchool);
+
+            assert.equal(schoolRepoStub.insert.callCount, 1);
+        })
+    })
+
+    describe('deleteSchool', async () => {
+        it('should successfully delete school', async () => {
+            schoolRepoStub.delete.resolves();
+
+            const result = await schoolService.deleteSchool(1);
+
+            assert.equal(schoolRepoStub.delete.callCount, 1);
+        })
+    })
+
     describe('getSchoolByAdminAndId', async () => {
         it('should return a school by id and admin id when the school exists', async () => {
             const mockSchool: SchoolEntity = {id: 1, name: 'School 1'};

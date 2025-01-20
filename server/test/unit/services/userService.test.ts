@@ -10,6 +10,7 @@ import {UserWithRoles} from "../../../src/dto/user/userWithRoles";
 import {AuthenticationError} from "../../../src/errors/authenticationError";
 import {DataConflictError} from "../../../src/errors/dataConflictError";
 import {UserEntity} from "../../../src/models/userEntity";
+import {SchoolEntity} from "../../../src/models/schoolEntity";
 
 describe('UserService', () => {
     let userService: UserService;
@@ -168,4 +169,14 @@ describe('UserService', () => {
             assert.equal(userRepoStub.insertUserRoles.callCount, 0);
         });
     });
+
+    describe('deleteUser', () => {
+        it('should sucessfuly delete user', async() => {
+            userRepoStub.deleteById.resolves();
+
+            const result = await userService.deleteUser(1);
+
+            assert.equal(userRepoStub.deleteById.callCount, 1);
+        })
+    })
 })
