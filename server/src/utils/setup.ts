@@ -31,10 +31,10 @@ export const runSimulations = async () => {
     const _p = 300;
     const _c = 1000;
 
-    for (let c = 1; c <= 10000; c *= 10) {
+    for (let c = 1; c <= 100000; c *= 10) {
         await runSimulation(_p, c, capacity, repetitions);
     }
-    for (let p = 6; p <= 6000; p *= 10) {
+    for (let p = 6; p <= 60000; p *= 10) {
         await runSimulation(p, _c, capacity, repetitions);
     }
 

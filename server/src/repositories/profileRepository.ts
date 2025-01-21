@@ -1,6 +1,6 @@
 import {db} from '../db';
 import {ProfileEntity} from "../models/profileEntity";
-import {ProfileCriteriaEntity} from "../models/profileCriteriaEntity";
+import {ProfileCriteriaEntity, ProfileCriteriaWithSubjects} from "../models/profileCriteriaEntity";
 import {ITask} from "pg-promise";
 
 export class ProfileRepository {
@@ -61,6 +61,23 @@ export class ProfileRepository {
         const query = `
             SELECT *
             FROM profile_criteria
+            WHERE profile_id = $1
+        `;
+
+        return await db.query(query, [profileId]);
+    }
+
+    
+    async getProfileCriteriaWithSubject(profileId: number): Promise<ProfileCriteriaWithSubjects[]> {
+        const query = `
+            SELECT
+                pc.id,
+                pc.profile_id AS profileId,
+                pc.subject_id AS subjectId,
+                s.name AS subjectName,
+                pc.type
+            FROM profile_criteria AS pc
+            LEFT JOIN subjects s ON s.id = pc.subject_id
             WHERE profile_id = $1
         `;
 

@@ -1,5 +1,5 @@
 import {ProfileRepository} from "../repositories/profileRepository";
-import {ProfileCriteriaEntity, ProfileCriteriaType} from "../models/profileCriteriaEntity";
+import {ProfileCriteriaEntity, ProfileCriteriaType, ProfileCriteriaWithSubjects} from "../models/profileCriteriaEntity";
 import {Profile} from "../dto/profile/profile";
 import {ResourceNotFoundError} from "../errors/resourceNotFoundError";
 import {ProfileCriteria} from "../dto/criteriaByProfile";
@@ -119,30 +119,60 @@ export class ProfileService {
      *   - schoolName: (string) - nazwa szkoły do której należy profil
      *   - applicationNumber: (number) - ilość oczekujących aplikacji złożonych do tego profilu
      *   - criteriaSubjects: (string[]) - nazwy przedmiotów które należą do kryteriów rekrutacyjnych profilu
+     *   - criteria: (ProfileCriteria[]) - tablica obiektów kryteriów
+     *   - capacity: (number) - liczba miejsc
+     *   - pending: (Application[]) - oczekujące aplikacje
+     *   - accepted: (Application[]) - aplikacje zaakceptowane w poprzednich turach
+     *   
      *
      * @returns {Promise<ProfileWithInfo[]>} Zwraca tablicę obiektów profilu wraz z dodatkowymi informacjami.
      */
     async getProfilesWithInfo(): Promise<ProfileWithInfo[]> {
         const profiles = await this.getAllProfiles()
         return await Promise.all(profiles.map(async p => {
-            const school = (await this.schoolService.getSchool(p.schoolId))
-
-            const criteria = await this.getProfileCriteria(p.id);
-            const criteriaSubjects = await Promise.all(criteria.map(async c => {
-                const subject = await this.subjectService.getSubject(c.subjectId);
-                return subject.name;
-            }));
-            const applicationNumber = (await this.applicationService.getAllPendingByProfile(p.id)).length;
+            const [school, criteria, pending, accepted] = await Promise.all([
+                this.schoolService.getSchool(p.schoolId),
+                this.getProfileCriteriaWithSubjects(p.id),
+                this.applicationService.getAllPendingByProfile(p.id),
+                this.applicationService.getAllAcceptedByProfile(p.id),
+            ]);
 
             return {
                 id: p.id,
                 name: p.name,
                 schoolId: school.id,
                 schoolName: school.name,
-                criteriaSubjects,
-                applicationNumber
+                criteria,
+                criteriaSubjects: criteria.map(c => c.subjectName),
+                applicationNumber: pending.length,
+                capacity: p.capacity,
+                accepted,
+                pending
             }
         }));
+    }
+
+    private async getProfileWithInfo(id: number): Promise<ProfileWithInfo> {
+        const profile = await this.getProfile(id)
+        const [school, criteria, pending, accepted] = await Promise.all([
+            this.schoolService.getSchool(profile.schoolId),
+            this.getProfileCriteriaWithSubjects(profile.id),
+            this.applicationService.getAllPendingByProfile(profile.id),
+            this.applicationService.getAllAcceptedByProfile(profile.id),
+        ]);
+
+        return {
+            id: profile.id,
+            name: profile.name,
+            schoolId: school.id,
+            schoolName: school.name,
+            criteria,
+            criteriaSubjects: criteria.map(c => c.subjectName),
+            applicationNumber: pending.length,
+            capacity: profile.capacity,
+            accepted,
+            pending
+        }
     }
 
     /**
@@ -290,15 +320,16 @@ export class ProfileService {
      * @throws {ResourceNotFoundError} Jeśli nie znaleziono kryteriów dla profilu.
      */
     async getRankList(id: number): Promise<RankList> {
-        const criteria = await this.getProfileCriteria(id);
-        const accepted = await this.applicationService.getAllAcceptedByProfile(id);
-        const pending = await this.applicationService.getAllPendingByProfile(id);
+       return this.getRankListByProfile( await this.getProfileWithInfo(id));
+    }
 
-        const rankedAccepted = await this.createRankList(accepted, criteria);
-        const rankedPending = await this.createRankList(pending, criteria);
+    private async getRankListByProfile(profile: ProfileWithInfo) {
+        const [rankedAccepted, rankedPending] = await Promise.all([
+            this.createRankList(profile.accepted, profile.criteria),
+            this.createRankList(profile.pending, profile.criteria)
+        ]);
 
-        const profileCapacity = await this.getProfileCapacity(id);
-        const capacity = profileCapacity - rankedAccepted.length;
+        const capacity = profile.capacity - rankedAccepted.length;
         return {
             prevAccepted: rankedAccepted,
             accepted: rankedPending.slice(0, capacity),
@@ -325,10 +356,20 @@ export class ProfileService {
         const profiles = await this.getProfilesWithInfo();
         const rankLists = new Map<number, RankListWithInfo>();
 
-        for (const profile of profiles) {
-            const {accepted, reserve} = await this.getRankList(profile.id);
-            rankLists.set(profile.id, {profile, accepted, reserve, rejected: []});
-        }
+        const rankListPromises = profiles.map(profile => 
+            this.getRankListByProfile(profile).then(({accepted, reserve}) => ({
+                profile,
+                accepted,
+                reserve,
+                rejected: []
+            }))
+        );
+    
+        const rankListResults = await Promise.all(rankListPromises);
+    
+        rankListResults.forEach(({profile, accepted, reserve, rejected}) => {
+            rankLists.set(profile.id, {profile, accepted, reserve, rejected});
+        });
 
         return rankLists;
     }
@@ -341,8 +382,10 @@ export class ProfileService {
     }
 
     private async toRankedApplication(criteria: ProfileCriteria[], application: Application): Promise<RankedApplication> {
-        const candidate = await this.candidateService.getCandidateById(application.candidateId);
-        const grades = await this.gradeService.getAllByCandidate(application.candidateId);
+        const [candidate, grades] = await Promise.all([
+            this.candidateService.getCandidateById(application.candidateId),
+            this.gradeService.getAllByCandidate(application.candidateId)
+        ]);
 
         const points = this.calculatePoints(criteria, grades);
 
@@ -355,14 +398,14 @@ export class ProfileService {
         }
     }
 
-    private async getProfileCapacity(profileId: number) {
-        const capacity = await this.profileRepository.getProfileCapacity(profileId);
-        if (!capacity) throw new ResourceNotFoundError('Nie znaleziono liczby miejsc dla profilu.');
-        return capacity
-    }
-
     private async getProfileCriteria(profileId: number): Promise<ProfileCriteria[]> {
         const criteria: ProfileCriteriaEntity[] = await this.profileRepository.getProfileCriteria(profileId);
+        if (!criteria) throw new ResourceNotFoundError('Nie znaleziono kryteriów dla profilu.');
+        return criteria;
+    }
+
+    private async getProfileCriteriaWithSubjects(profileId: number): Promise<ProfileCriteriaWithSubjects[]> {
+        const criteria: ProfileCriteriaWithSubjects[] = await this.profileRepository.getProfileCriteriaWithSubject(profileId);
         if (!criteria) throw new ResourceNotFoundError('Nie znaleziono kryteriów dla profilu.');
         return criteria;
     }

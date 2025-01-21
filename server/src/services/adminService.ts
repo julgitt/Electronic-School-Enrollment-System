@@ -16,9 +16,19 @@ export class AdminService {
     }
 
     async processProfileEnrollments(): Promise<ApplicationWithInfo[]> {
+        let startTime = performance.now();
         const rankListsByProfile = await this.profileService.getAllRankLists();
+        let endTime = performance.now();
+        console.log("rank:" + (endTime - startTime));
+        startTime = performance.now();
         const finalEnrollmentLists = await this.finalizeEnrollmentProcess(rankListsByProfile);
-        return await this.updateApplicationStatuses(finalEnrollmentLists)
+        endTime = performance.now();
+        console.log("enroll:" + (endTime - startTime));
+        startTime = performance.now();
+        const applications = await this.updateApplicationStatuses(finalEnrollmentLists);
+        endTime = performance.now();
+        console.log("update:" + (endTime - startTime));
+        return applications
     }
 
     private async finalizeEnrollmentProcess(rankListsByProfile: Map<number, RankListWithInfo>) {
