@@ -21,7 +21,7 @@ export class AdminService {
         let endTime = performance.now();
         console.log("rank:" + (endTime - startTime));
         startTime = performance.now();
-        const finalEnrollmentLists = await this.finalizeEnrollmentProcess(rankListsByProfile);
+        const finalEnrollmentLists = this.finalizeEnrollmentProcess(rankListsByProfile);
         endTime = performance.now();
         console.log("enroll:" + (endTime - startTime));
         startTime = performance.now();
@@ -31,16 +31,11 @@ export class AdminService {
         return applications
     }
 
-    private async finalizeEnrollmentProcess(rankListsByProfile: Map<number, RankListWithInfo>) {
+    private finalizeEnrollmentProcess(rankListsByProfile: Map<number, RankListWithInfo>) {
         const applicationsByCandidate = this.toApplicationsByCandidate(rankListsByProfile)
-        let backtrack = true;
 
-        while (backtrack) {
-            backtrack = false;
-            for (const [, {accepted}] of rankListsByProfile) {
-                backtrack = await this.processProfileApplications(accepted, applicationsByCandidate, rankListsByProfile);
-                if (backtrack) break;
-            }
+        for (const [, {accepted}] of rankListsByProfile) {
+            this.processProfileApplications(accepted, applicationsByCandidate, rankListsByProfile);
         }
         return rankListsByProfile;
     }
@@ -61,11 +56,11 @@ export class AdminService {
         return applicationsByCandidate;
     }
 
-    private async processProfileApplications(
+    private processProfileApplications(
         accepted: RankedApplication[],
         applicationsByCandidate: Map<number, ApplicationRequest[]>,
         rankListsByProfile: Map<number, RankListWithInfo>
-    ): Promise<boolean> {
+    ) : void {
         for (const application of accepted) {
             const candidateId = application.candidate.id;
             const candidateApplications = applicationsByCandidate.get(candidateId);
@@ -73,19 +68,14 @@ export class AdminService {
 
             const highestPriority = this.getHighestPriority(candidateApplications);
 
-            const removed = this.removeLowerPriorityApplications(
+            this.removeLowerPriorityApplications(
                 candidateId,
                 highestPriority,
                 candidateApplications,
                 rankListsByProfile,
                 applicationsByCandidate
             );
-
-            if (removed) {
-                return true;
-            }
         }
-        return false;
     }
 
     private getHighestPriority(applications: ApplicationRequest[]) {
@@ -101,8 +91,6 @@ export class AdminService {
         rankListsByProfile: Map<number, RankListWithInfo>,
         applicationsByCandidate: Map<number, ApplicationRequest[]>,
     ) {
-        let removedFlag = false;
-
         for (const {profileId, priority} of candidateApplications) {
             if (priority === highestPriority) continue;
 
@@ -112,11 +100,9 @@ export class AdminService {
             const removed = this.removeApp(candidateId, profileId, accepted, rejected, applicationsByCandidate);
             if (!removed) continue;
 
-            removedFlag = true;
             this.moveAppFromReserveToAccepted(profileId, reserve, accepted, applicationsByCandidate);
         }
 
-        return removedFlag;
     }
 
     private removeApp(candidateId: number, profileId: number, accepted: RankedApplication[], rejected: RankedApplication[], applicationsByCandidate: Map<number, ApplicationRequest[]>) {
