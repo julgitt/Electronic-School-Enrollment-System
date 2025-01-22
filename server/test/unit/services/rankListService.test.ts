@@ -2,7 +2,7 @@ import assert from 'assert';
 import {afterEach} from 'mocha';
 import sinon from 'sinon';
 
-import { profileService } from "../../../src/dependencyContainer";
+import { Application } from '../../../src/dto/application/application';
 import { Candidate } from "../../../src/dto/candidate/candidate";
 import { GradeType } from "../../../src/dto/grade/gradeType";
 import { ProfileWithInfo } from "../../../src/dto/profile/profileInfo";
@@ -14,9 +14,8 @@ import { RankListService } from "../../../src/services/rankListService";
 import { SubjectService } from "../../../src/services/subjectService";
 import { ProfileService } from "../../../src/services/profileService";
 import { Subject } from "../../../src/dto/subject";
-import { Application } from '../../../src/dto/application/application';
 
-describe('ProfileService', () => {
+describe('RankListService', () => {
     let rankListService: RankListService;
     let profileServiceStub: sinon.SinonStubbedInstance<ProfileService>;
     let gradeServiceStub: sinon.SinonStubbedInstance<GradeService>;
@@ -28,7 +27,7 @@ describe('ProfileService', () => {
         subjectServiceStub = sinon.createStubInstance(SubjectService);
         candidateServiceStub = sinon.createStubInstance(CandidateService);
         profileServiceStub = sinon.createStubInstance(ProfileService);
-        
+
         rankListService = new RankListService(gradeServiceStub, subjectServiceStub, candidateServiceStub, profileServiceStub);
     });
 
@@ -69,6 +68,19 @@ describe('ProfileService', () => {
 
     describe('getRankListById', async () => {
         it('should get rank list with applications sort by points', async () => {
+            const mockProfileCriteria = [
+                {id: 1, subjectId: 1, profileId: 1, type: ProfileCriteriaType.Mandatory},
+                {id: 2, subjectId: 2, profileId: 1, type: ProfileCriteriaType.Alternative},
+                {id: 3, subjectId: 3, profileId: 1, type: ProfileCriteriaType.Alternative}
+            ];
+            const mockAcceptedApplications: Application[] = [];
+            const mockPendingApplications: Application[] = [
+                {id: 1, profileId: 1, candidateId: 1} as Application,
+                {id: 2, profileId: 1, candidateId: 2} as Application,
+                {id: 3, profileId: 1, candidateId: 3} as Application,
+            ];
+            const mockProfileCapacity: number = 2;
+
             gradeServiceStub.getAllByCandidate.callsFake((candidateId: number) => {
                 return Promise.resolve(getMockGradesByCandidate(candidateId));
             });
@@ -77,7 +89,13 @@ describe('ProfileService', () => {
                 return Promise.resolve({id: candidateId} as Candidate)
             });
 
-            profileServiceStub.getProfileWithInfo.resolves({id: 1} as ProfileWithInfo);
+            profileServiceStub.getProfilesWithInfo.resolves([{
+                id: 1,
+                capacity: mockProfileCapacity,
+                pending: mockPendingApplications,
+                accepted: mockAcceptedApplications,
+                criteria: mockProfileCriteria
+            } as ProfileWithInfo]);
 
             const result = await rankListService.getRankListById(1);
 
@@ -102,10 +120,10 @@ describe('ProfileService', () => {
             getRankListStub.callsFake((_profileId: number) => {
                 return Promise.resolve({accepted: [], reserve: [], prevAccepted: []});
             });
-            const getProfilesWithInfoStub = sinon.stub(profileService, 'getProfilesWithInfo');
-            getProfilesWithInfoStub.callsFake(() => {
-                return Promise.resolve([{id: 1} as ProfileWithInfo, {id: 2} as ProfileWithInfo, {id: 3} as ProfileWithInfo]);
-            });
+
+            profileServiceStub.getProfilesWithInfo.resolves(
+                [{id: 1} as ProfileWithInfo, {id: 2} as ProfileWithInfo, {id: 3} as ProfileWithInfo]
+            );
 
             const result = await rankListService.getAllRankLists();
 
@@ -113,7 +131,7 @@ describe('ProfileService', () => {
             assert(result.has(1));
             assert(result.has(2));
             assert(result.has(3));
-            assert.equal(getProfilesWithInfoStub.callCount, 1);
+            assert.equal(profileServiceStub.getProfilesWithInfo.callCount, 1);
             assert.equal(getRankListStub.callCount, 3);
         });
     })
@@ -183,3 +201,4 @@ describe('ProfileService', () => {
         ])
         return grades.get(id) || [];
     }
+})

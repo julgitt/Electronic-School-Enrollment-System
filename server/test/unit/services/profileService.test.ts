@@ -5,15 +5,13 @@ import sinon from 'sinon';
 import {ProfileRepository} from "../../../src/repositories/profileRepository";
 import {ProfileService} from "../../../src/services/profileService";
 import {ProfileEntity} from "../../../src/models/profileEntity";
-import {SubjectService} from "../../../src/services/subjectService";
 import {SchoolService} from "../../../src/services/schoolService";
 import {ApplicationService} from "../../../src/services/applicationService";
 import {ResourceNotFoundError} from "../../../src/errors/resourceNotFoundError";
 import {ProfileCriteria} from "../../../src/dto/criteriaByProfile";
-import {ProfileCriteriaType} from "../../../src/models/profileCriteriaEntity";
+import {ProfileCriteriaType, ProfileCriteriaWithSubjects} from "../../../src/models/profileCriteriaEntity";
 import {Application} from '../../../src/dto/application/application';
 import {School} from "../../../src/dto/school/school";
-import {Subject} from '../../../src/dto/subject';
 import {Profile} from "../../../src/dto/profile/profile";
 import {ProfileRequest} from "../../../src/dto/profile/profileRequest";
 import {DataConflictError} from "../../../src/errors/dataConflictError";
@@ -21,14 +19,12 @@ import {DataConflictError} from "../../../src/errors/dataConflictError";
 describe('ProfileService', () => {
     let profileService: ProfileService;
     let profileRepoStub: sinon.SinonStubbedInstance<ProfileRepository>;
-    let subjectServiceStub: sinon.SinonStubbedInstance<SubjectService>;
     let schoolServiceStub: sinon.SinonStubbedInstance<SchoolService>;
     let applicationServiceStub: sinon.SinonStubbedInstance<ApplicationService>;
     let txStub: sinon.SinonStub;
 
     beforeEach(() => {
         profileRepoStub = sinon.createStubInstance(ProfileRepository);
-        subjectServiceStub = sinon.createStubInstance(SubjectService);
         applicationServiceStub = sinon.createStubInstance(ApplicationService);
         schoolServiceStub = sinon.createStubInstance(SchoolService);
         txStub = sinon.stub().callsFake(async (callback) => {
@@ -177,72 +173,81 @@ describe('ProfileService', () => {
             const mockProfiles: ProfileEntity[] = [
                 {id: 1, name: "Informatyczny", schoolId: 2, capacity: 20},
             ];
-            const mockCriteria: ProfileCriteria[] = [
-                {id: 1, profileId: 1, subjectId: 1, type: ProfileCriteriaType.Alternative},
+            const mockCriteria: ProfileCriteriaWithSubjects[] = [
+                {id: 1, profileId: 1, subjectId: 1, subjectName: "angielski", type: ProfileCriteriaType.Alternative},
             ];
             const mockSchool = {name: "school"} as School
 
             profileRepoStub.getAll.resolves(mockProfiles);
-            profileRepoStub.getProfileCriteria.resolves(mockCriteria);
+            profileRepoStub.getProfileCriteriaWithSubject.resolves(mockCriteria);
             schoolServiceStub.getSchool.resolves(mockSchool);
-            applicationServiceStub.getAllPendingByProfile.resolves([{} as Application, {} as Application]);
-            subjectServiceStub.getSubject.resolves({name: "matematyka"} as Subject)
+            applicationServiceStub.getAllPendingByProfile.resolves([{id: 4} as Application, {id: 3} as Application]);
+            applicationServiceStub.getAllAcceptedByProfile.resolves([{id: 1} as Application, {id: 2} as Application]);
             const result = await profileService.getProfilesWithInfo();
 
             assert.equal(profileRepoStub.getAll.callCount, 1);
-            assert.equal(profileRepoStub.getProfileCriteria.callCount, 1);
+            assert.equal(profileRepoStub.getProfileCriteriaWithSubject.callCount, 1);
             assert.deepEqual(result, [{
                 id: mockProfile.id,
                 name: mockProfile.name,
                 schoolId: mockSchool.id,
                 schoolName: mockSchool.name,
-                criteriaSubjects: ["matematyka"],
-                applicationNumber: 2
+                criteria: mockCriteria,
+                criteriaSubjects: ["angielski"],
+                applicationNumber: 2,
+                capacity: mockProfile.capacity,
+                pending: [{id: 4}, {id: 3}],
+                accepted: [{id: 1}, {id: 2}]
             }]);
         });
+    });
 
-        describe('getProfileWithInfo', () => {
-            it('should return profile with additional info if exist', async () => {
-                const mockProfile = {id: 1, name: "Informatyczny", schoolId: 2, capacity: 20};
-                const mockCriteria: ProfileCriteria[] = [
-                    {id: 1, profileId: 1, subjectId: 1, type: ProfileCriteriaType.Alternative},
-                ];
-                const mockSchool = {name: "school"} as School
-    
-                profileRepoStub.getById.resolves(mockProfile);
-                profileRepoStub.getProfileCriteria.resolves(mockCriteria);
-                schoolServiceStub.getSchool.resolves(mockSchool);
-                applicationServiceStub.getAllPendingByProfile.resolves([{} as Application, {} as Application]);
-                subjectServiceStub.getSubject.resolves({name: "matematyka"} as Subject)
-                const result = await profileService.getProfileWithInfo(1);
-    
-                assert.equal(profileRepoStub.getAll.callCount, 1);
-                assert.equal(profileRepoStub.getProfileCriteria.callCount, 1);
-                assert.deepEqual(result, {
-                    id: mockProfile.id,
-                    name: mockProfile.name,
-                    schoolId: mockSchool.id,
-                    schoolName: mockSchool.name,
-                    criteriaSubjects: ["matematyka"],
-                    applicationNumber: 2
-                });
+    describe('getProfileWithInfo', () => {
+        it('should return profile with additional info if exist', async () => {
+            const mockProfile = {id: 1, name: "Informatyczny", schoolId: 2, capacity: 20};
+            const mockCriteria: ProfileCriteriaWithSubjects[] = [
+                {id: 1, profileId: 1, subjectId: 1, subjectName: "matematyka",  type: ProfileCriteriaType.Alternative},
+            ];
+            const mockSchool = {name: "school"} as School
+
+            profileRepoStub.getById.resolves(mockProfile);
+            profileRepoStub.getProfileCriteriaWithSubject.resolves(mockCriteria);
+            schoolServiceStub.getSchool.resolves(mockSchool);
+            applicationServiceStub.getAllPendingByProfile.resolves([{id: 4} as Application, {id: 3} as Application]);
+            applicationServiceStub.getAllAcceptedByProfile.resolves([{id: 1} as Application, {id: 2} as Application]);
+            const result = await profileService.getProfileWithInfo(1);
+
+            assert.equal(profileRepoStub.getById.callCount, 1);
+            assert.equal(profileRepoStub.getProfileCriteriaWithSubject.callCount, 1);
+            assert.deepEqual(result, {
+                id: mockProfile.id,
+                name: mockProfile.name,
+                schoolId: mockSchool.id,
+                schoolName: mockSchool.name,
+                criteria: mockCriteria,
+                criteriaSubjects: ["matematyka"],
+                applicationNumber: 2,
+                capacity: mockProfile.capacity,
+                pending: [{id: 4}, {id: 3}],
+                accepted: [{id: 1}, {id: 2}]
             });
+        });
+    });
 
-        describe('deleteProfile', () => {
-            it('should delete profile if exist', async () => {
-                const mockProfile = {
-                    id: 1,
-                    name: "Informatyczny",
-                    schoolId: 2,
-                    capacity: 20
-                };
+    describe('deleteProfile', () => {
+        it('should delete profile if exist', async () => {
+            const mockProfile = {
+                id: 1,
+                name: "Informatyczny",
+                schoolId: 2,
+                capacity: 20
+            };
 
-                profileRepoStub.getById.resolves(mockProfile);
+            profileRepoStub.getById.resolves(mockProfile);
 
-                await profileService.deleteProfile(1, 2);
-                assert.equal(profileRepoStub.getById.callCount, 1);
-                assert.equal(profileRepoStub.delete.callCount, 1);
-            })
+            await profileService.deleteProfile(1, 2);
+            assert.equal(profileRepoStub.getById.callCount, 1);
+            assert.equal(profileRepoStub.delete.callCount, 1);
         })
     });
 
@@ -355,5 +360,5 @@ describe('ProfileService', () => {
             assert.equal(profileRepoStub.insertCriteria.callCount, 1);
             assert(profileRepoStub.insertCriteria.calledWith(criteria[0]));
         })
-    })
-})
+    });
+});

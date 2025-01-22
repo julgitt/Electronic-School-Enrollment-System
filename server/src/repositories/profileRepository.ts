@@ -74,7 +74,7 @@ export class ProfileRepository {
                 pc.id,
                 pc.profile_id,
                 pc.subject_id,
-                s.name AS subjectName,
+                s.name AS subject_name,
                 pc.type
             FROM profile_criteria AS pc
             LEFT JOIN subjects s ON s.id = pc.subject_id
@@ -83,17 +83,6 @@ export class ProfileRepository {
     
         let x = await db.query(query, [profileId]);
         return x
-    }
-
-    async getProfileCapacity(profileId: number): Promise<number | null> {
-        const query = `
-            SELECT capacity
-            FROM profiles
-            WHERE id = $1
-            LIMIT 1
-        `;
-
-        return (await db.oneOrNone(query, [profileId])).capacity;
     }
 
     async insert(profile: ProfileEntity, t: ITask<any>): Promise<ProfileEntity> {
