@@ -4,10 +4,15 @@ import {ResourceNotFoundError} from "../errors/resourceNotFoundError";
 import {Candidate} from "../dto/candidate/candidate";
 import {CandidateEntity} from "../models/candidateEntity";
 import {CandidateRequest} from "../dto/candidate/candidateRequest";
+import { GradeService } from "./gradeService";
+import { Grade } from "../dto/grade/grade";
+import { CandidateWithGrades } from "../dto/candidate/candidateWithGrades";
 
 export class CandidateService {
     constructor(
-        private readonly candidateRepository: CandidateRepository) {
+        private readonly candidateRepository: CandidateRepository,
+        private readonly gradeService: GradeService
+    ) {
     }
 
     async getLastCreatedCandidateByUser(userId: number) {
@@ -36,6 +41,18 @@ export class CandidateService {
         return candidate;
     }
 
+    
+    /**
+     * Pobiera wszystkich kandydatów wraz z ocenami.
+     *
+     * @returns {Promise<CandidateWithGrades[]>} Zwraca tablicę obiektów zawierających kandydata i jego oceny:
+     */
+    async getAllWithGrades(): Promise<CandidateWithGrades[]> {
+        const candidates: Candidate[] = await this.candidateRepository.getAll();
+        return candidates.map(c => {
+            return {candidate: c, grades: this.gradeService.getAllByCandidate(c.id)}
+        })
+    }
 
     /**
      * Pobiera dane kandydata na podstawie identyfikatora
