@@ -1,15 +1,15 @@
 import {ApplicationService} from "./applicationService";
-import {ProfileService} from "./profileService";
 import {ApplicationStatus} from "../dto/application/applicationStatus";
 import {ApplicationRequest} from "../dto/application/applicationRequest";
 import {transactionFunction} from "../db";
 import {RankedApplication, RankListWithInfo} from "../dto/application/rankedApplication";
 import {ApplicationWithInfo} from "../dto/application/applicationWithInfo";
+import { RankListService } from "./rankListService";
 
 
 export class AdminService {
     constructor(
-        private profileService: ProfileService,
+        private rankListService: RankListService,
         private applicationService: ApplicationService,
         private readonly tx: transactionFunction
     ) {
@@ -17,7 +17,7 @@ export class AdminService {
 
     async processProfileEnrollments(): Promise<ApplicationWithInfo[]> {
         let startTime = performance.now();
-        const rankListsByProfile = await this.profileService.getAllRankLists();
+        const rankListsByProfile = await this.rankListService.getAllRankLists();
         let endTime = performance.now();
         console.log("rank:" + (endTime - startTime));
         startTime = performance.now();

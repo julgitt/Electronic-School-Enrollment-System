@@ -3,28 +3,28 @@ import sinon from 'sinon';
 
 import {AdminService} from "../../../src/services/adminService";
 import {ITask} from "pg-promise";
-import {ProfileService} from "../../../src/services/profileService";
 import {ApplicationService} from "../../../src/services/applicationService";
 import assert from "assert";
 import {RankedApplication, RankListWithInfo} from "../../../src/dto/application/rankedApplication";
 import {ProfileWithInfo} from "../../../src/dto/profile/profileInfo";
 import {ApplicationWithInfo} from "../../../src/dto/application/applicationWithInfo";
+import { RankListService } from '../../../src/services/rankListService';
 
 describe('AdminService', () => {
     let adminService: AdminService;
-    let profileServiceStub: sinon.SinonStubbedInstance<ProfileService>;
+    let rankListServiceStub: sinon.SinonStubbedInstance<RankListService>;
     let applicationServiceStub: sinon.SinonStubbedInstance<ApplicationService>;
     let txStub: sinon.SinonStub;
 
     beforeEach(() => {
         applicationServiceStub = sinon.createStubInstance(ApplicationService);
-        profileServiceStub = sinon.createStubInstance(ProfileService);
+        rankListServiceStub = sinon.createStubInstance(RankListService);
         txStub = sinon.stub().callsFake(async (callback: (t: ITask<any>) => Promise<void>) => {
             await callback({} as unknown as ITask<any>);
         })
 
         adminService = new AdminService(
-            profileServiceStub,
+            rankListServiceStub,
             applicationServiceStub,
             txStub
         );
@@ -57,7 +57,7 @@ describe('AdminService', () => {
                 }]
             ]);
 
-            profileServiceStub.getAllRankLists.resolves(mockRankLists);
+            rankListServiceStub.getAllRankLists.resolves(mockRankLists);
 
 
             const result: ApplicationWithInfo[] = await adminService.processProfileEnrollments();

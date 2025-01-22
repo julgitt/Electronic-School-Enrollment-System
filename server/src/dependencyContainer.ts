@@ -26,6 +26,7 @@ import {AdminService} from "./services/adminService";
 import {AdminController} from "./controllers/adminController";
 import {SchoolAdminController} from "./controllers/schoolAdminController";
 import {ProfileController} from "./controllers/profileController";
+import { RankListService } from "./services/rankListService";
 
 
 const subjectRepository: SubjectRepository = new SubjectRepository();
@@ -49,8 +50,11 @@ export const gradeService = new GradeService(gradeRepository, subjectService, en
 export const gradeController = new GradeController(gradeService);
 
 const profileRepository = new ProfileRepository()
-export const profileService = new ProfileService(profileRepository, gradeService, subjectService, candidateService, tx);
-export const profileController = new ProfileController(profileService);
+export const profileService = new ProfileService(profileRepository, tx);
+export const rankListService = new RankListService(gradeService, subjectService, candidateService, profileService)
+
+export const profileController = new ProfileController(profileService, rankListService);
+
 
 const schoolRepository = new SchoolRepository();
 export const schoolService = new SchoolService(schoolRepository, profileService, tx);
@@ -64,7 +68,7 @@ profileService.setApplicationService(applicationService);
 applicationService.setProfileService(profileService);
 export const applicationController = new ApplicationController(applicationService);
 
-export const adminService = new AdminService(profileService, applicationService, tx);
+export const adminService = new AdminService(rankListService, applicationService, tx);
 export const adminController = new AdminController(adminService);
 
-export const schoolAdminController = new SchoolAdminController(schoolService, profileService, applicationService);
+export const schoolAdminController = new SchoolAdminController(schoolService, profileService, rankListService, applicationService);

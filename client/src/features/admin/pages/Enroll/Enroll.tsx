@@ -83,11 +83,6 @@ const Enroll: React.FC = () => {
                 (<h3> Uruchom proces naboru kandydatów </h3>)
             }
             <div className="horizontal">
-                <Button
-                    onClick={handleEnrollClick}
-                >
-                    Start
-                </Button>
                 {(enrollmentInfo && enrollmentInfo.length > 0)? (
                     <Button
                         onClick={handleExportClick}

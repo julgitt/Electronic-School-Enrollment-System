@@ -72,16 +72,17 @@ export class ProfileRepository {
         const query = `
             SELECT
                 pc.id,
-                pc.profile_id AS profileId,
-                pc.subject_id AS subjectId,
+                pc.profile_id,
+                pc.subject_id,
                 s.name AS subjectName,
                 pc.type
             FROM profile_criteria AS pc
             LEFT JOIN subjects s ON s.id = pc.subject_id
             WHERE profile_id = $1
         `;
-
-        return await db.query(query, [profileId]);
+    
+        let x = await db.query(query, [profileId]);
+        return x
     }
 
     async getProfileCapacity(profileId: number): Promise<number | null> {
