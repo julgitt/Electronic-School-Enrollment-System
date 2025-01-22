@@ -5,7 +5,6 @@ import {Candidate} from "../dto/candidate/candidate";
 import {CandidateEntity} from "../models/candidateEntity";
 import {CandidateRequest} from "../dto/candidate/candidateRequest";
 import { GradeService } from "./gradeService";
-import { Grade } from "../dto/grade/grade";
 import { CandidateWithGrades } from "../dto/candidate/candidateWithGrades";
 
 export class CandidateService {
@@ -49,9 +48,12 @@ export class CandidateService {
      */
     async getAllWithGrades(): Promise<CandidateWithGrades[]> {
         const candidates: Candidate[] = await this.candidateRepository.getAll();
-        return candidates.map(c => {
-            return {candidate: c, grades: this.gradeService.getAllByCandidate(c.id)}
-        })
+        return Promise.all(
+            candidates.map(async c => {
+                const grades = await this.gradeService.getAllByCandidate(c.id);
+                return { candidate: c, grades };
+            })
+        );
     }
 
     /**

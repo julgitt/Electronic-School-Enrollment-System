@@ -14,6 +14,7 @@ import { RankListService } from "../../../src/services/rankListService";
 import { SubjectService } from "../../../src/services/subjectService";
 import { ProfileService } from "../../../src/services/profileService";
 import { Subject } from "../../../src/dto/subject";
+import {CandidateWithGrades} from "../../../src/dto/candidate/candidateWithGrades";
 
 describe('RankListService', () => {
     let rankListService: RankListService;
@@ -81,21 +82,15 @@ describe('RankListService', () => {
             ];
             const mockProfileCapacity: number = 2;
 
-            gradeServiceStub.getAllByCandidate.callsFake((candidateId: number) => {
-                return Promise.resolve(getMockGradesByCandidate(candidateId));
-            });
+            candidateServiceStub.getAllWithGrades.resolves(mockGrades())
 
-            candidateServiceStub.getCandidateById.callsFake((candidateId: number) => {
-                return Promise.resolve({id: candidateId} as Candidate)
-            });
-
-            profileServiceStub.getProfilesWithInfo.resolves([{
+            profileServiceStub.getProfileWithInfo.resolves({
                 id: 1,
                 capacity: mockProfileCapacity,
                 pending: mockPendingApplications,
                 accepted: mockAcceptedApplications,
                 criteria: mockProfileCriteria
-            } as ProfileWithInfo]);
+            } as ProfileWithInfo);
 
             const result = await rankListService.getRankListById(1);
 
@@ -116,13 +111,40 @@ describe('RankListService', () => {
 
     describe('getAllRankLists', () => {
         it('should get all rank lists for all profiles', async () => {
-            const getRankListStub = sinon.stub(rankListService, 'getRankListById');
-            getRankListStub.callsFake((_profileId: number) => {
-                return Promise.resolve({accepted: [], reserve: [], prevAccepted: []});
-            });
+            const mockProfileCriteria = [
+                {id: 1, subjectId: 1, profileId: 1, type: ProfileCriteriaType.Mandatory},
+                {id: 2, subjectId: 2, profileId: 1, type: ProfileCriteriaType.Alternative},
+                {id: 3, subjectId: 3, profileId: 1, type: ProfileCriteriaType.Alternative}
+            ];
+            const mockAcceptedApplications: Application[] = [];
+            const mockPendingApplications: Application[] = [
+                {id: 1, profileId: 1, candidateId: 1} as Application,
+                {id: 2, profileId: 1, candidateId: 2} as Application,
+                {id: 3, profileId: 1, candidateId: 3} as Application,
+            ];
+            const mockProfileCapacity: number = 2;
 
-            profileServiceStub.getProfilesWithInfo.resolves(
-                [{id: 1} as ProfileWithInfo, {id: 2} as ProfileWithInfo, {id: 3} as ProfileWithInfo]
+            candidateServiceStub.getAllWithGrades.resolves(mockGrades())
+
+            profileServiceStub.getProfilesWithInfo.resolves([{
+                    id: 1,
+                    capacity: mockProfileCapacity,
+                    pending: mockPendingApplications,
+                    accepted: mockAcceptedApplications,
+                    criteria: mockProfileCriteria
+                } as ProfileWithInfo, {
+                    id: 2,
+                    capacity: mockProfileCapacity,
+                    pending: mockPendingApplications,
+                    accepted: mockAcceptedApplications,
+                    criteria: mockProfileCriteria
+                } as ProfileWithInfo, {
+                    id: 3,
+                    capacity: mockProfileCapacity,
+                    pending: mockPendingApplications,
+                    accepted: mockAcceptedApplications,
+                    criteria: mockProfileCriteria
+                } as ProfileWithInfo]
             );
 
             const result = await rankListService.getAllRankLists();
@@ -132,73 +154,32 @@ describe('RankListService', () => {
             assert(result.has(2));
             assert(result.has(3));
             assert.equal(profileServiceStub.getProfilesWithInfo.callCount, 1);
-            assert.equal(getRankListStub.callCount, 3);
         });
     })
 
-    function getMockGradesByCandidate(id: number): GradeEntity[] {
-        const grades = new Map([
-            [1, [
-                {subjectId: 1, type: GradeType.Exam, candidateId: 1, grade: 50}, {
-                    subjectId: 1,
-                    type: GradeType.Certificate,
-                    candidateId: 1,
-                    grade: 3
-                },
-                {subjectId: 2, type: GradeType.Exam, candidateId: 1, grade: 50}, {
-                    subjectId: 2,
-                    type: GradeType.Certificate,
-                    candidateId: 1,
-                    grade: 3
-                },
-                {subjectId: 3, type: GradeType.Exam, candidateId: 1, grade: 100}, {
-                    subjectId: 3,
-                    type: GradeType.Certificate,
-                    candidateId: 1,
-                    grade: 5
-                },
-            ]],
-            [2, [
-                {subjectId: 1, type: GradeType.Exam, grade: 75, candidateId: 2}, {
-                    subjectId: 1,
-                    type: GradeType.Certificate,
-                    grade: 4,
-                    candidateId: 2
-                },
-                {subjectId: 2, type: GradeType.Exam, grade: 75, candidateId: 2}, {
-                    subjectId: 2,
-                    type: GradeType.Certificate,
-                    grade: 4,
-                    candidateId: 2
-                },
-                {subjectId: 3, type: GradeType.Exam, grade: 75, candidateId: 2}, {
-                    subjectId: 3,
-                    type: GradeType.Certificate,
-                    grade: 4,
-                    candidateId: 2
-                },
-            ]],
-            [3, [
-                {subjectId: 1, type: GradeType.Exam, candidateId: 3, grade: 100}, {
-                    subjectId: 1,
-                    type: GradeType.Certificate,
-                    candidateId: 3,
-                    grade: 5
-                },
-                {subjectId: 2, type: GradeType.Exam, candidateId: 3, grade: 100}, {
-                    subjectId: 2,
-                    type: GradeType.Certificate,
-                    candidateId: 3,
-                    grade: 5
-                },
-                {subjectId: 3, type: GradeType.Exam, candidateId: 3, grade: 100}, {
-                    subjectId: 3,
-                    type: GradeType.Certificate,
-                    candidateId: 3,
-                    grade: 5
-                }
-            ]],
-        ])
-        return grades.get(id) || [];
+    function mockGrades(): CandidateWithGrades[] {
+        return [{candidate: {id: 1} as Candidate, grades: [
+                {subjectId: 1, type: GradeType.Exam, grade: 50},
+                {subjectId: 1, type: GradeType.Certificate, grade: 3},
+                {subjectId: 2, type: GradeType.Exam, grade: 50},
+                {subjectId: 2, type: GradeType.Certificate, grade: 3},
+                {subjectId: 3, type: GradeType.Exam, grade: 100},
+                {subjectId: 3, type: GradeType.Certificate, grade: 5},
+            ]}, {candidate: {id: 2} as Candidate, grades: [
+                {subjectId: 1, type: GradeType.Exam, grade: 75},
+                {subjectId: 1, type: GradeType.Certificate, grade: 4},
+                {subjectId: 2, type: GradeType.Exam, grade: 75},
+                {subjectId: 2, type: GradeType.Certificate, grade: 4},
+                {subjectId: 3, type: GradeType.Exam, grade: 75},
+                {subjectId: 3, type: GradeType.Certificate, grade: 4},
+            ]}, {candidate: {id: 3} as Candidate, grades: [
+                {subjectId: 1, type: GradeType.Exam, grade: 100},
+                {subjectId: 1, type: GradeType.Certificate, grade: 5},
+                {subjectId: 2, type: GradeType.Exam, grade: 100},
+                {subjectId: 2, type: GradeType.Certificate, grade: 5},
+                {subjectId: 3, type: GradeType.Exam, grade: 100},
+                {subjectId: 3, type: GradeType.Certificate, grade: 5}
+            ]}
+        ]
     }
 })

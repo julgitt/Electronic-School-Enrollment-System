@@ -8,15 +8,21 @@ import {ResourceNotFoundError} from "../../../src/errors/resourceNotFoundError";
 import {DataConflictError} from "../../../src/errors/dataConflictError";
 import {CandidateEntity} from "../../../src/models/candidateEntity";
 import {CandidateRequest} from "../../../src/dto/candidate/candidateRequest";
+import {GradeService} from "../../../src/services/gradeService";
+import {ITask} from "pg-promise";
+import {Candidate} from "../../../src/dto/candidate/candidate";
+import {Grade} from "../../../src/dto/grade/grade";
 
 
 describe('CandidateService', () => {
     let candidateService: CandidateService;
     let candidateRepoStub: sinon.SinonStubbedInstance<CandidateRepository>;
+    let gradeServiceStub: sinon.SinonStubbedInstance<GradeService>;
 
     beforeEach(() => {
         candidateRepoStub = sinon.createStubInstance(CandidateRepository);
-        candidateService = new CandidateService(candidateRepoStub);
+        gradeServiceStub = sinon.createStubInstance(GradeService);
+        candidateService = new CandidateService(candidateRepoStub, gradeServiceStub);
     });
 
     afterEach(() => {
@@ -37,7 +43,7 @@ describe('CandidateService', () => {
     });
 
     describe('getAllByUser', () => {
-        it('should all candidates for a given user', async () => {
+        it('should return all candidates for a given user', async () => {
             const mockCandidates: CandidateEntity[] = [
                 {id: 1, userId: 1, firstName: 'Jan', lastName: 'Kowalski', pesel: '12345678901'},
                 {id: 2, userId: 1, firstName: 'Agata', lastName: 'Nowak', pesel: '12345678902'},
@@ -47,6 +53,27 @@ describe('CandidateService', () => {
             const result = await candidateService.getAllByUser(1);
             assert.deepEqual(result, mockCandidates);
             assert.equal(candidateRepoStub.getAllByUser.callCount, 1);
+        });
+    });
+
+    describe('getAllWithGrades', () => {
+        it('should return all candidates with grades', async () => {
+            const mockCandidates: CandidateEntity[] = [
+                {id: 1} as CandidateEntity,
+                {id: 2} as CandidateEntity,
+            ];
+            gradeServiceStub.getAllByCandidate.callsFake(((candidateId: number) => {
+                return Promise.resolve([{grade: candidateId}] as Grade[])
+            }));
+            candidateRepoStub.getAll.resolves(mockCandidates);
+
+            const result = await candidateService.getAllWithGrades();
+            assert.deepEqual(result, [
+                {candidate: {id: 1}, grades: [{grade: 1}]},
+                {candidate: {id: 2}, grades: [{grade: 2}]}
+            ]);
+            assert.equal(candidateRepoStub.getAll.callCount, 1);
+            assert.equal(gradeServiceStub.getAllByCandidate.callCount, 2);
         });
     });
 
