@@ -15,6 +15,12 @@ const UserNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({renderLogo
     const {setError} = useError();
     const {data, loading: candidateLoading} = useFetch<Candidate | RedirectResponse>('api/candidate');
     const [candidate, setCandidate] = useState<Candidate | null>(null);
+
+    const {data: candidates, loading: candidatesLoading} = useFetch<Candidate[]>('api/candidates', !!candidate);
+    const {isPastDeadline, loading: deadlineLoading} = useDeadlineCheck(!!candidate);
+    const {areGradesSubmitted, loading: gradesLoading} = useGradeSubmittedCheck(!!candidate);
+    const [fetchingLoading, setFetchingLoading] = useState(false)
+    const loading = candidateLoading || candidatesLoading || deadlineLoading || gradesLoading || fetchingLoading;
     const [redirect, setRedirect] = useState<string | null>(null);
 
     useEffect(() => {
@@ -23,13 +29,6 @@ const UserNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({renderLogo
             if ('redirect' in data) setRedirect(data.redirect);
         }
     }, [data]);
-
-    const {data: candidates, loading: candidatesLoading} = useFetch<Candidate[]>('api/candidates', !!candidate);
-    const {isPastDeadline, loading: deadlineLoading} = useDeadlineCheck(!!candidate);
-    const {areGradesSubmitted, loading: gradesLoading} = useGradeSubmittedCheck(!!candidate);
-    const [fetchingLoading, setFetchingLoading] = useState(false)
-    const loading = candidateLoading || candidatesLoading || deadlineLoading || gradesLoading || fetchingLoading;
-
 
     const handleSwitch = async (id: number) => {
         setFetchingLoading(true);
@@ -63,7 +62,6 @@ const UserNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({renderLogo
 
     if (redirect && !window.location.href.includes(redirect)) {
         window.location.href = redirect;
-        return null;
     }
 
     return (

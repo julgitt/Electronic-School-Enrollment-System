@@ -8,6 +8,7 @@ import styles from "../../../assets/css/forms.module.scss";
 import {InputField} from "../../../components/atomic/InputField";
 import {Button} from "../../../components/atomic/Button";
 import {Enrollment} from "../../../shared/types/enrollment.ts";
+import SuccessMessage from "../../../components/atomic/SuccessMessage/SuccessMessage.tsx";
 
 interface EditEnrollmentFormProps {
     updatedEnrollments: Enrollment[];
@@ -18,6 +19,7 @@ interface EditEnrollmentFormProps {
     onDeleteEnrollment: (id: number) => void;
     onSave: () => void;
     onUndo: () => void;
+    successMessage: string | null
 }
 
 const EditEnrollmentForm: React.FC<EditEnrollmentFormProps> = ({
@@ -28,7 +30,8 @@ const EditEnrollmentForm: React.FC<EditEnrollmentFormProps> = ({
                                                                    onAddEnrollment,
                                                                    onDeleteEnrollment,
                                                                    onSave,
-                                                                   onUndo
+                                                                   onUndo,
+                                                                   successMessage
                                                                }) => (
     <form method="POST" className={styles.form}>
         <h2>Edytuj terminy</h2>
@@ -39,11 +42,12 @@ const EditEnrollmentForm: React.FC<EditEnrollmentFormProps> = ({
             <h5>Data zakończenia</h5>
         </div>
         {updatedEnrollments && updatedEnrollments.map(enrollment => (
-            <div className={styles.horizontal}>
+            <div className={styles.horizontal} key={enrollment.id}>
                 <InputField
                     type="number"
                     placeholder="1"
                     value={enrollment.round}
+                    min={1}
                     required
                     onChange={(e) =>
                         onEnrollmentChange(enrollment.id, 'round', e.target.value)}
@@ -78,6 +82,7 @@ const EditEnrollmentForm: React.FC<EditEnrollmentFormProps> = ({
             <Button onClick={onUndo} disabled={loading}> Cofnij </Button>
             <Button onClick={onSave}> Zapisz </Button>
         </div>
+        {successMessage && (<SuccessMessage message={successMessage}/>)}
     </form>
 )
 

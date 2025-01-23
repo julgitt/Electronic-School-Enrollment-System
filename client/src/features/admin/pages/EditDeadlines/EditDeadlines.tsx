@@ -11,6 +11,7 @@ const EditDeadlines: React.FC = () => {
     const [updatedEnrollments, setUpdatedEnrollments] = useState<Enrollment[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
     useEffect(() => {
         if (enrollments && enrollments.length > 0) {
@@ -48,6 +49,9 @@ const EditDeadlines: React.FC = () => {
         setLoading(true);
         try {
             await updateEnrollments(updatedEnrollments);
+
+            setSuccessMessage("Zapisano zmiany");
+            setTimeout(() => setSuccessMessage(null), 3000);
         } catch (err: any) {
             setError(err.message);
         } finally {
@@ -71,6 +75,7 @@ const EditDeadlines: React.FC = () => {
             onDeleteEnrollment={handleDeleteEnrollment}
             onSave={handleSave}
             onUndo={handleUndo}
+            successMessage={successMessage}
         />
     );
 };

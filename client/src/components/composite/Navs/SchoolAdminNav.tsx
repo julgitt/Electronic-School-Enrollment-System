@@ -20,6 +20,7 @@ const SchoolAdminNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({ren
     const [fetchingLoading, setFetchingLoading] = useState(false)
     const loading = profileLoading || schoolLoading || schoolsLoading || fetchingLoading || profilesLoading;
 
+
     const handleSwitch = async (id: number) => {
         setFetchingLoading(true);
         setError(null);
@@ -63,6 +64,7 @@ const SchoolAdminNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({ren
     };
 
     if (loading) return <div></div>
+    console.log(profile)
 
     return (
         <nav className={styles.nav}>
@@ -74,14 +76,14 @@ const SchoolAdminNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({ren
                             schools={schools || []}
                             onSelectSchool={handleSwitch}
                         />
-                        {profile && (
-                            <>
-                                <ProfileDropdown
-                                    currentProfile={profile}
+                         <ProfileDropdown
+                                    currentProfile={profile || {} as Profile}
                                     profiles={profiles || []}
                                     onSelectProfile={handleSwitchProfile}
                                     onDeleteProfile={handleDeleteProfile}
-                                />
+                        />
+                        {profile && profile.id && (
+                            <>
                                 <Link className={styles.navLink} to="/profileCandidates">Kandydaci</Link>
                             </>
                         )}

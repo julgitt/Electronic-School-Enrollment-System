@@ -1,7 +1,7 @@
 import {body} from 'express-validator';
 
 function validatePesel(pesel: string): boolean {
-    if (!/^\d{11}$/.test(pesel)) {
+    if (!/^[0-9]+$/.test(pesel)) {
         return false;
     }
 
@@ -19,10 +19,10 @@ function validatePesel(pesel: string): boolean {
 export const candidateRegisterValidator = [
     body('firstName')
         .notEmpty().withMessage("Podaj imię.")
-        .matches(/^\p{L}+$/u).withMessage("Imię może zawierać jedynie litery."),
+        .matches(/^[a-zA-Z0-9ąęćłńóśźżĄĘĆŁŃÓŚŹŻ]+$/).withMessage("Imię może zawierać jedynie litery."),
     body('lastName')
         .notEmpty().withMessage("Podaj nazwisko.")
-        .matches(/^\p{L}+$/u).withMessage("Nazwisko może zawierać jedynie litery."),
+        .matches(/^[a-zA-Z0-9ąęćłńóśźżĄĘĆŁŃÓŚŹŻ]+$/).withMessage("Nazwisko może zawierać jedynie litery."),
 
     body('pesel')
         .notEmpty().withMessage("Podaj pesel.")

@@ -34,8 +34,8 @@ const SignupForm: React.FC<SignupFormProps> = ({
                 placeholder="Nazwa użytkownika"
                 value={formData.username}
                 onChange={onInputChange('username')}
-                pattern="[a-zA-Z0-9]+"
-                minLength={5}
+                pattern="[a-zA-Z0-9ąęćłńóśźżĄĘĆŁŃÓŚŹŻ]+"
+                minLength={3}
                 title="Nazwa użytkownika może zawierać tylko litery oraz cyfry."
                 required
             />
@@ -54,7 +54,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
                 placeholder="Hasło"
                 value={formData.password}
                 onChange={onInputChange("password")}
-                pattern="[a-zA-Z0-9.*[@$!%*?&]]+"
+                pattern="[a-zA-Z0-9ąęćłńóśźżĄĘĆŁŃÓŚŹŻ.*[@$!%*?&]]+"
                 minLength={8}
                 title="Hasło może zawierać jedynie litery, cyfry oraz znaki: .*[@$!%*?&]"
                 required

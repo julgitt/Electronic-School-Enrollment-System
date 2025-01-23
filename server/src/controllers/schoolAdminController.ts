@@ -30,7 +30,7 @@ export class SchoolAdminController {
 
 
             if (school == null)
-                return res.status(200).json({message: 'No school assign to that school admin'});
+                return res.status(200).json();
 
             res.cookie('schoolId', school.id, {
                 signed: true,

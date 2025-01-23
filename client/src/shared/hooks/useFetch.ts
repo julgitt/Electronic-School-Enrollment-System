@@ -32,7 +32,6 @@ export const useFetch = <T>(endpoint: string, shouldFetch: boolean = true): Fetc
                 window.location.href = '/login';
             } else {
                 const error: any = await response.json();
-                console.log(error.message)
                 setError(error.message)
             }
         } catch (err: any) {

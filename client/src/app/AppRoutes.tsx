@@ -33,6 +33,7 @@ const AppRoutes = () => {
 
 
     if (error) {
+        console.log(error)
         return <ErrorPage errorMessage={error}/>;
     }
 

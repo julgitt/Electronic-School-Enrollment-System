@@ -1,21 +1,18 @@
 import {body} from "express-validator";
 
 export const enrollmentValidator = [
-    body("round")
-        .isInt({min: 1})
-        .withMessage("Tura musi być liczbą całkowitą większą od zera."),
-    body("startDate")
-        .isISO8601()
-        .withMessage("Data musi mieć poprawny formatowanie"),
-    body("endDate")
-        .isISO8601()
-        .withMessage("Data musi mieć poprawne formatowanie"),
-    body("endDate").custom((value, {req}) => {
-        const startDate = new Date(req.body.startDate);
-        const endDate = new Date(value);
-        if (endDate <= startDate) {
-            throw new Error("Data rozpoczęcia musi być przed datą zakończenia");
-        }
-        return true;
-    }),
+    body()
+        .isArray()
+        .bail()
+        .custom((enrollments: {round: number, startDate: Date, endDate: Date}[]) => {
+            for (const enrollment of enrollments) {
+                console.log(enrollment)
+                if (enrollment.endDate <= enrollment.startDate)
+                    throw new Error("Data rozpoczęcia musi być przed datą zakończenia");
+                
+                if (enrollment.round < 1 || enrollment.round % 1 !== 0)
+                    throw Error("Tura musi być liczbą całkowitą większą od zera.");
+                return true;
+            }
+        }).withMessage("Terminy naboru zostały podane w niepoprawnym formacie.")
 ];

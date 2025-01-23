@@ -32,7 +32,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
                 placeholder="Imię"
                 value={formData.firstName}
                 onChange={onInputChange("firstName")}
-                pattern="[a-zA-Z]+"
+                pattern="[a-zA-ZąęćłńóśźżĄĘĆŁŃÓŚŹŻ]+"
                 title="Podaj imię."
                 required
             />
@@ -41,7 +41,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
                 placeholder="Nazwisko"
                 value={formData.lastName}
                 onChange={onInputChange("lastName")}
-                pattern="[a-zA-Z]+"
+                pattern="[a-zA-ZąęćłńóśźżĄĘĆŁŃÓŚŹŻ]+"
                 title="Podaj nazwisko."
                 required
             />
