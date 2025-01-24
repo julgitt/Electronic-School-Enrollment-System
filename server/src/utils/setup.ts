@@ -10,7 +10,7 @@ import {
 import {UserRequest} from "../dto/user/userRequest";
 import {DataConflictError} from "../errors/dataConflictError";
 import {CandidateRequest} from "../dto/candidate/candidateRequest";
-import * as fs from 'fs';
+import { appendFile, createReadStream } from 'fs';
 import {School} from "../dto/school/school";
 import {ProfileRequest} from "../dto/profile/profileRequest";
 import {ProfileCriteria} from "../dto/criteriaByProfile";
@@ -20,7 +20,7 @@ import {GradeRequest} from "../dto/grade/gradeRequest";
 import {GradeType} from "../dto/grade/gradeType";
 import csvParser from 'csv-parser';
 import {Subject} from "../dto/subject";
-import * as path from "node:path";
+import {join} from "node:path";
 
 let userId = 0;
 let schoolId = 0;
@@ -34,9 +34,6 @@ export const runSimulations = async () => {
     for (let c = 1; c <= 10000; c *= 10) {
         await runSimulation(_p, c, capacity, repetitions);
     }
-    for (let p = 6; p <= 60000; p += 1000) {
-        await runSimulation(p, _c, capacity, repetitions);
-    }
 
     console.log("Simulations complete");
 };
@@ -47,7 +44,7 @@ const runSimulation = async (p: number, c: number, capacity: number, repetitions
     const totalTime = await runRepeatedSimulations(c, p, capacity, repetitions);
     const averageTime = totalTime / repetitions;
 
-    fs.appendFile(
+    appendFile(
         'executionTime.txt',
         `${averageTime} ${c} ${p} ${capacity}\n`,
         (err) => {
@@ -104,7 +101,7 @@ const initialize = async (
     let candidateId;
     const candidates: CandidateRequest[] = await new Promise<any[]>((resolve, reject) => {
         const results: any[] = [];
-        fs.createReadStream(path.join(__dirname, 'candidates_extended.csv'))
+        createReadStream(join(__dirname, 'candidates_extended.csv'))
             .pipe(csvParser())
             .on('data', (data: CandidateRequest) => results.push(data))
             .on('end', () => resolve(results))

@@ -5,6 +5,7 @@ import {transactionFunction} from "../db";
 import {RankedApplication, RankListWithInfo} from "../dto/application/rankedApplication";
 import {ApplicationWithInfo} from "../dto/application/applicationWithInfo";
 import { RankListService } from "./rankListService";
+import {appendFile} from 'fs'
 
 
 export class AdminService {
@@ -16,18 +17,9 @@ export class AdminService {
     }
 
     async processProfileEnrollments(): Promise<ApplicationWithInfo[]> {
-        let startTime = performance.now();
         const rankListsByProfile = await this.rankListService.getAllRankLists();
-        let endTime = performance.now();
-        console.log("rank:" + (endTime - startTime));
-        startTime = performance.now();
         const finalEnrollmentLists = this.finalizeEnrollmentProcess(rankListsByProfile);
-        endTime = performance.now();
-        console.log("enroll:" + (endTime - startTime));
-        startTime = performance.now();
         const applications = await this.updateApplicationStatuses(finalEnrollmentLists);
-        endTime = performance.now();
-        console.log("update:" + (endTime - startTime));
         return applications
     }
 
@@ -130,6 +122,13 @@ export class AdminService {
 
     private async updateApplicationStatuses(finalEnrollmentLists: Map<number, RankListWithInfo>) {
         const updatedApplications: ApplicationWithInfo[] = []
+        appendFile(
+            'executionTime.txt',
+            `${performance.now()} end\n`,
+            (err) => {
+                if (err) console.log("Error:" + err);
+            }
+        );
         await this.tx(async t => {
             for (const [_profileId, rankLists] of finalEnrollmentLists.entries()) {
                 const allApplications = [

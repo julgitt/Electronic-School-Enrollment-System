@@ -4,6 +4,7 @@ import {Grade} from "../dto/grade/grade";
 import {GradeService} from "./gradeService";
 import {Application} from "../dto/application/application";
 import {CandidateService} from "./candidateService";
+import {appendFile} from 'fs';
 import {RankedApplication, RankList, RankListWithInfo} from "../dto/application/rankedApplication";
 import {GRADE_TO_POINTS} from "../../../public/adminConstants";
 import {GradeType} from "../dto/grade/gradeType";
@@ -103,6 +104,13 @@ export class RankListService {
             this.profileService.getProfilesWithInfo()
         ]);
 
+        appendFile(
+            'executionTime.txt',
+            `${performance.now()} start\n`,
+            (err) => {
+                if (err) console.log("Error:" + err);
+            }
+        );
         const rankLists = new Map<number, RankListWithInfo>();
 
         profiles.forEach(profile => {
