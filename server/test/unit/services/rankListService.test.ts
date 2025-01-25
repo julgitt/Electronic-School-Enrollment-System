@@ -109,8 +109,8 @@ describe('RankListService', () => {
         })
     })
 
-    describe('getAllRankLists', () => {
-        it('should get all rank lists for all profiles', async () => {
+    describe('getEnrollmentLists', () => {
+        it('should get all enrollemnt lists', async () => {
             const mockProfileCriteria = [
                 {id: 1, subjectId: 1, profileId: 1, type: ProfileCriteriaType.Mandatory},
                 {id: 2, subjectId: 2, profileId: 1, type: ProfileCriteriaType.Alternative},
@@ -147,12 +147,9 @@ describe('RankListService', () => {
                 } as ProfileWithInfo]
             );
 
-            const result = await rankListService.getAllRankLists();
+            const result = await rankListService.getEnrollmentLists();
 
-            assert.equal(result.size, 3);
-            assert(result.has(1));
-            assert(result.has(2));
-            assert(result.has(3));
+            assert.equal(result.reserveByProfile.size, 3);
             assert.equal(profileServiceStub.getProfilesWithInfo.callCount, 1);
         });
     })

@@ -1,11 +1,11 @@
-import {ProfileCriteriaEntity, ProfileCriteriaType, ProfileCriteriaWithSubjects} from "../models/profileCriteriaEntity";
+import {ProfileCriteriaEntity, ProfileCriteriaType} from "../models/profileCriteriaEntity";
 import {ProfileCriteria} from "../dto/criteriaByProfile";
 import {Grade} from "../dto/grade/grade";
 import {GradeService} from "./gradeService";
 import {Application} from "../dto/application/application";
 import {CandidateService} from "./candidateService";
 import {appendFile} from 'fs';
-import {RankedApplication, RankList, RankListWithInfo} from "../dto/application/rankedApplication";
+import {EnrollmentLists, RankedApplication, RankList} from "../dto/application/rankedApplication";
 import {GRADE_TO_POINTS} from "../../../public/adminConstants";
 import {GradeType} from "../dto/grade/gradeType";
 import {GradesInfo, PointsInfo} from "../dto/grade/pointsInfo";
@@ -13,6 +13,7 @@ import {SubjectService} from "./subjectService";
 import {ProfileWithInfo} from "../dto/profile/profileInfo";
 import { ProfileService } from "./profileService";
 import { CandidateWithGrades } from "../dto/candidate/candidateWithGrades";
+import { ApplicationWithInfo } from "../dto/application/applicationWithInfo";
 
 export class RankListService {
 
@@ -86,19 +87,17 @@ export class RankListService {
     /**
      *  Pobiera wszystkie listy rekrutacyjne dla każdego profilu wraz z dodatkowymi informacjami.
      *
-     * @returns {Promise<Map<number, RankListWithInfo>>} Zwraca mapę, dla której:
+     * @returns {Promise<AcceptedAndReserveByProfile>} Zwraca obiekt, zawierający:
      *
-     * klucz - identyfikator profilu
-     * wartość - lista rankingowa, która zawiera:
-     *
-     *   - profile - profil z dodatkowymi informacjami
-     *   - accepted - listę zaakceptowanych kandydatów
-     *   - reserve - listę rezerwową kandydatów
-     *   - rejected - listę odrzuconych, początkowo ustawioną na pustą tablicę
+     * accepted - listę zaakceptowanych aplikacji
+     * rejected - zainicjalizowana lista odrzuconych aplikacji
+     * reserveByProfile - mapę, dla której:
+     *      klucz - identyfikator profilu 
+     *      wartość - lista rezerwowa kandydatów
      *
      * @throws {ResourceNotFoundError} Jeśli nie znaleziono kryteriów dla profilu.
      */
-    async getAllRankLists(): Promise<Map<number, RankListWithInfo>> {
+    async getEnrollmentLists(): Promise<EnrollmentLists> {
         const [candidatesWithGrades, profiles] = await Promise.all([
             this.candidateService.getAllWithGrades(),
             this.profileService.getProfilesWithInfo()
@@ -111,19 +110,21 @@ export class RankListService {
                 if (err) console.log("Error:" + err);
             }
         );
-        const rankLists = new Map<number, RankListWithInfo>();
+        const reserveByProfile = new Map<number, ApplicationWithInfo[]>();
+        const allAccepted: ApplicationWithInfo[] = []
 
         profiles.forEach(profile => {
             const {accepted, reserve} = this.createRankList(profile, candidatesWithGrades)
-            rankLists.set(profile.id, {profile, accepted, reserve, rejected: []});
+            reserveByProfile.set(profile.id, reserve)
+            allAccepted.concat(accepted)
         });
     
-        return rankLists;
+        return {reserveByProfile, accepted: allAccepted, rejected: [], acceptedByCandidate: new Map<number, ApplicationWithInfo>};
     }
 
     private createRankList(profile: ProfileWithInfo, candidatesWithGrades: CandidateWithGrades[]) {
-        const rankedAccepted = this.rankApplications(profile.accepted, profile.criteria, candidatesWithGrades)
-        const rankedPending = this.rankApplications(profile.pending, profile.criteria, candidatesWithGrades)
+        const rankedAccepted = this.rankApplications(profile.accepted, profile, candidatesWithGrades)
+        const rankedPending = this.rankApplications(profile.pending, profile, candidatesWithGrades)
         const capacity = profile.capacity - rankedAccepted.length;
 
         return {
@@ -133,20 +134,21 @@ export class RankListService {
         };
     }
 
-    private rankApplications(applications: Application[], criteria: ProfileCriteria[], candidatesWithGrades: CandidateWithGrades[]) {
+    private rankApplications(applications: Application[], profile: ProfileWithInfo, candidatesWithGrades: CandidateWithGrades[]) {
         return applications
-            .map(a => this.rankApplication(criteria, a, candidatesWithGrades.find(c => c.candidate.id === a.candidateId)!))
+            .map(a => this.rankApplication(profile, a, candidatesWithGrades.find(c => c.candidate.id === a.candidateId)!))
             .sort((a, b) => b.points - a.points);
     }
 
-    private rankApplication(criteria: ProfileCriteria[], application: Application, candidateWithGrades: CandidateWithGrades): RankedApplication {
-        const points = this.calculatePoints(criteria, candidateWithGrades.grades);
+    private rankApplication(profile: ProfileWithInfo, application: Application, candidateWithGrades: CandidateWithGrades): ApplicationWithInfo {
+        const points = this.calculatePoints(profile.criteria, candidateWithGrades.grades);
         return {
             id: application.id,
             candidate: candidateWithGrades.candidate,
             points,
             priority: application.priority,
-            status: application.status
+            status: application.status,
+            profile
         }
     }
 

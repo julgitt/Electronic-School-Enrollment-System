@@ -5,7 +5,7 @@ import {AdminService} from "../../../src/services/adminService";
 import {ITask} from "pg-promise";
 import {ApplicationService} from "../../../src/services/applicationService";
 import assert from "assert";
-import {RankedApplication, RankListWithInfo} from "../../../src/dto/application/rankedApplication";
+import {EnrollmentLists, RankedApplication, RankListWithInfo} from "../../../src/dto/application/rankedApplication";
 import {ProfileWithInfo} from "../../../src/dto/profile/profileInfo";
 import {ApplicationWithInfo} from "../../../src/dto/application/applicationWithInfo";
 import { RankListService } from '../../../src/services/rankListService';
@@ -36,28 +36,24 @@ describe('AdminService', () => {
 
     describe('processProfileEnrollments', () => {
         it('should process profile enrollments successfully', async () => {
-            const mockRankLists: Map<number, RankListWithInfo> = new Map([
-                [1, {
-                    profile: {id: 1} as ProfileWithInfo,
-                    accepted: [{candidate: {id: 1}, priority: 2} as RankedApplication],
-                    reserve: [
-                        {candidate: {id: 2}, priority: 1} as RankedApplication,
-                        {candidate: {id: 3}, priority: 1} as RankedApplication
-                    ],
-                    rejected: []
-                }],
-                [2, {
-                    profile: {id: 2} as ProfileWithInfo,
-                    accepted: [
-                        {candidate: {id: 2}, priority: 2} as RankedApplication,
-                        {candidate: {id: 1}, priority: 1} as RankedApplication
-                    ],
-                    reserve: [],
-                    rejected: []
-                }]
-            ]);
-
-            rankListServiceStub.getAllRankLists.resolves(mockRankLists);
+            const mockRankLists = {
+                accepted: [
+                    {candidate: {id: 1}, priority: 2, profile: {id: 1}} as ApplicationWithInfo,
+                    {candidate: {id: 2}, priority: 2, profile: {id: 2}} as ApplicationWithInfo,
+                    {candidate: {id: 1}, priority: 1, profile: {id: 2}} as ApplicationWithInfo,
+                ],
+                rejected: [],
+                reserveByProfile: new Map([
+                    [1, [
+                        {candidate: {id: 2}, priority: 1, profile: {id: 1}} as ApplicationWithInfo,
+                        {candidate: {id: 3}, priority: 1, profile: {id: 1}} as ApplicationWithInfo
+                    ]], 
+                    [2, []]
+                ]),
+                acceptedByCandidate: new Map<number, ApplicationWithInfo>
+            } as EnrollmentLists   
+          
+            rankListServiceStub.getEnrollmentLists.resolves(mockRankLists);
 
 
             const result: ApplicationWithInfo[] = await adminService.processProfileEnrollments();

@@ -1,6 +1,6 @@
 import {ApplicationStatus} from "./applicationStatus";
 import {Candidate} from "../candidate/candidate";
-import {ProfileWithInfo} from "../profile/profileInfo";
+import { ApplicationWithInfo } from "./applicationWithInfo";
 
 export type RankList= {
     accepted: RankedApplication[],
@@ -8,11 +8,11 @@ export type RankList= {
     prevAccepted: RankedApplication[]
 };
 
-export type RankListWithInfo = {
-    profile: ProfileWithInfo,
-    accepted: RankedApplication[],
-    reserve: RankedApplication[],
-    rejected: RankedApplication[]
+export type EnrollmentLists = {
+    acceptedByCandidate: Map<number, ApplicationWithInfo>
+    accepted: ApplicationWithInfo[],
+    rejected: ApplicationWithInfo[], 
+    reserveByProfile: Map<number, ApplicationWithInfo[]>
 };
 
 export interface RankedApplication {
