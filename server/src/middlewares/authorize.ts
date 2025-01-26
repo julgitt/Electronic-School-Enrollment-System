@@ -6,10 +6,6 @@ export function authorize(...roles: string[]) {
         const userRoles: string[] = req.signedCookies.roles;
         const candidateId = req.signedCookies.candidateId;
 
-        if (roles.includes('candidate') && candidateId == null) {
-            return res.status(401).json({message: 'Not authorized', redirect: '/registerCandidate?returnUrl=' + req.url});
-        }
-
         if (roles.length === 0) {
             req.user = userId;
             return next();
@@ -20,6 +16,9 @@ export function authorize(...roles: string[]) {
         }
 
         if (userRoles && roles.some(role => userRoles.includes(role))) {
+            if (roles.includes('candidate') && candidateId == null) {
+                return res.status(401).json({message: 'Not authorized', redirect: '/registerCandidate?returnUrl=' + req.url});
+            }
             req.user = userId;
             return next();
         }

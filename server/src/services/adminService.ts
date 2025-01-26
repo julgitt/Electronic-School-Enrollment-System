@@ -5,12 +5,14 @@ import {EnrollmentLists} from "../dto/application/rankedApplication";
 import {ApplicationWithInfo} from "../dto/application/applicationWithInfo";
 import {RankListService} from "./rankListService";
 import {appendFile} from 'fs'
+import {EnrollmentService} from "./enrollmentService";
 
 
 export class AdminService {
     constructor(
         private rankListService: RankListService,
         private applicationService: ApplicationService,
+        private enrollmentService: EnrollmentService,
         private readonly tx: transactionFunction
     ) {
     }
@@ -19,6 +21,7 @@ export class AdminService {
         const rankLists = await this.rankListService.getEnrollmentLists()
         const finalEnrollmentLists = this.finalizeEnrollmentProcess(rankLists)
         const applications = await this.updateApplicationStatuses(finalEnrollmentLists)
+        await this.enrollmentService.endEnrollment();
         return applications
     }
 

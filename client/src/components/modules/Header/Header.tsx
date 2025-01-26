@@ -4,19 +4,17 @@ import styles from './Header.module.scss';
 import {NavLink as Link} from "react-router-dom";
 import {logout} from "../../../shared/services/authService.ts";
 import {useError} from "../../../shared/providers/errorProvider.tsx";
-import {useFetch} from "../../../shared/hooks/useFetch.ts";
-import {User} from "../../../shared/types/user.ts";
 import AdminNav from "../../composite/Navs/AdminNav.tsx";
 import UserNav from "../../composite/Navs/UserNav.tsx";
 import SchoolAdminNav from "../../composite/Navs/SchoolAdminNav.tsx";
+import {useUser} from "../../../shared/providers/userProvider.tsx";
 
 const Header: React.FC = () => {
     const {setError} = useError();
-    const {data, loading: userLoading} = useFetch<User>('api/user')
-    const roles = data?.roles ?? [];
+    const {roles, loading} = useUser()
     const [logoutLoading, setLogoutLoading] = useState(false);
 
-    if (userLoading) return <nav className={styles.nav}/>
+    if (loading) return <nav className={styles.nav}/>
 
     const handleLogout = async (event: React.MouseEvent<HTMLAnchorElement>) => {
         event.preventDefault();

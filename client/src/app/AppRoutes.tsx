@@ -22,10 +22,12 @@ import {EditProfile} from "../features/schoolAdmin/pages/EditProfile";
 import {ProfileCandidatesRank} from "../features/schoolAdmin/pages/ProfileCandidatesRank";
 import {AddProfile} from "../features/schoolAdmin/pages/AddProfile";
 import {EducationalOffer} from "../features/educationalOffer";
+import {useUser} from "../shared/providers/userProvider.tsx";
 
 const AppRoutes = () => {
     const {setError, error} = useError();
     const location = useLocation();
+    const {roles, loading} = useUser();
 
     useEffect(() => {
         setError(null);
@@ -37,30 +39,49 @@ const AppRoutes = () => {
         return <ErrorPage errorMessage={error}/>;
     }
 
+    if (loading) return;
+
     return (
         <Routes>
-            {/* guest */}
-            <Route path="/" element={<Home/>}/>
-            <Route path="/dates" element={<Deadlines/>}/>
-            <Route path="/login" element={<Login/>}/>
-            <Route path="/signup" element={<Signup/>}/>
-            <Route path="educationalOffer" element={<EducationalOffer/>}/>
-            {/* user */}
-            <Route path="/registerCandidate" element={<RegisterCandidate/>}/>
-            <Route path="/submitApplication" element={<SubmitApplication/>}/>
-            <Route path="/applicationStatus" element={<ApplicationStatus/>}/>
-            <Route path="/submitApplicationPastDeadline" element={<SubmitApplicationPastDeadline/>}/>
-            <Route path="/submitGrades" element={<SubmitGrades/>}/>
-            <Route path="/calculatePoints" element={<CalculatePoints/>}/>
-            {/* admin */}
-            <Route path="/enroll" element={<Enroll/>}/>
-            <Route path="/editSchools" element={<EditSchools/>}/>
-            <Route path="/editDeadlines" element={<EditDeadlines/>}/>
-            {/* school admin */}
-            <Route path="/addProfile" element={<AddProfile/>}/>
-            <Route path="/editProfile" element={<EditProfile/>}/>
-            <Route path="/profileCandidates" element={<ProfileCandidatesRank/>}/>
-
+            {roles.length == 0 && (
+                <> {/* guest */}
+                <Route path="/" element={<Home/>}/>
+                <Route path="/dates" element={<Deadlines/>}/>
+                <Route path="/login" element={<Login/>}/>
+                <Route path="/signup" element={<Signup/>}/>
+                <Route path="educationalOffer" element={<EducationalOffer/>}/>
+                <Route path="/submitApplication" element={<SubmitApplication/>}/>
+                </>
+            )}
+            {roles.includes('user') && (
+                <> {/* user */}
+                    <Route path="/" element={<Home/>}/>
+                    <Route path="/dates" element={<Deadlines/>}/>
+                    <Route path="educationalOffer" element={<EducationalOffer/>}/>
+                    <Route path="/registerCandidate" element={<RegisterCandidate/>}/>
+                    <Route path="/submitApplication" element={<SubmitApplication/>}/>
+                    <Route path="/applicationStatus" element={<ApplicationStatus/>}/>
+                    <Route path="/submitApplicationPastDeadline" element={<SubmitApplicationPastDeadline/>}/>
+                    <Route path="/submitGrades" element={<SubmitGrades/>}/>
+                    <Route path="/calculatePoints" element={<CalculatePoints/>}/>
+                </>
+            )}
+            {roles.includes('admin') && (
+                <> {/* admin */}
+                    <Route path="/" element={<Enroll/>}/>
+                    <Route path="/enroll" element={<Enroll/>}/>
+                    <Route path="/editSchools" element={<EditSchools/>}/>
+                    <Route path="/editDeadlines" element={<EditDeadlines/>}/>
+                </>
+            )}
+            {roles.includes('admin') && (
+                <> {/* school admin */}
+                    <Route path="/" element={<ProfileCandidatesRank/>}/>
+                    <Route path="/addProfile" element={<AddProfile/>}/>
+                    <Route path="/editProfile" element={<EditProfile/>}/>
+                    <Route path="/profileCandidates" element={<ProfileCandidatesRank/>}/>
+                </>
+            )}
             <Route path="*" element={<ErrorPage errorMessage={"404: Page Not Found"}/>}/>
         </Routes>
     );

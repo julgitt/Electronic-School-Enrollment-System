@@ -47,8 +47,10 @@ export class ApplicationService {
      *  createdAt: Date | number - data utworzenia aplikacji
      *  updatedAt: Date | number - data modyfikacji aplikacji
      */
-    async getAllApplications(candidateId: number): Promise<ApplicationWithProfiles[]> {
-        const applications = await this.applicationRepository.getAllByCandidate(candidateId);
+    async getAllApplications(candidateId: number, enrollment?: Enrollment): Promise<ApplicationWithProfiles[]> {
+        const applications = enrollment != null?
+            await this.applicationRepository.getAllByCandidateAndEnrollmentId(candidateId, enrollment?.id) :
+            await this.applicationRepository.getAllByCandidate(candidateId);
 
         return Promise.all(
             applications.map(async (app) => {
@@ -105,7 +107,7 @@ export class ApplicationService {
     }
 
     /**
-     * Pobiera wszystkie aplikacje złożone przez podanego kandydata, pogrupowane ze względu na szkoły.
+     * Pobiera wszystkie oczekujące w obecnej turze aplikacje złożone przez podanego kandydata, pogrupowane ze względu na szkoły.
      * Zatem wszystkie profile należące do danej szkoły, do których złożył aplikację kandydat, będą w jednej grupie.
      *
      * @param {number} candidateId - identyfikator kandydata.
@@ -118,7 +120,9 @@ export class ApplicationService {
      *     - priority: number - priorytet
      */
     async getAllApplicationSubmissions(candidateId: number): Promise<ApplicationBySchool[]> {
-        const applications: ApplicationWithProfiles[] = await this.getAllApplications(candidateId);
+        const enrollment: Enrollment | null = await this.enrollmentService.getCurrentEnrollment();
+        if (!enrollment) throw new ValidationError('Nie można złożyć aplikacji poza okresem naboru.');
+        const applications: ApplicationWithProfiles[] = await this.getAllApplications(candidateId, enrollment);
         return this.groupApplicationsBySchool(applications);
     }
 

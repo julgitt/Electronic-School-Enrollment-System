@@ -24,6 +24,17 @@ export class EnrollmentRepository {
         return await db.oneOrNone(query, [date]);
     }
 
+    async endCurrent(): Promise<void> {
+        const date = new Date();
+        date.setDate(date.getDate() - 1);
+        const query = `
+            UPDATE enrollments
+            SET end_date = $1
+            WHERE start_date <= $1 AND end_date >= $1
+        `;
+        await db.query(query, [date]);
+    }
+
     async getAllFromCurrentYear(): Promise<EnrollmentEntity[]> {
         const year: number = new Date().getFullYear();
         const query = `

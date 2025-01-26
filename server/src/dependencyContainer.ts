@@ -68,7 +68,7 @@ profileService.setApplicationService(applicationService);
 applicationService.setProfileService(profileService);
 export const applicationController = new ApplicationController(applicationService);
 
-export const adminService = new AdminService(rankListService, applicationService, tx);
+export const adminService = new AdminService(rankListService, applicationService, enrollmentService, tx);
 export const adminController = new AdminController(adminService);
 
 export const schoolAdminController = new SchoolAdminController(schoolService, profileService, rankListService, applicationService);
