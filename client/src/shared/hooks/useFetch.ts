@@ -29,7 +29,7 @@ export const useFetch = <T>(endpoint: string, shouldFetch: boolean = true): Fetc
                 if (result) setData(result);
                 setAuthorized(true);
             } else if (response.status === status.UNAUTHORIZED) {
-                window.location.href = '/login';
+                window.location.href = (await response.json()).redirect;
             } else {
                 const error: any = await response.json();
                 setError(error.message)

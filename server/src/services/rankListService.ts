@@ -116,7 +116,7 @@ export class RankListService {
         profiles.forEach(profile => {
             const {accepted, reserve} = this.createRankList(profile, candidatesWithGrades)
             reserveByProfile.set(profile.id, reserve)
-            allAccepted.concat(accepted)
+            allAccepted.push(...accepted)
         });
     
         return {reserveByProfile, accepted: allAccepted, rejected: [], acceptedByCandidate: new Map<number, ApplicationWithInfo>};
