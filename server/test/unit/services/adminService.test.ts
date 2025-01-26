@@ -5,8 +5,7 @@ import {AdminService} from "../../../src/services/adminService";
 import {ITask} from "pg-promise";
 import {ApplicationService} from "../../../src/services/applicationService";
 import assert from "assert";
-import {EnrollmentLists, RankedApplication, RankListWithInfo} from "../../../src/dto/application/rankedApplication";
-import {ProfileWithInfo} from "../../../src/dto/profile/profileInfo";
+import {EnrollmentLists} from "../../../src/dto/application/rankedApplication";
 import {ApplicationWithInfo} from "../../../src/dto/application/applicationWithInfo";
 import { RankListService } from '../../../src/services/rankListService';
 
@@ -38,15 +37,15 @@ describe('AdminService', () => {
         it('should process profile enrollments successfully', async () => {
             const mockRankLists = {
                 accepted: [
-                    {candidate: {id: 1}, priority: 2, profile: {id: 1}} as ApplicationWithInfo,
-                    {candidate: {id: 2}, priority: 2, profile: {id: 2}} as ApplicationWithInfo,
-                    {candidate: {id: 1}, priority: 1, profile: {id: 2}} as ApplicationWithInfo,
+                    {id: 1, candidate: {id: 1}, priority: 2, profile: {id: 1}} as ApplicationWithInfo,
+                    {id: 2, candidate: {id: 2}, priority: 2, profile: {id: 2}} as ApplicationWithInfo,
+                    {id: 3, candidate: {id: 1}, priority: 1, profile: {id: 2}} as ApplicationWithInfo,
                 ],
                 rejected: [],
                 reserveByProfile: new Map([
                     [1, [
-                        {candidate: {id: 2}, priority: 1, profile: {id: 1}} as ApplicationWithInfo,
-                        {candidate: {id: 3}, priority: 1, profile: {id: 1}} as ApplicationWithInfo
+                        {id: 4, candidate: {id: 2}, priority: 1, profile: {id: 1}} as ApplicationWithInfo,
+                        {id: 5, candidate: {id: 3}, priority: 1, profile: {id: 1}} as ApplicationWithInfo
                     ]], 
                     [2, []]
                 ]),
@@ -55,38 +54,42 @@ describe('AdminService', () => {
           
             rankListServiceStub.getEnrollmentLists.resolves(mockRankLists);
 
-
             const result: ApplicationWithInfo[] = await adminService.processProfileEnrollments();
 
             // then
-            assert.deepEqual(result, [
+            assert.deepEqual(result.sort((a, b) => a.id - b.id), [
                 {
+                    id: 4,
                     candidate: {id: 2},
                     priority: 1,
                     profile: {id: 1},
                     status: "Przyjęty"
                 }, {
+                    id: 5,
                     candidate: {id: 3},
                     priority: 1,
                     profile: {id: 1},
                     status: "Odrzucony"
                 }, {
+                    id: 1,
                     candidate: {id: 1},
                     priority: 2,
                     profile: {id: 1},
                     status: "Odrzucony"
                 }, {
+                    id: 3,
                     candidate: {id: 1},
                     priority: 1,
                     profile: {id: 2},
                     status: "Przyjęty"
                 }, {
+                    id: 2,
                     candidate: {id: 2},
                     priority: 2,
                     profile: {id: 2},
                     status: "Odrzucony"
                 },
-            ]);
+            ].sort((a, b) => a.id - b.id), );
         });
     });
 })

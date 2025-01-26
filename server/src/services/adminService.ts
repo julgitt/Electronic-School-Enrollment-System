@@ -3,7 +3,7 @@ import {ApplicationStatus} from "../dto/application/applicationStatus";
 import {transactionFunction} from "../db";
 import {EnrollmentLists} from "../dto/application/rankedApplication";
 import {ApplicationWithInfo} from "../dto/application/applicationWithInfo";
-import { RankListService } from "./rankListService";
+import {RankListService} from "./rankListService";
 import {appendFile} from 'fs'
 
 
@@ -15,7 +15,7 @@ export class AdminService {
     ) {
     }
 
-    async processProfileEnrollments(): Promise<ApplicationWithInfo[]> {
+    async processProfileEnrollments() {
         const rankLists = await this.rankListService.getEnrollmentLists()
         const finalEnrollmentLists = this.finalizeEnrollmentProcess(rankLists)
         const applications = await this.updateApplicationStatuses(finalEnrollmentLists)
@@ -33,19 +33,21 @@ export class AdminService {
             const candidateId = application.candidate.id
             const candidateApplication = acceptedByCandidate.get(candidateId)
 
-            const foundLowerPriority = candidateApplication && candidateApplication.priority > application.priority
+            const isLowerPriority = candidateApplication != null && candidateApplication.priority < application.priority
 
-            if (foundLowerPriority) continue
+            const applicationToRemove = isLowerPriority? application : candidateApplication
+            const applicationToAccept = isLowerPriority? candidateApplication : application
 
-            acceptedByCandidate.set(candidateId, application)
-                
-            if (candidateApplication) {
-                const reserve = reserveByProfile.get(candidateApplication.profile.id)!
-                const newApp = reserve.shift()
-                if (!newApp) break
+            acceptedByCandidate.set(candidateId, applicationToAccept)
 
-                applicationsToProcess.push(newApp)
-            }
+            if (applicationToRemove == null) continue
+
+            rejected.push(applicationToRemove)
+            const reserve = reserveByProfile.get(applicationToRemove.profile.id)!
+            const newApp = reserve.shift()
+            if (!newApp) continue
+
+            applicationsToProcess.push(newApp)
         }
         
         return {acceptedByCandidate, rejected, reserveByProfile} as EnrollmentLists
@@ -62,16 +64,19 @@ export class AdminService {
         );
         await this.tx(async t => {
             for (const a of finalEnrollmentLists.rejected) {
-                await this.applicationService.updateApplicationStatus(a.id, ApplicationStatus.Rejected, t);
+                a.status = ApplicationStatus.Rejected
+                await this.applicationService.updateApplicationStatus(a.id, a.status, t);
                 updatedApplications.push(a);
             }
             for (const [_candidateId, a] of finalEnrollmentLists.acceptedByCandidate){
-                await this.applicationService.updateApplicationStatus(a.id, ApplicationStatus.Accepted, t);
+                a.status = ApplicationStatus.Accepted
+                await this.applicationService.updateApplicationStatus(a.id, a.status, t);
                 updatedApplications.push(a);
             }
             for (const [_profileId, reserve] of finalEnrollmentLists.reserveByProfile){
                 for (const a of reserve) {
-                    await this.applicationService.updateApplicationStatus(a.id, ApplicationStatus.Rejected, t);
+                    a.status = ApplicationStatus.Rejected
+                    await this.applicationService.updateApplicationStatus(a.id, a.status, t);
                     updatedApplications.push(a);
                 }
             }
