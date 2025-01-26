@@ -375,7 +375,7 @@ COPY public.candidates (id, pesel, first_name, last_name, created_at, updated_at
 
 COPY public.enrollments (id, round, start_date, end_date) FROM stdin;
 6	1	2025-01-21	2025-01-23
-7	2	2025-01-24	2025-01-25
+7	2	2025-01-24	2025-02-20
 \.
 
 
