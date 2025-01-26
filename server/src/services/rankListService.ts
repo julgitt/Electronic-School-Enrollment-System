@@ -87,7 +87,7 @@ export class RankListService {
     /**
      *  Pobiera wszystkie listy rekrutacyjne dla każdego profilu wraz z dodatkowymi informacjami.
      *
-     * @returns {Promise<AcceptedAndReserveByProfile>} Zwraca obiekt, zawierający:
+     * @returns {Promise<EnrollmentLists>} Zwraca obiekt, zawierający:
      *
      * accepted - listę zaakceptowanych aplikacji
      * rejected - zainicjalizowana lista odrzuconych aplikacji

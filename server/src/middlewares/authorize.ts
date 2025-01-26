@@ -4,6 +4,11 @@ export function authorize(...roles: string[]) {
     return async function (req: Request, res: Response, next: NextFunction) {
         const userId = req.signedCookies.userId;
         const userRoles: string[] = req.signedCookies.roles;
+        const candidateId = req.signedCookies.candidateId;
+
+        if (roles.includes('candidate') && candidateId == null) {
+            return res.status(401).json({message: 'Not authorized', redirect: '/registerCandidate?returnUrl=' + req.url});
+        }
 
         if (roles.length === 0) {
             req.user = userId;
