@@ -40,6 +40,7 @@ const EditEnrollmentForm: React.FC<EditEnrollmentFormProps> = ({
             <h5>Tura</h5>
             <h5>Data rozpoczęcia</h5>
             <h5>Data zakończenia</h5>
+            <h5>Usuń</h5>
         </div>
         {updatedEnrollments && updatedEnrollments.map(enrollment => (
             <div className={styles.horizontal} key={enrollment.id}>

@@ -36,6 +36,10 @@ const EditSchoolForm: React.FC<EditSchoolFormProps> = ({
     <form method="POST" className={styles.form}>
         <h2>Edytuj szkoły</h2>
         {error && <ErrorMessage message={error}/>}
+        <div className={styles.formInputGroupHorizontal}>
+            <h5>Nazwa szkoły</h5>
+            <h5>Usuń</h5>
+        </div>
         {updatedSchools && updatedSchools.map(school => (
             <div className={styles.formInputGroupHorizontal}>
                 <InputField
