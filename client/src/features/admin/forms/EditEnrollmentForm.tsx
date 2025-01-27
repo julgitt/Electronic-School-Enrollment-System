@@ -56,18 +56,32 @@ const EditEnrollmentForm: React.FC<EditEnrollmentFormProps> = ({
                 <InputField
                     placeholder="Data rozpoczęcia"
                     type="date"
-                    value={new Date(enrollment.startDate).toISOString().split('T')[0]}
+                    value={
+                        (() => {
+                        let dateUTF = new Date(enrollment.startDate)
+                        let offset = dateUTF.getTimezoneOffset() * 60 * 1000
+                        return new Date(dateUTF.getTime() - offset).toISOString().split("T")[0]
+                        })()
+                    }
                     required
-                    onChange={(e) =>
+                    onChange={(e) => {
                         onEnrollmentChange(enrollment.id, 'startDate', e.target.value)}
+                    }
                 />
                 <InputField
                     placeholder="Data zakończenia"
                     type="date"
-                    value={new Date(enrollment.endDate).toISOString().split('T')[0]}
+                    value={
+                        (() => {
+                            let dateUTF = new Date(enrollment.endDate)
+                            let offset = dateUTF.getTimezoneOffset() * 60 * 1000
+                            return new Date(dateUTF.getTime() - offset).toISOString().split("T")[0]
+                        })()
+                    }
                     required
                     onChange={(e) =>
-                        onEnrollmentChange(enrollment.id, 'endDate', e.target.value)}
+                        onEnrollmentChange(enrollment.id, 'endDate', e.target.value)
+                    }
                 />
                 <MinusButton
                     onClick={() => onDeleteEnrollment(enrollment.id)}
