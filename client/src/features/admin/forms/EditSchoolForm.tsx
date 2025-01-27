@@ -41,7 +41,7 @@ const EditSchoolForm: React.FC<EditSchoolFormProps> = ({
             <h5>Usuń</h5>
         </div>
         {updatedSchools && updatedSchools.map(school => (
-            <div className={styles.formInputGroupHorizontal}>
+            <div className={styles.formInputGroupHorizontal} key={school.id}>
                 <InputField
                     type="text"
                     placeholder="Nazwa szkoły"
