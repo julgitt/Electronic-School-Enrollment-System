@@ -8,16 +8,19 @@ import assert from "assert";
 import {EnrollmentLists} from "../../../src/dto/application/rankedApplication";
 import {ApplicationWithInfo} from "../../../src/dto/application/applicationWithInfo";
 import { RankListService } from '../../../src/services/rankListService';
+import {EnrollmentService} from "../../../src/services/enrollmentService";
 
 describe('AdminService', () => {
     let adminService: AdminService;
     let rankListServiceStub: sinon.SinonStubbedInstance<RankListService>;
     let applicationServiceStub: sinon.SinonStubbedInstance<ApplicationService>;
+    let enrollmentServiceStub: sinon.SinonStubbedInstance<EnrollmentService>;
     let txStub: sinon.SinonStub;
 
     beforeEach(() => {
         applicationServiceStub = sinon.createStubInstance(ApplicationService);
         rankListServiceStub = sinon.createStubInstance(RankListService);
+        enrollmentServiceStub = sinon.createStubInstance(EnrollmentService);
         txStub = sinon.stub().callsFake(async (callback: (t: ITask<any>) => Promise<void>) => {
             await callback({} as unknown as ITask<any>);
         })
@@ -25,6 +28,7 @@ describe('AdminService', () => {
         adminService = new AdminService(
             rankListServiceStub,
             applicationServiceStub,
+            enrollmentServiceStub,
             txStub
         );
     });
@@ -90,6 +94,7 @@ describe('AdminService', () => {
                     status: "Odrzucony"
                 },
             ].sort((a, b) => a.id - b.id), );
+            assert.equal(enrollmentServiceStub.endEnrollment.callCount, 1);
         });
     });
 })

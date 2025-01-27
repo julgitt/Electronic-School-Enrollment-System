@@ -94,6 +94,13 @@ describe('EnrollmentService', () => {
         });
     });
 
+    describe('endEnrollment', () => {
+        it('should return enrollments from the current year', async () => {
+            const result = await enrollmentService.endEnrollment();
+            assert.equal(enrollmentRepoStub.endCurrent.callCount, 1);
+        });
+    });
+
     describe('getAllEnrollments', () => {
         it('should return all enrollments', async () => {
             const mockEnrollments: EnrollmentEntity[] = [

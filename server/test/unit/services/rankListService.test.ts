@@ -111,11 +111,11 @@ describe('RankListService', () => {
 
     describe('getEnrollmentLists', () => {
         it('should get all enrollemnt lists', async () => {
-            const mockProfileCriteria = [
-                {id: 1, subjectId: 1, profileId: 1, type: ProfileCriteriaType.Mandatory},
-                {id: 2, subjectId: 2, profileId: 1, type: ProfileCriteriaType.Alternative},
-                {id: 3, subjectId: 3, profileId: 1, type: ProfileCriteriaType.Alternative}
-            ];
+            const mockProfileCriteria = ((id: number) => [
+                {id: 1, subjectId: 1, profileId: id, type: ProfileCriteriaType.Mandatory},
+                {id: 2, subjectId: 2, profileId: id, type: ProfileCriteriaType.Alternative},
+                {id: 3, subjectId: 3, profileId: id, type: ProfileCriteriaType.Alternative}
+            ]);
             const mockAcceptedApplications: Application[] = [];
             const mockPendingApplications: Application[] = [
                 {id: 1, profileId: 1, candidateId: 1} as Application,
@@ -131,26 +131,24 @@ describe('RankListService', () => {
                     capacity: mockProfileCapacity,
                     pending: mockPendingApplications,
                     accepted: mockAcceptedApplications,
-                    criteria: mockProfileCriteria
+                    criteria: mockProfileCriteria(1)
                 } as ProfileWithInfo, {
                     id: 2,
                     capacity: mockProfileCapacity,
-                    pending: mockPendingApplications,
+                    pending: [{id: 4, profileId: 2, candidateId: 2} as Application],
                     accepted: mockAcceptedApplications,
-                    criteria: mockProfileCriteria
-                } as ProfileWithInfo, {
-                    id: 3,
-                    capacity: mockProfileCapacity,
-                    pending: mockPendingApplications,
-                    accepted: mockAcceptedApplications,
-                    criteria: mockProfileCriteria
+                    criteria: mockProfileCriteria(2)
                 } as ProfileWithInfo]
             );
 
             const result = await rankListService.getEnrollmentLists();
 
-            assert.equal(result.reserveByProfile.size, 3);
+            assert.equal(result.reserveByProfile.size, 2);
             assert.equal(profileServiceStub.getProfilesWithInfo.callCount, 1);
+            assert.equal((result.reserveByProfile.get(1))?.length, 1);
+            assert.equal(result.reserveByProfile.get(0), null);
+            assert.equal((result.reserveByProfile.get(1))![0].id, 1)
+            assert.equal(result.accepted.length, 3);
         });
     })
 

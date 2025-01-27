@@ -31,16 +31,6 @@ export class EnrollmentService {
 
     /**
      * Kończy obecny nabór
-     *
-     * @param {number} id - identyfikator naboru.
-     * @returns {Promise<Enrollment>} Zwraca obiekt naboru, zawierający:
-     *
-     *    id: number - identyfikator naboru
-     *    round: number - turę
-     *    startDate: Date - datę rozpoczęcia
-     *    endDate: Date - datę zakończenia
-     *
-     * @throws {ResourceNotFoundError} Jeśli nie znaleziono naboru o podanym identyfikatorze.
      */
     async endEnrollment(): Promise<void> {
         await this.enrollmentRepository.endCurrent();

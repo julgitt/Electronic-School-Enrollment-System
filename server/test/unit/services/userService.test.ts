@@ -10,7 +10,6 @@ import {UserWithRoles} from "../../../src/dto/user/userWithRoles";
 import {AuthenticationError} from "../../../src/errors/authenticationError";
 import {DataConflictError} from "../../../src/errors/dataConflictError";
 import {UserEntity} from "../../../src/models/userEntity";
-import {SchoolEntity} from "../../../src/models/schoolEntity";
 
 describe('UserService', () => {
     let userService: UserService;

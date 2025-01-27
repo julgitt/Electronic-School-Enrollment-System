@@ -298,7 +298,7 @@ describe('ApplicationService', () => {
             ];
 
             sinon.stub(applicationService, 'getAllApplications').resolves(mockApplicationsWithProfiles);
-
+            enrollmentServiceStub.getCurrentEnrollment.resolves({id:3} as Enrollment);
             const result = await applicationService.getAllApplicationSubmissions(1);
 
             const expected = [
