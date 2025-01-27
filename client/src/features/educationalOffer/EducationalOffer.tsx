@@ -52,8 +52,6 @@ const EducationalOffer: React.FC = () => {
             {(Object.keys(filters) as Array<keyof typeof filters>).map(key => {
                 const profilesFields = new Set(profiles?.flatMap(p => p[key]) || []);
                 const filter = filters[key];
-                console.log(filter);
-                console.log(filters);
                 return (
                     <>
                         <div className={styles.horizontalListing}>

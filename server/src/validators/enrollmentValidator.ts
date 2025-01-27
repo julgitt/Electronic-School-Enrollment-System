@@ -6,7 +6,6 @@ export const enrollmentValidator = [
         .bail()
         .custom((enrollments: {round: number, startDate: Date, endDate: Date}[]) => {
             for (const enrollment of enrollments) {
-                console.log(enrollment)
                 if (enrollment.endDate <= enrollment.startDate)
                     throw new Error("Data rozpoczęcia musi być przed datą zakończenia");
                 

@@ -40,7 +40,6 @@ const CalculatePoints: React.FC = () => {
 
         try {
             const data: PointsInfo = await getPoints(profileId);
-            console.log(data)
             setPointsInfo(data);
         } catch (err: any) {
             setError(err.message);

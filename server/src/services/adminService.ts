@@ -17,7 +17,12 @@ export class AdminService {
     ) {
     }
 
-    async processProfileEnrollments() {
+    /**
+     * Przeprowadza proces naboru.
+     *
+     * @returns {Promise<ApplicationWithInfo[]> zwraca tablicę obiektów aplikacji, których statusy zostały zaktualizowane w wyniku naboru}
+     */
+    async processProfileEnrollments(): Promise<ApplicationWithInfo[]> {
         const rankLists = await this.rankListService.getEnrollmentLists()
         const finalEnrollmentLists = this.finalizeEnrollmentProcess(rankLists)
         const applications = await this.updateApplicationStatuses(finalEnrollmentLists)

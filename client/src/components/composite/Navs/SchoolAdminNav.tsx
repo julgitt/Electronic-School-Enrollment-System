@@ -64,7 +64,6 @@ const SchoolAdminNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({ren
     };
 
     if (loading) return <div></div>
-    console.log(profile)
 
     return (
         <nav className={styles.nav}>
