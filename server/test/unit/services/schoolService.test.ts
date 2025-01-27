@@ -136,12 +136,12 @@ describe('SchoolService', () => {
         it('should successfully add school', async () => {
             const mockSchool: SchoolEntity = {id: 1, name: 'School 1'};
 
-            schoolRepoStub.insert.resolves({id:2, name: 'School 1'});
+            schoolRepoStub.insert.resolves({id: 2, name: 'School 1'});
 
             const result = await schoolService.addSchool(mockSchool);
 
             assert.equal(schoolRepoStub.insert.callCount, 1);
-            assert.deepEqual(result, {id:2, name: 'School 1'});
+            assert.deepEqual(result, {id: 2, name: 'School 1'});
         })
     })
 

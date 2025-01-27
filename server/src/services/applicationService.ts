@@ -50,7 +50,7 @@ export class ApplicationService {
      *  updatedAt: Date | number - data modyfikacji aplikacji
      */
     async getAllApplications(candidateId: number, enrollmentId?: number): Promise<ApplicationWithProfiles[]> {
-        const applications = enrollmentId != null?
+        const applications = enrollmentId != null ?
             await this.applicationRepository.getAllByCandidateAndEnrollmentId(candidateId, enrollmentId) :
             await this.applicationRepository.getAllByCandidate(candidateId);
 

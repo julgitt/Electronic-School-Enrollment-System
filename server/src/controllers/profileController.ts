@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from 'express';
 import {ProfileService} from "../services/profileService";
-import { RankListService } from '../services/rankListService';
+import {RankListService} from '../services/rankListService';
 
 
 export class ProfileController {

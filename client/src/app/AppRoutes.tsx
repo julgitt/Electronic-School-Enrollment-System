@@ -45,12 +45,12 @@ const AppRoutes = () => {
         <Routes>
             {roles.length == 0 && (
                 <> {/* guest */}
-                <Route path="/" element={<Home/>}/>
-                <Route path="/dates" element={<Deadlines/>}/>
-                <Route path="/login" element={<Login/>}/>
-                <Route path="/signup" element={<Signup/>}/>
-                <Route path="educationalOffer" element={<EducationalOffer/>}/>
-                <Route path="/submitApplication" element={<SubmitApplication/>}/>
+                    <Route path="/" element={<Home/>}/>
+                    <Route path="/dates" element={<Deadlines/>}/>
+                    <Route path="/login" element={<Login/>}/>
+                    <Route path="/signup" element={<Signup/>}/>
+                    <Route path="educationalOffer" element={<EducationalOffer/>}/>
+                    <Route path="/submitApplication" element={<SubmitApplication/>}/>
                 </>
             )}
             {roles.includes('user') && (

@@ -9,7 +9,7 @@ import {ProfileWithCriteria} from "../dto/profile/profileWithCriteria";
 import {ProfileWithInfo} from "../dto/profile/profileInfo";
 import {SchoolService} from "./schoolService";
 import {DataConflictError} from "../errors/dataConflictError";
-import { ProfileCriteria } from "../dto/criteriaByProfile";
+import {ProfileCriteria} from "../dto/criteriaByProfile";
 
 export class ProfileService {
     private applicationService!: ApplicationService;
@@ -104,7 +104,7 @@ export class ProfileService {
         };
     }
 
-      /**
+    /**
      *  Dodaje podany profil do bazy danych.
      *
      * @param {ProfileRequest} profile - Obiekt dodawanego profilu, który zawiera:
@@ -118,7 +118,7 @@ export class ProfileService {
      *
      * @throws {DataConflictError} Jeśli profil o podanej nazwie już istnieje dla danej szkoły.
      */
-      async addProfile(profile: ProfileRequest, schoolId: number): Promise<number> {
+    async addProfile(profile: ProfileRequest, schoolId: number): Promise<number> {
         let insertedProfileId = 0;
         if (await this.profileRepository.getBySchoolAndName(schoolId, profile.name))
             throw new DataConflictError("Profil o podanej nazwie już istnieje.");
@@ -146,7 +146,7 @@ export class ProfileService {
         return insertedProfileId;
     }
 
-     /**
+    /**
      *  Aktualizuje podany profil w bazie danych, jeśli należy on do podanej szkoły.
      *
      * @param {ProfileRequest} profile - Obiekt aktualizowanego profilu, który zawiera:
@@ -160,31 +160,31 @@ export class ProfileService {
      *
      * @throws {ResourceNotFoundError} Jeśli nie znaleziono profilu o podanym identyfikatorze lub profil należy do innej szkoły niż podaliśmy.
      */
-        async updateProfile(profile: ProfileRequest, schoolId: number): Promise<void> {
-            await this.getProfileByIdAndSchoolId(profile.id, schoolId);
-    
-            const updatedProfile: Profile = {
-                id: profile.id,
-                name: profile.name,
-                capacity: profile.capacity,
-                schoolId: schoolId,
-            }
-    
-            await this.tx(async t => {
-                await this.profileRepository.update(updatedProfile, t);
-                await this.profileRepository.deleteCriteriaByProfile(updatedProfile.id, t);
-    
-                for (const criteria of profile.criteria) {
-                    const newProfileCriteria: ProfileCriteriaEntity = {
-                        id: 0,
-                        profileId: updatedProfile.id,
-                        subjectId: criteria.subjectId,
-                        type: criteria.type,
-                    }
-                    await this.profileRepository.insertCriteria(newProfileCriteria, t);
-                }
-            });
+    async updateProfile(profile: ProfileRequest, schoolId: number): Promise<void> {
+        await this.getProfileByIdAndSchoolId(profile.id, schoolId);
+
+        const updatedProfile: Profile = {
+            id: profile.id,
+            name: profile.name,
+            capacity: profile.capacity,
+            schoolId: schoolId,
         }
+
+        await this.tx(async t => {
+            await this.profileRepository.update(updatedProfile, t);
+            await this.profileRepository.deleteCriteriaByProfile(updatedProfile.id, t);
+
+            for (const criteria of profile.criteria) {
+                const newProfileCriteria: ProfileCriteriaEntity = {
+                    id: 0,
+                    profileId: updatedProfile.id,
+                    subjectId: criteria.subjectId,
+                    type: criteria.type,
+                }
+                await this.profileRepository.insertCriteria(newProfileCriteria, t);
+            }
+        });
+    }
 
     /**
      *  Pobiera dane wszystkich profili wraz z ich kryteriami rekrutacyjnymi na podstawie identyfikatora szkoły.
@@ -196,7 +196,7 @@ export class ProfileService {
         return this.profileRepository.getAllBySchool(schoolId);
     }
 
-       /**
+    /**
      *  Pobiera dane wszystkich profili wraz z dodatkowymi informacjami.
      * @param {number} id - identyfikator profilu.
      * @returns {Promise<ProfileWithInfo>} Zwraca obiekt profilu wraz z dodatkowymi informacjami.
@@ -218,7 +218,7 @@ export class ProfileService {
      *   - capacity: (number) - liczba miejsc
      *   - pending: (Application[]) - oczekujące aplikacje
      *   - accepted: (Application[]) - aplikacje zaakceptowane w poprzednich turach
-     *   
+     *
      *
      * @returns {Promise<ProfileWithInfo[]>} Zwraca tablicę obiektów profilu wraz z dodatkowymi informacjami.
      */
@@ -227,6 +227,16 @@ export class ProfileService {
         return await Promise.all(profiles.map(async p => {
             return this.createProfileWithInfo(p)
         }));
+    }
+
+    /**
+     *  Pobiera dane o kryteriach profilu na podstawie identyfikatora profilu:
+     * @returns {Promise<ProfileCriteria[]>} Zwraca tablicę obiektów kryteriów profilu.
+     */
+    async getProfileCriteria(profileId: number): Promise<ProfileCriteria[]> {
+        const criteria: ProfileCriteriaEntity[] = await this.profileRepository.getProfileCriteria(profileId);
+        if (!criteria) throw new ResourceNotFoundError('Nie znaleziono kryteriów dla profilu.');
+        return criteria;
     }
 
     private async createProfileWithInfo(profile: Profile): Promise<ProfileWithInfo> {
@@ -249,16 +259,6 @@ export class ProfileService {
             accepted,
             pending
         }
-    }
-
-    /**
-     *  Pobiera dane o kryteriach profilu na podstawie identyfikatora profilu:
-     * @returns {Promise<ProfileCriteria[]>} Zwraca tablicę obiektów kryteriów profilu.
-     */
-    async getProfileCriteria(profileId: number): Promise<ProfileCriteria[]> {
-        const criteria: ProfileCriteriaEntity[] = await this.profileRepository.getProfileCriteria(profileId);
-        if (!criteria) throw new ResourceNotFoundError('Nie znaleziono kryteriów dla profilu.');
-        return criteria;
     }
 
     private async getProfileCriteriaWithSubjects(profileId: number): Promise<ProfileCriteriaWithSubjects[]> {

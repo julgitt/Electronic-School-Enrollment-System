@@ -9,7 +9,10 @@
       "DOM",
       "DOM.Iterable"
     ],
-    "types": ["cypress", "node"],
+    "types": [
+      "cypress",
+      "node"
+    ],
     "module": "ESNext",
     "skipLibCheck": true,
     /* Bundler mode */

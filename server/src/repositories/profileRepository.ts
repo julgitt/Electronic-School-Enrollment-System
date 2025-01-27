@@ -67,7 +67,7 @@ export class ProfileRepository {
         return await db.query(query, [profileId]);
     }
 
-    
+
     async getProfileCriteriaWithSubject(profileId: number): Promise<ProfileCriteriaWithSubjects[]> {
         const query = `
             SELECT
@@ -80,7 +80,7 @@ export class ProfileRepository {
             LEFT JOIN subjects s ON s.id = pc.subject_id
             WHERE profile_id = $1
         `;
-    
+
         let x = await db.query(query, [profileId]);
         return x
     }

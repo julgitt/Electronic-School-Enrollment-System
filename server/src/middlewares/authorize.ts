@@ -17,7 +17,10 @@ export function authorize(...roles: string[]) {
 
         if (userRoles && roles.some(role => userRoles.includes(role))) {
             if (roles.includes('candidate') && candidateId == null) {
-                return res.status(401).json({message: 'Not authorized', redirect: '/registerCandidate?returnUrl=' + req.url});
+                return res.status(401).json({
+                    message: 'Not authorized',
+                    redirect: '/registerCandidate?returnUrl=' + req.url
+                });
             }
             req.user = userId;
             return next();

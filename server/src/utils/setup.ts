@@ -1,7 +1,8 @@
 import {
     adminService,
     applicationService,
-    candidateService, gradeService,
+    candidateService,
+    gradeService,
     profileService,
     schoolService,
     subjectService,
@@ -10,7 +11,7 @@ import {
 import {UserRequest} from "../dto/user/userRequest";
 import {DataConflictError} from "../errors/dataConflictError";
 import {CandidateRequest} from "../dto/candidate/candidateRequest";
-import { appendFile, createReadStream } from 'fs';
+import {appendFile, createReadStream} from 'fs';
 import {School} from "../dto/school/school";
 import {ProfileRequest} from "../dto/profile/profileRequest";
 import {ProfileCriteria} from "../dto/criteriaByProfile";

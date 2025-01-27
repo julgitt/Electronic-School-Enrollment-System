@@ -75,11 +75,11 @@ const SchoolAdminNav: React.FC<{ renderLogoutLink: () => JSX.Element; }> = ({ren
                             schools={schools || []}
                             onSelectSchool={handleSwitch}
                         />
-                         <ProfileDropdown
-                                    currentProfile={profile || {} as Profile}
-                                    profiles={profiles || []}
-                                    onSelectProfile={handleSwitchProfile}
-                                    onDeleteProfile={handleDeleteProfile}
+                        <ProfileDropdown
+                            currentProfile={profile || {} as Profile}
+                            profiles={profiles || []}
+                            onSelectProfile={handleSwitchProfile}
+                            onDeleteProfile={handleDeleteProfile}
                         />
                         {profile && profile.id && (
                             <>

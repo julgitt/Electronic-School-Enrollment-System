@@ -26,7 +26,7 @@ import {AdminService} from "./services/adminService";
 import {AdminController} from "./controllers/adminController";
 import {SchoolAdminController} from "./controllers/schoolAdminController";
 import {ProfileController} from "./controllers/profileController";
-import { RankListService } from "./services/rankListService";
+import {RankListService} from "./services/rankListService";
 
 
 const subjectRepository: SubjectRepository = new SubjectRepository();

@@ -58,14 +58,15 @@ const EditEnrollmentForm: React.FC<EditEnrollmentFormProps> = ({
                     type="date"
                     value={
                         (() => {
-                        let dateUTF = new Date(enrollment.startDate)
-                        let offset = dateUTF.getTimezoneOffset() * 60 * 1000
-                        return new Date(dateUTF.getTime() - offset).toISOString().split("T")[0]
+                            let dateUTF = new Date(enrollment.startDate)
+                            let offset = dateUTF.getTimezoneOffset() * 60 * 1000
+                            return new Date(dateUTF.getTime() - offset).toISOString().split("T")[0]
                         })()
                     }
                     required
                     onChange={(e) => {
-                        onEnrollmentChange(enrollment.id, 'startDate', e.target.value)}
+                        onEnrollmentChange(enrollment.id, 'startDate', e.target.value)
+                    }
                     }
                 />
                 <InputField

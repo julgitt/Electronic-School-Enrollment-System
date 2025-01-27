@@ -36,15 +36,15 @@ export class AdminService {
         const applicationsToProcess: ApplicationWithInfo[] = rankLists.accepted
         const reserveByProfile = rankLists.reserveByProfile
 
-        while(applicationsToProcess.length > 0) {
+        while (applicationsToProcess.length > 0) {
             const application = applicationsToProcess.pop()!
             const candidateId = application.candidate.id
             const candidateApplication = acceptedByCandidate.get(candidateId)
 
             const isLowerPriority = candidateApplication != null && candidateApplication.priority < application.priority
 
-            const applicationToRemove = isLowerPriority? application : candidateApplication
-            const applicationToAccept = isLowerPriority? candidateApplication : application
+            const applicationToRemove = isLowerPriority ? application : candidateApplication
+            const applicationToAccept = isLowerPriority ? candidateApplication : application
 
             acceptedByCandidate.set(candidateId, applicationToAccept)
 
@@ -57,7 +57,7 @@ export class AdminService {
 
             applicationsToProcess.push(newApp)
         }
-        
+
         return {acceptedByCandidate, rejected, reserveByProfile} as EnrollmentLists
     }
 
@@ -76,12 +76,12 @@ export class AdminService {
                 await this.applicationService.updateApplicationStatus(a.id, a.status, t);
                 updatedApplications.push(a);
             }
-            for (const [_candidateId, a] of finalEnrollmentLists.acceptedByCandidate){
+            for (const [_candidateId, a] of finalEnrollmentLists.acceptedByCandidate) {
                 a.status = ApplicationStatus.Accepted
                 await this.applicationService.updateApplicationStatus(a.id, a.status, t);
                 updatedApplications.push(a);
             }
-            for (const [_profileId, reserve] of finalEnrollmentLists.reserveByProfile){
+            for (const [_profileId, reserve] of finalEnrollmentLists.reserveByProfile) {
                 for (const a of reserve) {
                     a.status = ApplicationStatus.Rejected
                     await this.applicationService.updateApplicationStatus(a.id, a.status, t);

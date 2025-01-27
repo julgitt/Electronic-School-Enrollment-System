@@ -2,18 +2,18 @@ import assert from 'assert';
 import {afterEach} from 'mocha';
 import sinon from 'sinon';
 
-import { Application } from '../../../src/dto/application/application';
-import { Candidate } from "../../../src/dto/candidate/candidate";
-import { GradeType } from "../../../src/dto/grade/gradeType";
-import { ProfileWithInfo } from "../../../src/dto/profile/profileInfo";
-import { GradeEntity } from "../../../src/models/gradeEntity";
-import { ProfileCriteriaType } from "../../../src/models/profileCriteriaEntity";
-import { CandidateService } from "../../../src/services/candidateService";
-import { GradeService } from "../../../src/services/gradeService";
-import { RankListService } from "../../../src/services/rankListService";
-import { SubjectService } from "../../../src/services/subjectService";
-import { ProfileService } from "../../../src/services/profileService";
-import { Subject } from "../../../src/dto/subject";
+import {Application} from '../../../src/dto/application/application';
+import {Candidate} from "../../../src/dto/candidate/candidate";
+import {GradeType} from "../../../src/dto/grade/gradeType";
+import {ProfileWithInfo} from "../../../src/dto/profile/profileInfo";
+import {GradeEntity} from "../../../src/models/gradeEntity";
+import {ProfileCriteriaType} from "../../../src/models/profileCriteriaEntity";
+import {CandidateService} from "../../../src/services/candidateService";
+import {GradeService} from "../../../src/services/gradeService";
+import {RankListService} from "../../../src/services/rankListService";
+import {SubjectService} from "../../../src/services/subjectService";
+import {ProfileService} from "../../../src/services/profileService";
+import {Subject} from "../../../src/dto/subject";
 import {CandidateWithGrades} from "../../../src/dto/candidate/candidateWithGrades";
 
 describe('RankListService', () => {
@@ -153,28 +153,34 @@ describe('RankListService', () => {
     })
 
     function mockGrades(): CandidateWithGrades[] {
-        return [{candidate: {id: 1} as Candidate, grades: [
+        return [{
+            candidate: {id: 1} as Candidate, grades: [
                 {subjectId: 1, type: GradeType.Exam, grade: 50},
                 {subjectId: 1, type: GradeType.Certificate, grade: 3},
                 {subjectId: 2, type: GradeType.Exam, grade: 50},
                 {subjectId: 2, type: GradeType.Certificate, grade: 3},
                 {subjectId: 3, type: GradeType.Exam, grade: 100},
                 {subjectId: 3, type: GradeType.Certificate, grade: 5},
-            ]}, {candidate: {id: 2} as Candidate, grades: [
+            ]
+        }, {
+            candidate: {id: 2} as Candidate, grades: [
                 {subjectId: 1, type: GradeType.Exam, grade: 75},
                 {subjectId: 1, type: GradeType.Certificate, grade: 4},
                 {subjectId: 2, type: GradeType.Exam, grade: 75},
                 {subjectId: 2, type: GradeType.Certificate, grade: 4},
                 {subjectId: 3, type: GradeType.Exam, grade: 75},
                 {subjectId: 3, type: GradeType.Certificate, grade: 4},
-            ]}, {candidate: {id: 3} as Candidate, grades: [
+            ]
+        }, {
+            candidate: {id: 3} as Candidate, grades: [
                 {subjectId: 1, type: GradeType.Exam, grade: 100},
                 {subjectId: 1, type: GradeType.Certificate, grade: 5},
                 {subjectId: 2, type: GradeType.Exam, grade: 100},
                 {subjectId: 2, type: GradeType.Certificate, grade: 5},
                 {subjectId: 3, type: GradeType.Exam, grade: 100},
                 {subjectId: 3, type: GradeType.Certificate, grade: 5}
-            ]}
+            ]
+        }
         ]
     }
 })

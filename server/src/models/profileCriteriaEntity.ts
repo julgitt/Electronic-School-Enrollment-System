@@ -1,5 +1,3 @@
-import { Subject } from "../dto/subject";
-
 export enum ProfileCriteriaType {
     Mandatory = 'mandatory',
     Alternative = 'alternative',
