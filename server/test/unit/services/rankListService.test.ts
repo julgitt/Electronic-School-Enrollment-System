@@ -110,7 +110,7 @@ describe('RankListService', () => {
     })
 
     describe('getEnrollmentLists', () => {
-        it('should get all enrollemnt lists', async () => {
+        it('should get all enrollment lists', async () => {
             const mockProfileCriteria = ((id: number) => [
                 {id: 1, subjectId: 1, profileId: id, type: ProfileCriteriaType.Mandatory},
                 {id: 2, subjectId: 2, profileId: id, type: ProfileCriteriaType.Alternative},
