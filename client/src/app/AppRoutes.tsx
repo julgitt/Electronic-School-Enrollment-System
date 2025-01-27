@@ -74,7 +74,7 @@ const AppRoutes = () => {
                     <Route path="/editDeadlines" element={<EditDeadlines/>}/>
                 </>
             )}
-            {roles.includes('admin') && (
+            {roles.includes('schoolAdmin') && (
                 <> {/* school admin */}
                     <Route path="/" element={<ProfileCandidatesRank/>}/>
                     <Route path="/addProfile" element={<AddProfile/>}/>
