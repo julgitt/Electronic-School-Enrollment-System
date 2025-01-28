@@ -171,7 +171,7 @@ describe('UserService', () => {
     });
 
     describe('deleteUser', () => {
-        it('should sucessfuly delete user', async() => {
+        it('should sucessfully delete user', async() => {
             userRepoStub.deleteById.resolves();
 
             const result = await userService.deleteUser(1);
