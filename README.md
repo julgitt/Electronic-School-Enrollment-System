@@ -1,6 +1,8 @@
-# Electronic School Enrollment System
+# Aplikacja webowa automatyzująca proces rekrutacji do szkół ponadpodstawowych
 
-## Application created as an engineering thesis.
+## Aplikacja została stworzona jako praca inżynierska.
+
+## Technologie:
 
 ### Frontend:
 
@@ -13,7 +15,7 @@
 - Framework: Express
 - Język: TypeScript
 
-### Instalacja
+## Instalacja
 - git clone https://github.com/julgitt/Electronic-School-Enrollment-System
 - Przejdź do katalogu projektu.
 -  Aplikacja jest podzielona na dwie warstwy: frontendową w katalogu /client oraz backendową w katalogu /server. Należy przejść do obu podkatalogów i uruchomić polecenie npm install w każdym z nich, aby zainstalować brakujące zależności.
