@@ -22,7 +22,9 @@ function camelizeColumns(data: any[]) {
         }
     }
 }
-
+if(process.env.DB_USER == "" || process.env.DB_PASSWORD == "") {
+    throw Error("Uzupełnij wartości parametrów konfiguracyjnych w pliku .env")
+}
 
 const db = pgp({
     host: process.env.DB_HOST,

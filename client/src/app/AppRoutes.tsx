@@ -76,7 +76,7 @@ const AppRoutes = () => {
             )}
             {roles.includes('schoolAdmin') && (
                 <> {/* school admin */}
-                    <Route path="/" element={<ProfileCandidatesRank/>}/>
+                    <Route path="/" element={<AddProfile/>}/>
                     <Route path="/addProfile" element={<AddProfile/>}/>
                     <Route path="/editProfile" element={<EditProfile/>}/>
                     <Route path="/profileCandidates" element={<ProfileCandidatesRank/>}/>
