@@ -18,7 +18,6 @@ export const useFetch = <T>(endpoint: string, shouldFetch: boolean = true): Fetc
     const fetchData = async (shouldFetch: boolean) => {
         try {
             if (!shouldFetch) return;
-            console.log(endpoint)
             const response = await fetch(endpoint, {
                 method: 'GET',
                 credentials: 'include'

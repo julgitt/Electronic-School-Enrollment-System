@@ -9,8 +9,6 @@ import {DataConflictError} from "../../../src/errors/dataConflictError";
 import {CandidateEntity} from "../../../src/models/candidateEntity";
 import {CandidateRequest} from "../../../src/dto/candidate/candidateRequest";
 import {GradeService} from "../../../src/services/gradeService";
-import {ITask} from "pg-promise";
-import {Candidate} from "../../../src/dto/candidate/candidate";
 import {Grade} from "../../../src/dto/grade/grade";
 
 

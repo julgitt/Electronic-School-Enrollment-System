@@ -5,15 +5,15 @@ import {GradeService} from "./gradeService";
 import {Application} from "../dto/application/application";
 import {CandidateService} from "./candidateService";
 import {appendFile} from 'fs';
-import {EnrollmentLists, RankedApplication, RankList} from "../dto/application/rankedApplication";
+import {EnrollmentLists, RankList} from "../dto/application/rankedApplication";
 import {GRADE_TO_POINTS} from "../../../public/adminConstants";
 import {GradeType} from "../dto/grade/gradeType";
 import {GradesInfo, PointsInfo} from "../dto/grade/pointsInfo";
 import {SubjectService} from "./subjectService";
 import {ProfileWithInfo} from "../dto/profile/profileInfo";
-import { ProfileService } from "./profileService";
-import { CandidateWithGrades } from "../dto/candidate/candidateWithGrades";
-import { ApplicationWithInfo } from "../dto/application/applicationWithInfo";
+import {ProfileService} from "./profileService";
+import {CandidateWithGrades} from "../dto/candidate/candidateWithGrades";
+import {ApplicationWithInfo} from "../dto/application/applicationWithInfo";
 
 export class RankListService {
 
@@ -52,17 +52,6 @@ export class RankListService {
         return {points: this.calculatePoints(criteria, grades), gradesInfo};
     }
 
-    private async getGradesInfo(grades: Grade[], criteria: ProfileCriteria[]): Promise<GradesInfo[]> {
-        const gradesInfoPromises = grades.map(async grade => {
-            const criterion = criteria.find(c => c.subjectId === grade.subjectId && grade.type === GradeType.Certificate)
-            if (!criterion) return null
-
-            const subject = await this.subjectService.getSubject(grade.subjectId)
-            return {grade: grade.grade, subject: subject.name, type: criterion.type}
-        })
-        return (await Promise.all(gradesInfoPromises)).filter(grade => grade !== null)
-    }
-
     /**
      *  Pobiera listę rekrutacyjną dla podanego profilu.
      *  Listy rekrutacyjne są sortowane według punktów uzyskanych przez kandydatów.
@@ -81,7 +70,7 @@ export class RankListService {
             this.candidateService.getAllWithGrades(),
             this.profileService.getProfileWithInfo(id)
         ]);
-       return this.createRankList(profile, candidatesWithGrades);
+        return this.createRankList(profile, candidatesWithGrades);
     }
 
     /**
@@ -92,7 +81,7 @@ export class RankListService {
      * accepted - listę zaakceptowanych aplikacji
      * rejected - zainicjalizowana lista odrzuconych aplikacji
      * reserveByProfile - mapę, dla której:
-     *      klucz - identyfikator profilu 
+     *      klucz - identyfikator profilu
      *      wartość - lista rezerwowa kandydatów
      *
      * @throws {ResourceNotFoundError} Jeśli nie znaleziono kryteriów dla profilu.
@@ -118,8 +107,24 @@ export class RankListService {
             reserveByProfile.set(profile.id, reserve)
             allAccepted.push(...accepted)
         });
-    
-        return {reserveByProfile, accepted: allAccepted, rejected: [], acceptedByCandidate: new Map<number, ApplicationWithInfo>};
+
+        return {
+            reserveByProfile,
+            accepted: allAccepted,
+            rejected: [],
+            acceptedByCandidate: new Map<number, ApplicationWithInfo>
+        };
+    }
+
+    private async getGradesInfo(grades: Grade[], criteria: ProfileCriteria[]): Promise<GradesInfo[]> {
+        const gradesInfoPromises = grades.map(async grade => {
+            const criterion = criteria.find(c => c.subjectId === grade.subjectId && grade.type === GradeType.Certificate)
+            if (!criterion) return null
+
+            const subject = await this.subjectService.getSubject(grade.subjectId)
+            return {grade: grade.grade, subject: subject.name, type: criterion.type}
+        })
+        return (await Promise.all(gradesInfoPromises)).filter(grade => grade !== null)
     }
 
     private createRankList(profile: ProfileWithInfo, candidatesWithGrades: CandidateWithGrades[]) {
@@ -160,7 +165,7 @@ export class RankListService {
         let alternativeGrades = []
 
         for (const grade of grades) {
-            if (grade.type === GradeType.Exam) 
+            if (grade.type === GradeType.Exam)
                 points += grade.grade * 0.35;
             else if (mandatorySubjects.some(s => s.subjectId == grade.subjectId))
                 points += GRADE_TO_POINTS[grade.grade] || 0;

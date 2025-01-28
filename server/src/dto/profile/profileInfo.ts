@@ -1,5 +1,5 @@
-import { Application } from "../application/application";
-import { ProfileCriteria } from "../criteriaByProfile";
+import {Application} from "../application/application";
+import {ProfileCriteria} from "../criteriaByProfile";
 
 export interface ProfileWithInfo {
     id: number;

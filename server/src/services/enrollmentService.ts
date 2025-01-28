@@ -30,6 +30,13 @@ export class EnrollmentService {
     }
 
     /**
+     * Kończy obecny nabór
+     */
+    async endEnrollment(): Promise<void> {
+        await this.enrollmentRepository.endCurrent();
+    }
+
+    /**
      * Pobiera dane o obecnie trwającym naborze
      *
      * @returns {Promise<Enrollment>} Zwraca obiekt naboru, zawierający:

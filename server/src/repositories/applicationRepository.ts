@@ -18,10 +18,10 @@ export class ApplicationRepository {
                      JOIN profiles p ON a.profile_id = p.id
                      JOIN schools s ON p.school_id = s.id
             WHERE candidate_id = $1
-              and enrollment_id = $2
+              AND enrollment_id = $2 AND a.status = $3
         `;
 
-        return await db.query(query, [candidateId, enrollmentId]);
+        return await db.query(query, [candidateId, enrollmentId, ApplicationStatus.Pending]);
     }
 
     async getAllByCandidate(candidateId: number): Promise<ApplicationEntity[]> {
@@ -43,6 +43,27 @@ export class ApplicationRepository {
         `;
 
         return await db.query(query, [candidateId]);
+    }
+
+    async getAllPendingByCandidate(candidateId: number): Promise<ApplicationEntity[]> {
+        const query = `
+            SELECT a.id,
+                   a.candidate_id,
+                   p.id AS profile_id,
+                   s.id AS school_id,
+                   a.priority,
+                   a.status,
+                   a.enrollment_id,
+                   a.created_at,
+                   a.updated_at
+            FROM applications a
+                     JOIN profiles p ON a.profile_id = p.id
+                     JOIN schools s ON p.school_id = s.id
+            WHERE candidate_id = $1 AND a.status = $2
+            ORDER BY date_part('year', a.updated_at) DESC, a.priority
+        `;
+
+        return await db.query(query, [candidateId, ApplicationStatus.Pending]);
     }
 
     async updateStatus(id: number, status: string, t: ITask<any>): Promise<void> {

@@ -206,7 +206,7 @@ describe('ProfileService', () => {
         it('should return profile with additional info if exist', async () => {
             const mockProfile = {id: 1, name: "Informatyczny", schoolId: 2, capacity: 20};
             const mockCriteria: ProfileCriteriaWithSubjects[] = [
-                {id: 1, profileId: 1, subjectId: 1, subjectName: "matematyka",  type: ProfileCriteriaType.Alternative},
+                {id: 1, profileId: 1, subjectId: 1, subjectName: "matematyka", type: ProfileCriteriaType.Alternative},
             ];
             const mockSchool = {name: "school"} as School
 

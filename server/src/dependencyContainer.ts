@@ -26,7 +26,7 @@ import {AdminService} from "./services/adminService";
 import {AdminController} from "./controllers/adminController";
 import {SchoolAdminController} from "./controllers/schoolAdminController";
 import {ProfileController} from "./controllers/profileController";
-import { RankListService } from "./services/rankListService";
+import {RankListService} from "./services/rankListService";
 
 
 const subjectRepository: SubjectRepository = new SubjectRepository();
@@ -68,7 +68,7 @@ profileService.setApplicationService(applicationService);
 applicationService.setProfileService(profileService);
 export const applicationController = new ApplicationController(applicationService);
 
-export const adminService = new AdminService(rankListService, applicationService, tx);
+export const adminService = new AdminService(rankListService, applicationService, enrollmentService, tx);
 export const adminController = new AdminController(adminService);
 
 export const schoolAdminController = new SchoolAdminController(schoolService, profileService, rankListService, applicationService);

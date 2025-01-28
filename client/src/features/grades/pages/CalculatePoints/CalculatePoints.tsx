@@ -32,15 +32,11 @@ const CalculatePoints: React.FC = () => {
         event.preventDefault();
         setError(null);
         setLoading(true);
-        const profileId = selection.profile?.id || null;
-        if (!profileId) {
-            setError("Prosze wybrać szkołę oraz profil.");
-            return;
-        }
-
         try {
+            const profileId = selection.profile?.id || null;
+            if (!profileId) throw new Error("Prosze wybrać szkołę oraz profil.");
+
             const data: PointsInfo = await getPoints(profileId);
-            console.log(data)
             setPointsInfo(data);
         } catch (err: any) {
             setError(err.message);

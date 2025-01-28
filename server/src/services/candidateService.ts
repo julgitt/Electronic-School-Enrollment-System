@@ -4,8 +4,8 @@ import {ResourceNotFoundError} from "../errors/resourceNotFoundError";
 import {Candidate} from "../dto/candidate/candidate";
 import {CandidateEntity} from "../models/candidateEntity";
 import {CandidateRequest} from "../dto/candidate/candidateRequest";
-import { GradeService } from "./gradeService";
-import { CandidateWithGrades } from "../dto/candidate/candidateWithGrades";
+import {GradeService} from "./gradeService";
+import {CandidateWithGrades} from "../dto/candidate/candidateWithGrades";
 
 export class CandidateService {
     constructor(
@@ -40,7 +40,7 @@ export class CandidateService {
         return candidate;
     }
 
-    
+
     /**
      * Pobiera wszystkich kandydatów wraz z ocenami.
      *
@@ -51,7 +51,7 @@ export class CandidateService {
         return Promise.all(
             candidates.map(async c => {
                 const grades = await this.gradeService.getAllByCandidate(c.id);
-                return { candidate: c, grades };
+                return {candidate: c, grades};
             })
         );
     }

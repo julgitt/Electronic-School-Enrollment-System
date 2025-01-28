@@ -6,7 +6,7 @@ import {ProfileService} from "../services/profileService";
 import {ProfileRequest} from "../dto/profile/profileRequest";
 import {ProfileWithCriteria} from "../dto/profile/profileWithCriteria";
 import {ApplicationService} from "../services/applicationService";
-import { RankListService } from '../services/rankListService';
+import {RankListService} from '../services/rankListService';
 
 
 export class SchoolAdminController {

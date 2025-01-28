@@ -5,20 +5,23 @@ import {Header} from '../components/modules/Header';
 
 import AppRoutes from './AppRoutes.tsx';
 import {ErrorProvider} from '../shared/providers/errorProvider.tsx';
+import {UserProvider} from "../shared/providers/userProvider.tsx";
 
 function App() {
     return (
         <ErrorProvider>
-            <Router>
-                <div className="content">
-                    <Header/>
-                    <main className="main-content">
-                        <AppRoutes/>
-                    </main>
-                    <Footer/>
-                </div>
+            <UserProvider>
+                <Router>
+                    <div className="content">
+                        <Header/>
+                        <main className="main-content">
+                            <AppRoutes/>
+                        </main>
+                        <Footer/>
+                    </div>
 
-            </Router>
+                </Router>
+            </UserProvider>
         </ErrorProvider>
 
     );

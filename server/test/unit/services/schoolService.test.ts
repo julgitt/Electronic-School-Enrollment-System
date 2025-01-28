@@ -136,11 +136,12 @@ describe('SchoolService', () => {
         it('should successfully add school', async () => {
             const mockSchool: SchoolEntity = {id: 1, name: 'School 1'};
 
-            schoolRepoStub.insert.resolves();
+            schoolRepoStub.insert.resolves({id: 2, name: 'School 1'});
 
             const result = await schoolService.addSchool(mockSchool);
 
             assert.equal(schoolRepoStub.insert.callCount, 1);
+            assert.deepEqual(result, {id: 2, name: 'School 1'});
         })
     })
 
@@ -148,7 +149,7 @@ describe('SchoolService', () => {
         it('should successfully delete school', async () => {
             schoolRepoStub.delete.resolves();
 
-            const result = await schoolService.deleteSchool(1);
+            await schoolService.deleteSchool(1);
 
             assert.equal(schoolRepoStub.delete.callCount, 1);
         })

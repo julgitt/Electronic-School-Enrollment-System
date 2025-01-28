@@ -2,13 +2,12 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 17.2
--- Dumped by pg_dump version 17.2
+-- Dumped from database version 14.13 (Ubuntu 14.13-1.pgdg22.04+1)
+-- Dumped by pg_dump version 14.13 (Ubuntu 14.13-1.pgdg22.04+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
-SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -335,7 +334,7 @@ CREATE SEQUENCE public.users_user_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.users_user_id_seq OWNER TO postgres;
+ALTER TABLE public.users_user_id_seq OWNER TO postgres;
 
 --
 -- Name: users_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -364,6 +363,8 @@ COPY public.applications (id, candidate_id, profile_id, status, enrollment_id, c
 --
 
 COPY public.candidates (id, pesel, first_name, last_name, created_at, updated_at, user_id) FROM stdin;
+169917	89050675527	Adam	Wiśniewski	2025-01-23 22:36:55.775884	2025-01-23 22:36:55.775884	235
+169918	61080138676	Katarzyna	Wiśniewska	2025-01-23 22:38:26.461422	2025-01-23 22:38:26.461422	235
 \.
 
 
@@ -372,6 +373,8 @@ COPY public.candidates (id, pesel, first_name, last_name, created_at, updated_at
 --
 
 COPY public.enrollments (id, round, start_date, end_date) FROM stdin;
+6	1	2025-01-21	2025-01-23
+7	2	2025-01-24	2025-02-20
 \.
 
 
@@ -440,6 +443,8 @@ COPY public.profiles (id, name, school_id, capacity, created_at, updated_at) FRO
 --
 
 COPY public.school_admins (id, school_id, user_id, created_at, updated_at) FROM stdin;
+11	233	236	2025-01-24 00:25:24.389705	2025-01-24 00:25:24.389705
+12	3	236	2025-01-24 00:25:24.389705	2025-01-24 00:25:24.389705
 \.
 
 
@@ -450,8 +455,9 @@ COPY public.school_admins (id, school_id, user_id, created_at, updated_at) FROM 
 COPY public.schools (id, name, created_at, updated_at) FROM stdin;
 1	Technikum nr 24	2024-11-17 14:40:44.745302	2024-11-17 14:40:44.745302
 2	Szkoła zawodowa nr 3	2024-11-17 14:40:44.745302	2024-11-17 14:40:44.745302
-3	Liceum ogólnokształcące nr 1	2024-11-17 14:40:44.745302	2024-11-17 14:40:44.745302
+3	Liceum Ogólnokształcące nr 1	2024-11-17 14:40:44.745302	2024-11-17 14:40:44.745302
 5	Technikum nr 4	2024-12-16 21:53:55.842103	2024-12-16 21:53:55.842103
+233	Liceum Ogólnokształcące nr 20	2025-01-23 22:00:45.267038	2025-01-23 22:00:45.267038
 \.
 
 
@@ -477,6 +483,10 @@ COPY public.subjects (id, name, created_at, updated_at, is_exam_subject) FROM st
 --
 
 COPY public.user_roles (user_id, role_name, created_at, updated_at) FROM stdin;
+234	admin	2025-01-23 21:57:42.883088	2025-01-23 21:57:42.883088
+235	user	2025-01-23 22:34:58.707602	2025-01-23 22:34:58.707602
+236	schoolAdmin	2025-01-23 22:39:48.268128	2025-01-23 22:39:48.268128
+238	user	2025-01-27 23:57:15.089376	2025-01-27 23:57:15.089376
 \.
 
 
@@ -485,6 +495,10 @@ COPY public.user_roles (user_id, role_name, created_at, updated_at) FROM stdin;
 --
 
 COPY public.users (id, username, email, password, created_at, updated_at) FROM stdin;
+234	administrator	admin@admin.com	$2b$12$EYqRv9qxxAP/zuS6sEKDMu0o4a7cIVZ6Xsy5eObwtmS7rplqdETGK	2025-01-23 21:57:42.883088	2025-01-23 21:57:42.883088
+235	JanWiśniewski	email@email.com	$2b$12$gPqwsW7dFZ6P3Wn4y4AS3.BVzGvxZAlbe4Yl7Fk9ni7nkNGSMhGem	2025-01-23 22:34:58.707602	2025-01-23 22:34:58.707602
+236	AdministratorLiceum	admin@liceum.com	$2b$12$CAGeACTSGA/hMB03PYaJOu84tA/QL6ikasrnuOof/8I4dErGiiTIy	2025-01-23 22:39:48.268128	2025-01-23 22:39:48.268128
+238	e2etest	e2e@test.com	$2b$12$vSIvp5z0//pO1T3MNMmWV.Dj5w.WhJ4aWbP7xFErD4iVm6/z20hJm	2025-01-27 23:57:15.089376	2025-01-27 23:57:15.089376
 \.
 
 
@@ -499,7 +513,7 @@ SELECT pg_catalog.setval('public.applications_id_seq', 1, false);
 -- Name: candidates_candidate_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.candidates_candidate_id_seq', 169916, true);
+SELECT pg_catalog.setval('public.candidates_candidate_id_seq', 169919, true);
 
 
 --
@@ -520,7 +534,7 @@ SELECT pg_catalog.setval('public.classes_id_seq', 21687, true);
 -- Name: enrollment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.enrollment_id_seq', 5, true);
+SELECT pg_catalog.setval('public.enrollment_id_seq', 7, true);
 
 
 --
@@ -534,14 +548,14 @@ SELECT pg_catalog.setval('public.grades_id_seq', 2038734, true);
 -- Name: school_admins_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.school_admins_id_seq', 8, true);
+SELECT pg_catalog.setval('public.school_admins_id_seq', 12, true);
 
 
 --
 -- Name: schools_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.schools_id_seq', 232, true);
+SELECT pg_catalog.setval('public.schools_id_seq', 233, true);
 
 
 --
@@ -555,7 +569,7 @@ SELECT pg_catalog.setval('public.subjects_id_seq', 11, true);
 -- Name: users_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.users_user_id_seq', 233, true);
+SELECT pg_catalog.setval('public.users_user_id_seq', 238, true);
 
 
 --
