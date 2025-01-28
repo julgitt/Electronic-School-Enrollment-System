@@ -15,6 +15,11 @@
 - Framework: Express
 - Język: TypeScript
 
+## Wymagania wstępne przed instalacją
+- Zainstalowane środowisko Node.js oraz menedżer pakietów npm.
+- Zainstalowany system baz danych PostreSQL.
+- Utworzona baza danych, do której zaimportowana zostanie kopia zapasowa bazy danych.
+
 ## Instalacja
 - git clone https://github.com/julgitt/Electronic-School-Enrollment-System
 - Przejdź do katalogu projektu.
